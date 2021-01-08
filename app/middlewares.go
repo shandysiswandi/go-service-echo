@@ -26,5 +26,5 @@ func Middlewares(e *echo.Echo) {
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{Level: 5}))
 
 	// secure
-	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{}))
+	e.Use(middleware.Secure())
 }
