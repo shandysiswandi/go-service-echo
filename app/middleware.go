@@ -8,8 +8,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-// Middlewares is
-func Middlewares(e *echo.Echo) {
+// Middleware is
+func Middleware(e *echo.Echo) {
 	// Remove Trailing Slash
 	e.Pre(middleware.RemoveTrailingSlash())
 

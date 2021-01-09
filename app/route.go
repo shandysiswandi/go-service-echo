@@ -9,8 +9,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// Routes is
-func Routes(e *echo.Echo) {
+// Route is
+func Route(e *echo.Echo) {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Auto Migren Pala Gue")
 	})
