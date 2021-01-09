@@ -12,6 +12,12 @@ func Middlewares(e *echo.Echo) {
 	// Remove Trailing Slash
 	e.Pre(middleware.RemoveTrailingSlash())
 
+	// logger
+	e.Use(middleware.Logger())
+
+	// recover panic
+	e.Use(middleware.Recover())
+
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
