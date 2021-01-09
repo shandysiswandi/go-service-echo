@@ -2,20 +2,21 @@ package fetch
 
 import (
 	"go-rest-echo/entity"
-	"go-rest-echo/response"
+	"go-rest-echo/helper"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 // Delivery is
-func Delivery(c echo.Context) (err error) {
+func Delivery(cc echo.Context) (err error) {
+	c := cc.(*helper.Context)
 	u := []entity.User{}
 
 	// usecase
 	if err = Usecase(&u); err != nil {
-		return response.HandleErrors(c, err)
+		return c.HandleErrors(err)
 	}
 
-	return response.Success(c, http.StatusCreated, "create user", u)
+	return c.Success(http.StatusOK, "create user", u)
 }

@@ -2,30 +2,31 @@ package create
 
 import (
 	"go-rest-echo/entity"
-	"go-rest-echo/response"
+	"go-rest-echo/helper"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 // Delivery is
-func Delivery(c echo.Context) (err error) {
+func Delivery(cc echo.Context) (err error) {
+	c := cc.(*helper.Context)
 	u := entity.User{}
 
 	// binding
 	if err = c.Bind(&u); err != nil {
-		return response.BadRequest(c, err)
+		return c.BadRequest(err)
 	}
 
 	// validation
 	if err = c.Validate(u); err != nil {
-		return response.ValidationFail(c, err)
+		return c.ValidationFail(err)
 	}
 
 	// usecase
 	if err = Usecase(&u); err != nil {
-		return response.HandleErrors(c, err)
+		return c.HandleErrors(err)
 	}
 
-	return response.Success(c, http.StatusCreated, "create user", u)
+	return c.Success(http.StatusCreated, "create user", u)
 }
