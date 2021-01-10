@@ -1,8 +1,8 @@
 package get
 
 import (
+	"go-rest-echo/app/context"
 	"go-rest-echo/entity"
-	"go-rest-echo/helper"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -10,7 +10,7 @@ import (
 
 // Delivery is
 func Delivery(cc echo.Context) (err error) {
-	c := cc.(*helper.Context)
+	c := cc.(*context.CustomContext)
 	u := entity.User{}
 	id := c.Param("id")
 
