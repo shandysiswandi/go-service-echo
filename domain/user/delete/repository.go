@@ -6,7 +6,7 @@ import (
 )
 
 // Repository is
-func Repository(user *entity.User, id string) (int64, error) {
-	result := mysql.DB.Where("id = ?", id).Delete(user)
+func Repository(u *entity.User, id string) (int64, error) {
+	result := mysql.DB.Where("id = ?", id).Delete(u)
 	return result.RowsAffected, result.Error
 }

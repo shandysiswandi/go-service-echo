@@ -5,8 +5,8 @@ import (
 )
 
 // Usecase is
-func Usecase(user *entity.User, id string) error {
-	err := Repository(user, id).Error
+func Usecase(u *entity.User, id string) error {
+	err := Repository(u, id).Error
 	if err != nil {
 		return err
 	}

@@ -8,6 +8,6 @@ import (
 )
 
 // Repository is
-func Repository(user *entity.User) *gorm.DB {
-	return mysql.DB.Create(user)
+func Repository(u *entity.User) *gorm.DB {
+	return mysql.DB.Create(u)
 }

@@ -8,6 +8,6 @@ import (
 )
 
 // Repository is
-func Repository(user *entity.User, id string) *gorm.DB {
-	return mysql.DB.Where("id = ?", id).First(user)
+func Repository(u *entity.User, id string) *gorm.DB {
+	return mysql.DB.Where("id = ?", id).First(u)
 }
