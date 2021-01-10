@@ -19,5 +19,6 @@ func Delivery(cc echo.Context) (err error) {
 		return c.HandleErrors(err)
 	}
 
-	return c.Success(http.StatusOK, "delete task", t)
+	type H map[string]interface{}
+	return c.Success(http.StatusOK, "delete task", H{"deleted_at": t.DeletedAt})
 }
