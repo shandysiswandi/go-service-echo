@@ -1,20 +1,21 @@
 package delete
 
 import (
-	"go-rest-echo/domain/user/get"
 	"go-rest-echo/entity"
+
+	"gorm.io/gorm"
 )
 
 // Usecase is
-func Usecase(user *entity.User, id string) (err error) {
-	err = get.Repository(user, id).Error
+func Usecase(user *entity.User, id string) error {
+	count, err := Repository(user, id)
 	if err != nil {
 		return err
 	}
 
-	err = Repository(user, id).Error
-	if err != nil {
-		return err
+	if count == 0 {
+		return gorm.ErrRecordNotFound
 	}
+
 	return nil
 }
