@@ -1,4 +1,4 @@
-package app
+package validation
 
 import (
 	"github.com/go-playground/validator/v10"
@@ -15,7 +15,7 @@ func (v *valid) Validate(i interface{}) error {
 	return v.validator.Struct(i)
 }
 
-// Validation is
-func Validation(e *echo.Echo) {
+// Initialize is
+func Initialize(e *echo.Echo) {
 	e.Validator = &valid{validator: validator.New()}
 }

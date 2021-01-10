@@ -1,4 +1,4 @@
-package app
+package route
 
 import (
 	"net/http"
@@ -20,8 +20,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// Route is
-func Route(e *echo.Echo) {
+// Initialize is
+func Initialize(e *echo.Echo) {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "ENV "+helper.Env("ENV"))
 	})
