@@ -19,10 +19,11 @@ func Initialize(e *echo.Echo) {
 	uri := "\033[33mURI\033[0m: ${uri}"
 	ip := "\033[33mIP\033[0m: ${remote_ip}"
 	status := "\033[33mSTATUS\033[0m: ${status}"
+	err := "\033[33mERROR\033[0m: ${error}"
 	latency := "\033[33mLATENCY\033[0m: ${latency_human}"
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: fmt.Sprintf("%s | %s | %s | %s | %s | %s\n", time, method, uri, ip, status, latency),
+		Format: fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s\n", time, method, uri, ip, status, err, latency),
 	}))
 
 	// recover panic
