@@ -1,7 +1,8 @@
-package helper
+package context
 
 import (
 	"errors"
+	"go-rest-echo/helper"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -9,27 +10,37 @@ import (
 	"gorm.io/gorm"
 )
 
-// Response is
 type responseSuccess struct {
 	Status  bool        `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
 
-// Error is
 type responseError struct {
 	Status  bool        `json:"status"`
 	Message string      `json:"message"`
 	Error   interface{} `json:"error"`
 }
 
-// Context is custom
-type Context struct {
+// CustomContext is
+type CustomContext struct {
 	echo.Context
 }
 
+// Initialize is
+func Initialize(e *echo.Echo) {
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &CustomContext{c}
+			return next(cc)
+		}
+	})
+}
+
+/* receiver & function base on custom context */
+
 // Success is
-func (c *Context) Success(s int, m string, d interface{}) error {
+func (c *CustomContext) Success(s int, m string, d interface{}) error {
 	return c.JSON(s, responseSuccess{
 		Status:  true,
 		Message: m,
@@ -38,7 +49,7 @@ func (c *Context) Success(s int, m string, d interface{}) error {
 }
 
 // BadRequest is
-func (c *Context) BadRequest(err interface{}) error {
+func (c *CustomContext) BadRequest(err interface{}) error {
 	return c.JSON(http.StatusBadRequest, responseError{
 		Status:  false,
 		Message: "Bad Request, something wrong on your request",
@@ -47,7 +58,7 @@ func (c *Context) BadRequest(err interface{}) error {
 }
 
 // NotFound is
-func (c *Context) NotFound(err interface{}) error {
+func (c *CustomContext) NotFound(err interface{}) error {
 	return c.JSON(http.StatusNotFound, responseError{
 		Status:  false,
 		Message: "Not Found, your request data not found in our database",
@@ -56,12 +67,12 @@ func (c *Context) NotFound(err interface{}) error {
 }
 
 // ValidationFail is
-func (c *Context) ValidationFail(err interface{}) error {
+func (c *CustomContext) ValidationFail(err interface{}) error {
 	var e []map[string]interface{}
 
 	for _, err := range err.(validator.ValidationErrors) {
 		e = append(e, map[string]interface{}{
-			"key":     SnakeCase(err.StructField()),
+			"key":     helper.SnakeCase(err.StructField()),
 			"message": getMessageValidation(err),
 			"value":   err.Value(),
 		})
@@ -75,7 +86,7 @@ func (c *Context) ValidationFail(err interface{}) error {
 }
 
 // InternalServerError is
-func (c *Context) InternalServerError(err interface{}) error {
+func (c *CustomContext) InternalServerError(err interface{}) error {
 	return c.JSON(http.StatusInternalServerError, responseError{
 		Status:  false,
 		Message: "Internal Server Error",
@@ -84,7 +95,7 @@ func (c *Context) InternalServerError(err interface{}) error {
 }
 
 // HandleErrors is
-func (c *Context) HandleErrors(e error) error {
+func (c *CustomContext) HandleErrors(e error) error {
 	if errors.Is(e, gorm.ErrRecordNotFound) {
 		return c.NotFound(gorm.ErrRecordNotFound)
 	}
@@ -140,8 +151,7 @@ func (c *Context) HandleErrors(e error) error {
 	return c.InternalServerError(e)
 }
 
-// private func
-//
+/* private function */
 func getMessageValidation(e validator.FieldError) (msg string) {
 	switch e.Tag() {
 	case "min":
