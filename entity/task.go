@@ -13,9 +13,9 @@ const TaskTable string = "tasks"
 // Task is
 type Task struct {
 	base.UUID
-	UserID      string `gorm:"type:varchar(36)" json:"user_id" validate:"required"`
-	Title       string `gorm:"type:varchar(100)" json:"title" validate:"required,min=5"`
-	Description string `gorm:"type:varchar(100)" json:"description" validate:"required,min=15"`
+	UserID      string `json:"user_id" gorm:"type:varchar(36)" validate:"required"`
+	Title       string `json:"title" gorm:"type:varchar(100); not null" validate:"required,min=5"`
+	Description string `json:"description" gorm:"type:varchar(100); not null" validate:"required,min=15"`
 	Completed   bool   `json:"completed"`
 	base.Timestamp
 }
