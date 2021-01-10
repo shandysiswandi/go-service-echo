@@ -4,12 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"go-rest-echo/helper"
-	"log"
-	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // DB is a instance to
@@ -28,7 +25,6 @@ func GetDB() (con *gorm.DB, err error) {
 
 	con, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		PrepareStmt: true,
-		Logger:      logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{}),
 	})
 	if err != nil {
 		err = errors.New("Can't connect database mysql with gorm library")
