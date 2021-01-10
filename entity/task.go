@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"go-rest-echo/entity/base"
+	"go-rest-echo/app/base"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -13,15 +13,24 @@ const TaskTable string = "tasks"
 // Task is
 type Task struct {
 	base.UUID
-	UserID      string `json:"user_id" gorm:"type:varchar(36)" validate:"required"`
-	Title       string `json:"title" gorm:"type:varchar(100); not null" validate:"required,min=5"`
-	Description string `json:"description" gorm:"type:varchar(100); not null" validate:"required,min=15"`
+	UserID      string `json:"user_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 	Completed   bool   `json:"completed"`
 	base.Timestamp
+}
+
+/*
+ * Hooks GORM
+ */
+
+// TableName is
+func (Task) TableName() string {
+	return "tasks"
 }
 
 // BeforeCreate is
 func (u *Task) BeforeCreate(tx *gorm.DB) (err error) {
 	u.ID = uuid.New().String()
-	return
+	return nil
 }
