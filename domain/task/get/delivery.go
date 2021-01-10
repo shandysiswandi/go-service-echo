@@ -11,11 +11,11 @@ import (
 // Delivery is
 func Delivery(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
-	t := &entity.Task{}
+	t := entity.Task{}
 	id := c.Param("id")
 
 	// usecase
-	if err = Usecase(t, id); err != nil {
+	if err = Usecase(&t, id); err != nil {
 		return c.HandleErrors(err)
 	}
 
