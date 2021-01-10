@@ -30,9 +30,20 @@ func Initialize(e *echo.Echo) {
 
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+		AllowHeaders: []string{
+			echo.HeaderAccept,
+			echo.HeaderAcceptEncoding,
+			echo.HeaderAccessControlAllowHeaders,
+			echo.HeaderAuthorization,
+			echo.HeaderContentType,
+			echo.HeaderContentLength,
+			echo.HeaderOrigin,
+			echo.HeaderXCSRFToken,
+		},
+		MaxAge: 86400,
 	}))
 
 	// body limit
