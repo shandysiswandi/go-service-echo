@@ -19,5 +19,5 @@ func Delivery(cc echo.Context) (err error) {
 		return c.HandleErrors(err)
 	}
 
-	return c.Success(http.StatusOK, "fetch users", t)
+	return c.Success(http.StatusOK, "delete task", t)
 }
