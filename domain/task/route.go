@@ -12,7 +12,7 @@ import (
 
 // Route is
 func Route(e *echo.Echo) {
-	r := e.Group("/users")
+	r := e.Group("/tasks")
 	r.GET("", fetch.Delivery)
 	r.GET("/:id", get.Delivery)
 	r.POST("", create.Delivery)
