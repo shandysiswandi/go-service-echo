@@ -12,6 +12,10 @@ run : destroy
 destroy :
 	@echo "Hellow"
 
+test:
+	@clear
+	@go test --race -v ./...
+
 # Command Local
 local:
 	@clear
