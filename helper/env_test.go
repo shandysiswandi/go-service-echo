@@ -23,37 +23,37 @@ func TestEnv(t *testing.T) {
 
 	t.Run("1. ENV value", func(t *testing.T) {
 		got := helper.Env("ENV")
-		expected := "testing"
+		want := "testing"
 
-		if got != expected {
-			t.Errorf("Expected `%s`, but got %s", expected, got)
+		if got != want {
+			t.Errorf("Expected`%s`, but got %s", want, got)
 		}
 	})
 
 	t.Run("2. PORT value", func(t *testing.T) {
 		got := helper.Env("PORT")
-		expected := "3000"
+		want := "3000"
 
-		if got != expected {
-			t.Errorf("Expected `%s`, but got %s", expected, got)
+		if got != want {
+			t.Errorf("Expected`%s`, but got %s", want, got)
 		}
 	})
 
 	t.Run("3. Empty string value", func(t *testing.T) {
 		got := helper.Env("")
-		expected := ""
+		want := ""
 
-		if got != expected {
-			t.Errorf("Expected `%s`, but got %s", expected, got)
+		if got != want {
+			t.Errorf("Expected`%s`, but got %s", want, got)
 		}
 	})
 
 	t.Run("4. Empty key value", func(t *testing.T) {
 		got := helper.Env("EMPTY_KEY")
-		expected := ""
+		want := ""
 
-		if got != expected {
-			t.Errorf("Expected `%s`, but got %s", expected, got)
+		if got != want {
+			t.Errorf("Expected`%s`, but got %s", want, got)
 		}
 	})
 }
