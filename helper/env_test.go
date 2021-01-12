@@ -21,7 +21,7 @@ func TestEnv(t *testing.T) {
 		return
 	}
 
-	t.Run("1. ENV value", func(t *testing.T) {
+	t.Run("1 ENV value", func(t *testing.T) {
 		got := helper.Env("ENV")
 		want := "testing"
 
@@ -30,7 +30,7 @@ func TestEnv(t *testing.T) {
 		}
 	})
 
-	t.Run("2. PORT value", func(t *testing.T) {
+	t.Run("2 PORT value", func(t *testing.T) {
 		got := helper.Env("PORT")
 		want := "3000"
 
@@ -39,7 +39,7 @@ func TestEnv(t *testing.T) {
 		}
 	})
 
-	t.Run("3. Empty string value", func(t *testing.T) {
+	t.Run("3 Empty string value", func(t *testing.T) {
 		got := helper.Env("")
 		want := ""
 
@@ -48,7 +48,7 @@ func TestEnv(t *testing.T) {
 		}
 	})
 
-	t.Run("4. Empty key value", func(t *testing.T) {
+	t.Run("4 Empty key value", func(t *testing.T) {
 		got := helper.Env("EMPTY_KEY")
 		want := ""
 
