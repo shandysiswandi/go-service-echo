@@ -2,7 +2,6 @@ package entity
 
 import (
 	"errors"
-	"go-rest-echo/app/base"
 	"go-rest-echo/helper"
 
 	"github.com/google/uuid"
@@ -11,17 +10,13 @@ import (
 
 // User is
 type User struct {
-	base.UUID
+	UUID
 	Name     string `json:"name" validate:"required,min=5"`
 	Email    string `json:"email" validate:"required,email,min=5"`
 	Password string `json:"password" validate:"required,min=6"`
 	Task     []Task `json:"tasks"`
-	base.Timestamp
+	Timestamps
 }
-
-/*
- * Hooks GORM
- */
 
 // TableName is
 func (User) TableName() string {

@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"go-rest-echo/app/base"
-
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -12,17 +10,13 @@ const TaskTable string = "tasks"
 
 // Task is
 type Task struct {
-	base.UUID
+	UUID
 	UserID      string `json:"user_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Completed   bool   `json:"completed"`
-	base.Timestamp
+	Timestamps
 }
-
-/*
- * Hooks GORM
- */
 
 // TableName is
 func (Task) TableName() string {
