@@ -4,17 +4,22 @@
 up: build run
 
 build :
-	@echo "Hellow"
+	@echo "build"
 
 run : destroy
-	@echo "Hellow"
+	@echo "run"
 
 destroy :
-	@echo "Hellow"
+	@echo "destroy"
 
 test:
 	@clear
 	@go test --race -v ./...
+
+test-cover:
+	@clear
+	@go test ./... -coverprofile .coverage
+	@go tool cover -html=.coverage
 
 # Command Local
 local:
