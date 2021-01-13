@@ -1,6 +1,7 @@
 package user
 
 import (
+	"go-rest-echo/db/mysql"
 	"go-rest-echo/entity"
 
 	"gorm.io/gorm"
@@ -21,7 +22,7 @@ type Repository interface {
 
 // NewRepository is contstructor
 func NewRepository() Repository {
-	return &repository{DB: nil}
+	return &repository{DB: mysql.GetDB()}
 }
 
 func (r *repository) Fetch(u *[]entity.User) *gorm.DB {
