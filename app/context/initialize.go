@@ -27,8 +27,8 @@ type CustomContext struct {
 	echo.Context
 }
 
-// Initialize is
-func Initialize(e *echo.Echo) {
+// NewContext is
+func NewContext(e *echo.Echo) {
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := &CustomContext{c}
