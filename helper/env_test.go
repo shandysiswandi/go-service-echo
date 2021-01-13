@@ -2,22 +2,15 @@ package helper_test
 
 import (
 	"go-rest-echo/helper"
-	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/joho/godotenv"
 )
 
-func envPath() (b string) {
-	_, b, _, _ = runtime.Caller(0)
-	return filepath.Join(filepath.Dir(b), "../.env.test")
-}
-
 func TestEnv(t *testing.T) {
-	err := godotenv.Load(envPath())
+	err := godotenv.Load("../.env.test")
 	if err != nil {
-		t.Errorf("No %v", err)
+		t.Errorf(err.Error())
 		return
 	}
 
