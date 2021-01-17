@@ -1,6 +1,7 @@
 README.md
-mysql.sql
 Makefile
+mysql.sql
+requests.http
 .git
 .gitignore
 .coverage
