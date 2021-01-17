@@ -11,38 +11,25 @@ import (
 
 var connection *gorm.DB
 
-type database struct {
-	dsn string
-}
+// GormMysqlConnection is
+func GormMysqlConnection() (err error) {
+	var dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		os.Getenv("GORM_USERNAME"),
+		os.Getenv("GORM_PASSWORD"),
+		os.Getenv("GORM_HOST"),
+		os.Getenv("GORM_PORT"),
+		os.Getenv("GORM_DATABASE"),
+	)
 
-// Database is
-type Database interface {
-	Initialize() error
-}
-
-// NewDatabase is
-func NewDatabase() Database {
-	return &database{
-		dsn: fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			os.Getenv("GORM_USERNAME"),
-			os.Getenv("GORM_PASSWORD"),
-			os.Getenv("GORM_HOST"),
-			os.Getenv("GORM_PORT"),
-			os.Getenv("GORM_DATABASE"),
-		),
-	}
-}
-
-func (d *database) Initialize() (err error) {
-	connection, err = gorm.Open(mysql.Open(d.dsn), &gorm.Config{PrepareStmt: true})
+	connection, err = gorm.Open(mysql.Open(dsn), &gorm.Config{PrepareStmt: true})
 	if err != nil {
-		err = errors.New("Can't connect database mysql with gorm library")
-		return err
+		return errors.New("Can't connect database mysql with gorm library")
 	}
 
-	conDB, err := connection.DB()
-	conDB.SetMaxIdleConns(5)
-	conDB.SetMaxOpenConns(50)
+	sqlCon, err := connection.DB()
+	sqlCon.SetMaxIdleConns(5)
+	sqlCon.SetMaxOpenConns(50)
+
 	return nil
 }
 
