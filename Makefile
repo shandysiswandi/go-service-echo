@@ -11,6 +11,7 @@ run : destroy
 destroy :
 	@echo "destroy"
 
+# ------------------------------------------------------------
 test:
 	@clear
 	@go test --race -v ./...
@@ -20,11 +21,12 @@ test-cover:
 	@go test ./... -coverprofile .coverage
 	@go tool cover -html=.coverage
 
+# ------------------------------------------------------------
 lint:
 	@clear
 	@golint ./...
 	@go fmt ./...
 
-local:
+local: lint
 	@clear
 	@go run .
