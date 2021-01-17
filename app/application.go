@@ -2,13 +2,14 @@ package app
 
 import (
 	"fmt"
-	"go-rest-echo/app/context"
-	"go-rest-echo/app/validation"
-	"go-rest-echo/domain/animal"
-	"go-rest-echo/domain/task"
-	"go-rest-echo/domain/user"
 	"net/http"
 	"os"
+
+	"go-rest-echo/app/context"
+	"go-rest-echo/app/validation"
+	"go-rest-echo/domain/app"
+	"go-rest-echo/domain/task"
+	"go-rest-echo/domain/user"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -24,34 +25,20 @@ const (
 	latency = "\033[33mLATENCY\033[0m: ${latency_human}"
 )
 
-type app struct{}
-
-// Interface is
-type Interface interface {
-	Start()
-	initializeMiddlewares(*echo.Echo)
-	initializeRoutes(*echo.Echo)
-}
-
 // NewApplication is
-func NewApplication() Interface {
-	return &app{}
-}
-
-// Start is
-func (a app) Start() {
+func NewApplication() {
 	e := echo.New()
 
 	context.NewContext(e)
 	validation.NewValidation(e)
 
-	a.initializeMiddlewares(e)
-	a.initializeRoutes(e)
+	initializeMiddlewares(e)
+	initializeRoutes(e)
 
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
 
-func (app) initializeMiddlewares(e *echo.Echo) {
+func initializeMiddlewares(e *echo.Echo) {
 	// Remove Trailing Slash
 	e.Pre(middleware.RemoveTrailingSlash())
 	// logger
@@ -85,12 +72,8 @@ func (app) initializeMiddlewares(e *echo.Echo) {
 	e.Use(middleware.Secure())
 }
 
-func (app) initializeRoutes(e *echo.Echo) {
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, fmt.Sprintf("%s ----> %s", os.Getenv("NAME"), os.Getenv("ENV")))
-	})
-
-	task.NewRouter().Initialize(e, "/tasks")
-	user.NewRouter().Initialize(e, "/users")
-	animal.NewRouter().Initialize(e)
+func initializeRoutes(e *echo.Echo) {
+	app.NewRouter(e)
+	task.NewRouter(e)
+	user.NewRouter(e)
 }
