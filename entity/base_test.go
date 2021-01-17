@@ -79,31 +79,11 @@ func TestTimestamps(t *testing.T) {
 	})
 
 	t.Run("2 Struct Timestamps Pointer", func(t *testing.T) {
-		t.Run("2.1 Field CreatedAt", func(t *testing.T) {
-			got := &entity.Timestamps{CreatedAt: time.Time{}}
-			want := &entity.Timestamps{CreatedAt: time.Time{}}
+		got := &entity.Timestamps{}
+		want := &entity.Timestamps{}
 
-			if got == want {
-				t.Errorf("Expected `%v`, but got %v", want, got)
-			}
-		})
-
-		t.Run("2.2 Field UpdatedAt", func(t *testing.T) {
-			got := &entity.Timestamps{UpdatedAt: time.Time{}}
-			want := &entity.Timestamps{UpdatedAt: time.Time{}}
-
-			if got == want {
-				t.Errorf("Expected `%v`, but got %v", want, got)
-			}
-		})
-
-		t.Run("2.3 Field DeletedAt", func(t *testing.T) {
-			got := &entity.Timestamps{DeletedAt: gorm.DeletedAt{}}
-			want := &entity.Timestamps{DeletedAt: gorm.DeletedAt{}}
-
-			if got == want {
-				t.Errorf("Expected `%v`, but got %v", want, got)
-			}
-		})
+		if got == want {
+			t.Errorf("Expected `%v`, but got %v", want, got)
+		}
 	})
 }
