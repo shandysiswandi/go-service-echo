@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	config.NewConfiguration().Start()
+	config.NewConfiguration()
 
-	db.NewDatabase().Start()
+	db.NewDatabase()
 
-	app.NewApplication().Start()
+	app.NewApplication()
 }
