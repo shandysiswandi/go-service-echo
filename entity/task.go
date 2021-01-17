@@ -1,10 +1,5 @@
 package entity
 
-import (
-	"github.com/google/uuid"
-	"gorm.io/gorm"
-)
-
 // Task is
 type Task struct {
 	UUID
@@ -18,10 +13,4 @@ type Task struct {
 // TableName is
 func (Task) TableName() string {
 	return "tasks"
-}
-
-// BeforeCreate is
-func (u *Task) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.New().String()
-	return nil
 }
