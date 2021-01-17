@@ -1,6 +1,5 @@
-.PHONY: build run destroy up
+.PHONY: up build run destroy test test-cover lint local
 
-# Command Server
 up: build run
 
 build :
@@ -21,7 +20,10 @@ test-cover:
 	@go test ./... -coverprofile .coverage
 	@go tool cover -html=.coverage
 
-# Command Local
+lint:
+	@clear
+	@golint ./...
+
 local:
 	@clear
-	@go run main.go
+	@go run .
