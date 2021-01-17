@@ -5,9 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TaskTable is
-const TaskTable string = "tasks"
-
 // Task is
 type Task struct {
 	UUID
