@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-rest-echo/app/context"
 	"go-rest-echo/app/validation"
+	"go-rest-echo/domain/animal"
 	"go-rest-echo/domain/task"
 	"go-rest-echo/domain/user"
 	"net/http"
@@ -91,4 +92,5 @@ func (app) initializeRoutes(e *echo.Echo) {
 
 	task.NewRouter().Initialize(e, "/tasks")
 	user.NewRouter().Initialize(e, "/users")
+	animal.NewRouter().Initialize(e)
 }
