@@ -23,6 +23,7 @@ test-cover:
 lint:
 	@clear
 	@golint ./...
+	@go fmt ./...
 
 local:
 	@clear
