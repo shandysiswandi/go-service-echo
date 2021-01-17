@@ -2,25 +2,13 @@ package db
 
 import (
 	"go-rest-echo/db/mysql"
-	"go-rest-echo/entity"
+	"log"
 )
 
-type db struct{}
-
-// Interface is
-type Interface interface {
-	Start()
-}
-
 // NewDatabase is
-func NewDatabase() Interface {
-	return &db{}
-}
-
-func (db) Start() {
-	err := mysql.NewDatabase().Initialize()
+func NewDatabase() {
+	err := mysql.GormMysqlConnection()
 	if err != nil {
-		panic(err)
+		log.Println(err.Error())
 	}
-	mysql.GetDB().AutoMigrate(&entity.User{}, &entity.Task{})
 }
