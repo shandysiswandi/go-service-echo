@@ -1,21 +1,23 @@
 FROM golang:1.15.6-alpine
 
-# make directory for this  
-RUN mkdir /app  
+LABEL maintainer="SHANDY SISWANDI <shandysiswandi@gmail.com>"
+
+# change dir container to this directory
+WORKDIR /app
 
 # copy go.mod dan go.sum first 
-COPY go.* /app 
+COPY go.* ./
 
 # download third_party from go mod
 RUN go mod download 
 
 # copy rest of the files
-COPY . /app
-
-# change dir container to this directory
-WORKDIR /app
+COPY . .
 
 # build go aplication
-RUN go build -o server . 
+RUN go build -o application .
 
-CMD ["/app/server"]
+# add permission executable
+RUN chmod +x application
+
+CMD ["./application"]
