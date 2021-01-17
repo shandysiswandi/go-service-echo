@@ -3,7 +3,7 @@ package mysql
 import (
 	"errors"
 	"fmt"
-	h "go-rest-echo/helper"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -24,11 +24,11 @@ type Database interface {
 func NewDatabase() Database {
 	return &database{
 		dsn: fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			h.Env("GORM_USERNAME"),
-			h.Env("GORM_PASSWORD"),
-			h.Env("GORM_HOST"),
-			h.Env("GORM_PORT"),
-			h.Env("GORM_DATABASE"),
+			os.Getenv("GORM_USERNAME"),
+			os.Getenv("GORM_PASSWORD"),
+			os.Getenv("GORM_HOST"),
+			os.Getenv("GORM_PORT"),
+			os.Getenv("GORM_DATABASE"),
 		),
 	}
 }

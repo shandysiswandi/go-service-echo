@@ -6,8 +6,8 @@ import (
 	"go-rest-echo/app/validation"
 	"go-rest-echo/domain/task"
 	"go-rest-echo/domain/user"
-	"go-rest-echo/helper"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -47,7 +47,7 @@ func (a app) Start() {
 	a.initializeMiddlewares(e)
 	a.initializeRoutes(e)
 
-	e.Logger.Fatal(e.Start(":" + helper.Env("PORT")))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
 
 func (app) initializeMiddlewares(e *echo.Echo) {
@@ -86,7 +86,7 @@ func (app) initializeMiddlewares(e *echo.Echo) {
 
 func (app) initializeRoutes(e *echo.Echo) {
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, fmt.Sprintf("%s ----> %s", helper.Env("NAME"), helper.Env("ENV")))
+		return c.String(http.StatusOK, fmt.Sprintf("%s ----> %s", os.Getenv("NAME"), os.Getenv("ENV")))
 	})
 
 	task.NewRouter().Initialize(e, "/tasks")
