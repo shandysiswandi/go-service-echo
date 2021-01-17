@@ -1,0 +1,8 @@
+README.md
+mysql.sql
+Makefile
+.git
+.gitignore
+.coverage
+.env.test
+.env.example
