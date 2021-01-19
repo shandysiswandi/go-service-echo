@@ -1,23 +1,23 @@
-FROM golang:1.15.6-alpine
+FROM golang:1.15-alpine AS builder
 
 LABEL maintainer="SHANDY SISWANDI <shandysiswandi@gmail.com>"
 
-# change dir container to this directory
 WORKDIR /app
 
-# copy go.mod dan go.sum first 
 COPY go.* ./
 
-# download third_party from go mod
-RUN go mod download 
+RUN go mod download
 
-# copy rest of the files
 COPY . .
 
-# build go aplication
-RUN go build -o application .
+# RUN go build -o application
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /app/application
 
-# add permission executable
-RUN chmod +x application
+FROM alpine
 
-CMD ["./application"]
+COPY --from=builder /app/ /app/
+
+WORKDIR /app
+
+CMD ["/app/application"]
+
