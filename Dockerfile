@@ -1,6 +1,7 @@
 FROM golang:1.15-alpine AS builder
 
 LABEL maintainer="SHANDY SISWANDI <shandysiswandi@gmail.com>"
+LABEL build="builder-go-rest-echo"
 
 WORKDIR /app
 
