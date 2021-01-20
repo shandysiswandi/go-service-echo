@@ -3,16 +3,20 @@ package helper_test
 import (
 	"go-rest-echo/helper"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateUUID(t *testing.T) {
-	uuid := helper.GenerateUUID()
+	// instance assert
+	assert := assert.New(t)
 
-	if "" == uuid {
-		t.Errorf("Expected `%v`, but got `%v`", "uuid string", uuid)
-	}
+	// call actual function
+	actual := helper.GenerateUUID()
 
-	if len(uuid) != 36 {
-		t.Errorf("Expected length = `%v`, but got `%v`", 36, len(uuid))
-	}
+	// define variable here
+
+	// assertion execution
+	assert.NotEqualf("", actual, "Expected `uuid string`, but got `%v`", actual)
+	assert.Equalf(36, len(actual), "Expected length = `%v`, but got `%v`", 36, len(actual))
 }
