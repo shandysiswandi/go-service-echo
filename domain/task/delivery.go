@@ -62,7 +62,7 @@ func (d *delivery) Create(cc echo.Context) (err error) {
 
 	// validation
 	if err = c.Validate(t); err != nil {
-		return c.ValidationFail(err)
+		return c.UnprocessableEntity(err)
 	}
 
 	// usecase
@@ -85,7 +85,7 @@ func (d *delivery) Update(cc echo.Context) (err error) {
 
 	// validation
 	if err = c.Validate(t); err != nil {
-		return c.ValidationFail(err)
+		return c.UnprocessableEntity(err)
 	}
 
 	// usecase
