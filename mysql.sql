@@ -1,3 +1,4 @@
+-- CREATED_AT = 17-01-2021 12:12:01
 -- create table `users` with id using uuid
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -13,6 +14,7 @@ CREATE TABLE `users` (
   KEY `idx_users_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- CREATED_AT = 17-01-2021 12:12:02
 -- create table `tasks` with id using uuid
 DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
