@@ -29,7 +29,7 @@ const (
 func NewApplication() {
 	e := echo.New()
 
-	context.NewContext(e)
+	context.NewCustomContext(e)
 	validation.NewValidation(e)
 
 	initializeMiddlewares(e)
