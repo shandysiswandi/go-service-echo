@@ -25,6 +25,7 @@ test-cover:
 	@clear
 	@go test ./... -coverprofile .coverage
 	@go tool cover -html=.coverage
+	
 lint:
 	@clear
 	@golint ./...
