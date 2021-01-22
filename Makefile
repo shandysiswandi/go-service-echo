@@ -8,8 +8,8 @@ CONTAINER_NAME=$(docker ps -aq --filter name=IMAGE_NAME)
 up: build run
 
 build:
-	@docker build -f Dockerfile -t "$(IMAGE_NAME)" .
-	@docker image prune --filter label=build=builder-go-rest-echo --force
+	@docker build --build-arg builder=builder-${IMAGE_NAME} -f Dockerfile -t "$(IMAGE_NAME)" .
+	@docker image prune --filter label=buildername=builder-${IMAGE_NAME} --force
 
 run: destroy
 	@docker run -d --name "$(IMAGE_NAME)" -p $(PORT):$(PORT) $(IMAGE_NAME)
