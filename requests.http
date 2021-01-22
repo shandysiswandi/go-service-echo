@@ -1,2 +1,8 @@
 ### HOME
 GET http://localhost:3000
+
+### Fetch All Users
+GET http://localhost:3000/users
+
+### Get User By ID
+GET http://localhost:3000/users/1
