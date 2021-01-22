@@ -15,7 +15,7 @@ func TestHashPassword(t *testing.T) {
 		actual, err := helper.HashPassword("password")
 		expected := "$2a$10"
 
-		assert.Nilf(err, "Expected `%s`, but got error", expected)
+		assert.Nil(err)
 		assert.Equalf(actual[0:6], expected, "Expected `%s`, but actual %s", expected, actual)
 	})
 }
