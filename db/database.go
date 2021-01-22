@@ -1,14 +1,25 @@
 package db
 
 import (
-	"go-rest-echo/db/mysql"
 	"log"
 )
 
 // NewDatabase is
 func NewDatabase() {
-	err := mysql.GormMysqlConnection()
+	var err error
+
+	err = mysqlConnection()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
+	err = postgresqlConnection()
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	// err := mongoConnection()
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// }
 }
