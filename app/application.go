@@ -1,18 +1,18 @@
 package app
 
 import (
-	"os"
-
 	"go-rest-echo/app/context"
 	"go-rest-echo/app/middleware"
 	"go-rest-echo/app/route"
 	"go-rest-echo/app/validation"
+	"go-rest-echo/config"
+	"go-rest-echo/db"
 
 	"github.com/labstack/echo/v4"
 )
 
 // NewApplication is
-func NewApplication() {
+func NewApplication(conf *config.Config, db *db.Database) error {
 	// instance of echo framework
 	e := echo.New()
 
@@ -32,8 +32,9 @@ func NewApplication() {
 	middleware.Secure(e)
 
 	// routes
-	route.TaskRoute(e)
-	route.UserRoute(e)
+	route.TaskRoute(e, db)
+	route.UserRoute(e, db)
 
-	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+	// run application
+	return e.Start(":" + conf.App.Port)
 }
