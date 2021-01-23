@@ -13,8 +13,8 @@ type postgresqlRepository struct {
 }
 
 // NewPostgresql is contstructor
-func NewPostgresql() task.Repository {
-	return &postgresqlRepository{db: db.GetMysqlDB()}
+func NewPostgresql(db *db.Database) task.Repository {
+	return &postgresqlRepository{db: db.Posrgresql}
 }
 
 func (m *postgresqlRepository) Fetch() (t []*entity.Task, err error) {

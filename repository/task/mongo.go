@@ -5,25 +5,20 @@ import (
 	"go-rest-echo/entity"
 	"go-rest-echo/usecase/task"
 
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type mongoRepository struct {
-	db *gorm.DB
+	db *mongo.Database
 }
 
 // NewMongo is contstructor
-func NewMongo() task.Repository {
-	return &mongoRepository{db: db.GetMongoDB()}
+func NewMongo(db *db.Database) task.Repository {
+	return &mongoRepository{db: db.Mongo}
 }
 
 func (m *mongoRepository) Fetch() (t []*entity.Task, err error) {
-	err = m.db.Find(t).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return t, err
+	return nil, nil
 }
 
 func (m *mongoRepository) Get(string) (*entity.Task, error) {

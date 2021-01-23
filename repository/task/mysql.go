@@ -13,17 +13,12 @@ type mysqlRepository struct {
 }
 
 // NewMysql is contstructor
-func NewMysql() task.Repository {
-	return &mysqlRepository{db: db.GetMysqlDB()}
+func NewMysql(db *db.Database) task.Repository {
+	return &mysqlRepository{db: db.Mysql}
 }
 
 func (m *mysqlRepository) Fetch() (t []*entity.Task, err error) {
-	err = m.db.Find(t).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return t, err
+	return nil, nil
 }
 
 func (m *mysqlRepository) Get(string) (*entity.Task, error) {
