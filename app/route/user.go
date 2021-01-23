@@ -2,7 +2,7 @@ package route
 
 import (
 	"go-rest-echo/db"
-	d "go-rest-echo/delivery/http/user"
+	d "go-rest-echo/delivery/user"
 	r "go-rest-echo/repository/user"
 	u "go-rest-echo/usecase/user"
 
