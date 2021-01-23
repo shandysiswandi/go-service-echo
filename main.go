@@ -4,6 +4,7 @@ import (
 	"go-rest-echo/app"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"log"
 )
 
 // Version and Build is
@@ -13,9 +14,20 @@ const (
 )
 
 func main() {
-	config.NewConfiguration()
+	conf, err := config.NewConfiguration()
+	if err != nil {
+		panic(err)
+	}
 
-	db.NewDatabase()
+	db, errs := db.NewDatabase(conf)
+	if errs != nil {
+		for _, e := range errs {
+			log.Println(e)
+		}
+	}
 
-	app.NewApplication()
+	err = app.NewApplication(conf, db)
+	if err != nil {
+		panic(err)
+	}
 }
