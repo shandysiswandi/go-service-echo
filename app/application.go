@@ -32,8 +32,9 @@ func NewApplication(conf *config.Config, db *db.Database) error {
 	middleware.Secure(e)
 
 	// routes
-	route.TaskRoute(e, db)
-	route.UserRoute(e, db)
+	route.HomeRoute(e, conf, db)
+	route.TaskRoute(e, conf, db)
+	route.UserRoute(e, conf, db)
 
 	// run application
 	return e.Start(":" + conf.App.Port)
