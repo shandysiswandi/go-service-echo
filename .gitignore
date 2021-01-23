@@ -1,6 +1,0 @@
-# environment file
-.env
-# test coverage file
-.coverage
-# bin build from this project
-application

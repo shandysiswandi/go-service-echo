@@ -1,9 +1,0 @@
-README.md
-Makefile
-mysql.sql
-requests.http
-.git
-.gitignore
-.coverage
-.env.test
-.env.example
