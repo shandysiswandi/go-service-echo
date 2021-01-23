@@ -26,11 +26,13 @@ type Config struct {
 }
 
 // NewConfiguration is
-func NewConfiguration() (config *Config, err error) {
-	err = godotenv.Load(".env")
+func NewConfiguration() (*Config, error) {
+	err := godotenv.Load(".env")
 	if err != nil {
 		return nil, err
 	}
+
+	config := new(Config)
 
 	config.App.Env = os.Getenv("APP_ENV")
 	config.App.Port = os.Getenv("APP_PORT")
