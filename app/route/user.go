@@ -1,6 +1,7 @@
 package route
 
 import (
+	"go-rest-echo/db"
 	d "go-rest-echo/delivery/http/user"
 	r "go-rest-echo/repository/user"
 	u "go-rest-echo/usecase/user"
@@ -9,9 +10,9 @@ import (
 )
 
 // UserRoute is
-func UserRoute(e *echo.Echo) {
+func UserRoute(e *echo.Echo, db *db.Database) {
 	// define variables and inject
-	repository := r.NewMysql()
+	repository := r.NewMysql(db)
 	usecase := u.NewUsecase(repository)
 	delivery := d.NewDelivery(usecase)
 

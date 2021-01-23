@@ -1,6 +1,7 @@
 package route
 
 import (
+	"go-rest-echo/db"
 	d "go-rest-echo/delivery/http/task"
 	r "go-rest-echo/repository/task"
 	u "go-rest-echo/usecase/task"
@@ -9,9 +10,9 @@ import (
 )
 
 // TaskRoute is
-func TaskRoute(e *echo.Echo) {
+func TaskRoute(e *echo.Echo, db *db.Database) {
 	// define variables and inject
-	repository := r.NewMysql()
+	repository := r.NewMysql(db)
 	usecase := u.NewUsecase(repository)
 	delivery := d.NewDelivery(usecase)
 
