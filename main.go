@@ -16,7 +16,7 @@ const (
 func main() {
 	conf, err := config.NewConfiguration()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	db, errs := db.NewDatabase(conf)
@@ -28,6 +28,6 @@ func main() {
 
 	err = app.NewApplication(conf, db)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 }
