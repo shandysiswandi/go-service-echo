@@ -16,8 +16,12 @@ type Database struct {
 }
 
 // NewDatabase is
-func NewDatabase(config *config.Config) (db *Database, errs []error) {
-	var err error
+func NewDatabase(config *config.Config) (*Database, []error) {
+	var (
+		err  error
+		errs []error
+		db   = new(Database)
+	)
 
 	// check SchemaDatabases is set or not
 	if len(config.SchemaDatabases) < 1 {
