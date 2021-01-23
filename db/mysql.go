@@ -1,8 +1,6 @@
 package db
 
 import (
-	"errors"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -10,13 +8,13 @@ import (
 func mysqlConnection(dsn string) (db *gorm.DB, err error) {
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{PrepareStmt: true})
 	if err != nil {
-		return nil, errors.New("Can't connect database mysql with gorm library")
+		return nil, err
 	}
 
 	// pooling connection
 	sqlCon, err := db.DB()
 	if err != nil {
-		return nil, errors.New("Can't instance mysql pool database connection")
+		return nil, err
 	}
 
 	sqlCon.SetMaxIdleConns(5)
