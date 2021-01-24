@@ -23,9 +23,13 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		db   = new(Database)
 	)
 
+	if config == nil {
+		return db, append(errs, errors.New("Configuration is nil"))
+	}
+
 	// check SchemaDatabases is set or not
 	if len(config.SchemaDatabases) < 1 {
-		return nil, append(errs, errors.New("\033[33mThis application not using any database\033[0m"))
+		return db, append(errs, errors.New("This application not using any database"))
 	}
 
 	// loop SchemaDatabases and passing to database connection
