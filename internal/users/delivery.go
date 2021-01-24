@@ -78,11 +78,11 @@ func (d *delivery) Update(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
-	u := User{}
+	u := new(User)
 	id := c.Param("id")
 
 	// binding
-	if err = c.Bind(&u); err != nil {
+	if err = c.Bind(u); err != nil {
 		return c.BadRequest(err)
 	}
 
@@ -92,7 +92,7 @@ func (d *delivery) Update(cc echo.Context) (err error) {
 	}
 
 	// usecase
-	if err = d.usecase.Update(&u, id); err != nil {
+	if err = d.usecase.Update(u, id); err != nil {
 		return c.HandleErrors(err)
 	}
 
