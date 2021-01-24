@@ -3,8 +3,6 @@ package config
 import (
 	"os"
 	"strings"
-
-	"github.com/joho/godotenv"
 )
 
 // Config is
@@ -26,12 +24,7 @@ type Config struct {
 }
 
 // NewConfiguration is
-func NewConfiguration() (*Config, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return nil, err
-	}
-
+func NewConfiguration() *Config {
 	config := new(Config)
 
 	config.App.Env = os.Getenv("APP_ENV")
@@ -46,5 +39,5 @@ func NewConfiguration() (*Config, error) {
 	config.Monggo.URI = os.Getenv("MONGO_URI")
 	config.Monggo.Database = os.Getenv("MONGO_DATABASE")
 
-	return config, nil
+	return config
 }
