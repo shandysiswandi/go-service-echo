@@ -1,8 +1,69 @@
-### HOME
+-------------------------------------------------------------
+|                   END POINT `/`                           |
+-------------------------------------------------------------
+### ----------------------------------- HOME
 GET http://localhost:3000
 
-### Fetch All Users
+-------------------------------------------------------------
+|                   END POINT `/users`                      |
+-------------------------------------------------------------
+### ----------------------------------- Fetch All Users
 GET http://localhost:3000/users
 
-### Get User By ID
+### ----------------------------------- Get User By ID
 GET http://localhost:3000/users/1
+
+### ----------------------------------- Create One User
+POST http://localhost:3000/users
+content-type: application/json
+
+{
+    "name": "sample",
+    "email": "email@email.com",
+    "password": "password"
+}
+
+### ----------------------------------- Update One User By ID
+PUT http://localhost:3000/users/1
+content-type: application/json
+
+{
+    "name": "sample",
+    "email": "email@email.com",
+    "password": "password"
+}
+
+### ----------------------------------- Delete One User
+DELETE http://localhost:3000/users/1
+
+-------------------------------------------------------------
+|                   END POINT `/tasks`                      |
+-------------------------------------------------------------
+### ----------------------------------- Fetch All Tasks
+GET http://localhost:3000/tasks
+
+### ----------------------------------- Get Task By ID
+GET http://localhost:3000/tasks/1
+
+### ----------------------------------- Create One User
+POST http://localhost:3000/tasks
+content-type: application/json
+
+{
+    "user_id": "1",
+    "title": "Title of Task",
+    "description": "lorem ipsum dolor amet"
+}
+
+### ----------------------------------- Update One User By ID
+PUT http://localhost:3000/tasks/1
+content-type: application/json
+
+{
+    "name": "sample",
+    "email": "email@email.com",
+    "password": "password"
+}
+
+### ----------------------------------- Delete One User
+DELETE http://localhost:3000/tasks/1
