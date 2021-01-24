@@ -2,7 +2,7 @@ package context
 
 import (
 	"errors"
-	"go-rest-echo/helper"
+	"go-rest-echo/util"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -39,7 +39,7 @@ func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 
 	for _, err := range err.(validator.ValidationErrors) {
 		e = append(e, map[string]interface{}{
-			"key":     helper.SnakeCase(err.StructField()),
+			"key":     util.SnakeCase(err.StructField()),
 			"message": getMessageValidation(err),
 			"value":   err.Value(),
 		})
