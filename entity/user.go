@@ -1,6 +1,6 @@
 package entity
 
-import "go-rest-echo/helper"
+import "github.com/google/uuid"
 
 // UserPayloadCreate is entity for validation on create
 type UserPayloadCreate struct {
@@ -25,6 +25,6 @@ func (User) TableName() string {
 }
 
 // SetID is
-func (User) SetID() string {
-	return helper.GenerateUUID()
+func (u *User) SetID() {
+	u.ID = uuid.New().String()
 }
