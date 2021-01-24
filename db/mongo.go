@@ -2,15 +2,14 @@ package db
 
 import (
 	"context"
-	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func mongoConnection() (*mongo.Database, error) {
-	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
+func mongoConnection(uri, database string) (*mongo.Database, error) {
+	clientOptions := options.Client().ApplyURI(uri)
 	client, err := mongo.NewClient(clientOptions)
 	if err != nil {
 		return nil, err
@@ -24,5 +23,5 @@ func mongoConnection() (*mongo.Database, error) {
 		return nil, err
 	}
 
-	return client.Database(os.Getenv("MONGO_DATABASE")), nil
+	return client.Database(database), nil
 }

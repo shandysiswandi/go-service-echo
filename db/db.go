@@ -47,7 +47,7 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		}
 
 		if s == "mongo" {
-			db.Mongo, err = mongoConnection()
+			db.Mongo, err = mongoConnection(config.Monggo.URI, config.Monggo.Database)
 			if err != nil {
 				errs = append(errs, err)
 			}
