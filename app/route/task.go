@@ -3,9 +3,7 @@ package route
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
-	d "go-rest-echo/delivery/task"
-	r "go-rest-echo/repository/task"
-	u "go-rest-echo/usecase/task"
+	"go-rest-echo/internal/tasks"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,9 +11,9 @@ import (
 // TaskRoute is
 func TaskRoute(e *echo.Echo, config *config.Config, db *db.Database) {
 	// define variables and inject
-	repository := r.NewMysql(db)
-	usecase := u.NewUsecase(repository)
-	delivery := d.NewDelivery(usecase)
+	repository := tasks.NewMysql(db)
+	usecase := tasks.NewUsecase(repository)
+	delivery := tasks.NewDelivery(usecase)
 
 	// create group and route
 	r := e.Group("/tasks")

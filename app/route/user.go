@@ -3,9 +3,7 @@ package route
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
-	d "go-rest-echo/delivery/user"
-	r "go-rest-echo/repository/user"
-	u "go-rest-echo/usecase/user"
+	"go-rest-echo/internal/users"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,9 +11,9 @@ import (
 // UserRoute is
 func UserRoute(e *echo.Echo, config *config.Config, db *db.Database) {
 	// define variables and inject
-	repository := r.NewMysql(db)
-	usecase := u.NewUsecase(repository)
-	delivery := d.NewDelivery(usecase)
+	repository := users.NewMysql(db)
+	usecase := users.NewUsecase(repository)
+	delivery := users.NewDelivery(usecase)
 
 	// create group and route
 	r := e.Group("/users")
