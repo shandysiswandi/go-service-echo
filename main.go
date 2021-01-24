@@ -5,6 +5,8 @@ import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
 	"log"
+
+	"github.com/joho/godotenv"
 )
 
 // Version and Build is
@@ -14,10 +16,12 @@ const (
 )
 
 func main() {
-	conf, err := config.NewConfiguration()
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Println(err)
 	}
+
+	conf := config.NewConfiguration()
 
 	db, errs := db.NewDatabase(conf)
 	if errs != nil {
