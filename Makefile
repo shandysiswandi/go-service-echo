@@ -19,11 +19,11 @@ destroy:
 
 test: lint
 	@clear
-	@go test --race -v ./...
+	@go test -timeout 90s --race -v ./...
 
 test-cover: lint
 	@clear
-	@go test ./... -coverprofile .coverage
+	@go test -timeout 90s ./... -coverprofile .coverage
 	@go tool cover -html=.coverage
 	
 lint:
