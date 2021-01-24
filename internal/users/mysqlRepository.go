@@ -2,7 +2,6 @@ package users
 
 import (
 	"go-rest-echo/db"
-	"log"
 
 	"gorm.io/gorm"
 )
@@ -37,18 +36,38 @@ func (m *mysqlRepository) Get(ID string) (*User, error) {
 }
 
 func (m *mysqlRepository) Create(u *User) error {
-	if err := m.db.Create(u).Error; err != nil {
-		log.Println(err)
-		return err
+	q := m.db.Create(u)
+	if q.Error != nil {
+		return q.Error
 	}
 
 	return nil
 }
 
-func (m *mysqlRepository) Update(*User, string) error {
+func (m *mysqlRepository) Update(u *User, ID string) error {
+	q := m.db.Where("id = ?", ID).Updates(u)
+	if q.Error != nil {
+		return q.Error
+	}
+
+	if q.RowsAffected < 1 {
+		return gorm.ErrRecordNotFound
+	}
+
 	return nil
 }
 
-func (m *mysqlRepository) Delete(string) error {
+func (m *mysqlRepository) Delete(ID string) error {
+	u := new(User)
+
+	q := m.db.Delete(u, "id", ID)
+	if q.Error != nil {
+		return q.Error
+	}
+
+	if q.RowsAffected < 1 {
+		return gorm.ErrRecordNotFound
+	}
+
 	return nil
 }
