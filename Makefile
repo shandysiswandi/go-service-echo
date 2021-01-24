@@ -17,11 +17,11 @@ run: destroy
 destroy:
 	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm "$(IMAGE_NAME)" --force; fi;
 
-test:
+test: lint
 	@clear
 	@go test --race -v ./...
 
-test-cover:
+test-cover: lint
 	@clear
 	@go test ./... -coverprofile .coverage
 	@go tool cover -html=.coverage
