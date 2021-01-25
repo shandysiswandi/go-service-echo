@@ -11,5 +11,7 @@ const (
 
 // The common error from post
 var (
-	ErrPostFetch = errors.New("Failed Fetch From " + PostsPath)
+	ErrPostFetch  = errors.New("Failed Fetch From " + PostsPath)
+	ErrPostGet    = errors.New("Failed Get From " + PostsPath)
+	ErrPostCreate = errors.New("Failed Create From " + PostsPath)
 )
