@@ -1,6 +1,8 @@
 package db
 
 import (
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -17,8 +19,9 @@ func mysqlConnection(dsn string) (db *gorm.DB, err error) {
 		return nil, err
 	}
 
-	sqlCon.SetMaxIdleConns(5)
-	sqlCon.SetMaxOpenConns(50)
+	sqlCon.SetMaxIdleConns(10 / 2)
+	sqlCon.SetMaxOpenConns(100 / 2)
+	sqlCon.SetConnMaxLifetime(time.Hour / 2)
 
 	return db, nil
 }
