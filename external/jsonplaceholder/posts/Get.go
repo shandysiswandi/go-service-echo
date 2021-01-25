@@ -14,12 +14,12 @@ func Get(ID int) (*Post, error) {
 
 	response, err := http.Get(link)
 	if err != nil {
-		return nil, jsonplaceholder.ErrPostFetch
+		return nil, jsonplaceholder.ErrPostGet
 	}
 	defer response.Body.Close()
 
 	if err = json.NewDecoder(response.Body).Decode(post); err != nil {
-		return nil, jsonplaceholder.ErrPostFetch
+		return nil, jsonplaceholder.ErrPostGet
 	}
 
 	return post, nil
