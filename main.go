@@ -22,6 +22,7 @@ func main() {
 	}
 
 	conf := config.NewConfiguration()
+	log.Println("is configuration exist", conf != nil)
 
 	db, errs := db.NewDatabase(conf)
 	if errs != nil {
@@ -29,6 +30,9 @@ func main() {
 			log.Println(e)
 		}
 	}
+	log.Println("is db mysql connect", db.Mysql != nil)
+	log.Println("is db postgresql connect", db.Posrgresql != nil)
+	log.Println("is db mongo connect", db.Mongo != nil)
 
 	err = app.NewApplication(conf, db)
 	if err != nil {
