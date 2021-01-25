@@ -32,12 +32,11 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		return db, append(errs, errors.New("This application not using any database"))
 	}
 
-	// loop SchemaDatabases and passing to database connection
 	for _, s := range config.SchemaDatabases {
 		if s == "mysql" && config.Gorm.MysqDSN != "" {
 			db.Mysql, err = mysqlConnection(config.Gorm.MysqDSN)
 			if err != nil {
-				errs = append(errs, err)
+				errs = append(errs, errors.New("Can't connect database mysql"))
 			}
 			continue
 		}
@@ -45,7 +44,7 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		if s == "postgresql" && config.Gorm.PostgresqlDSN != "" {
 			db.Posrgresql, err = postgresqlConnection(config.Gorm.PostgresqlDSN)
 			if err != nil {
-				errs = append(errs, err)
+				errs = append(errs, errors.New("Can't connect database postgresql"))
 			}
 			continue
 		}
@@ -53,7 +52,7 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		if s == "mongo" && config.Monggo.URI != "" && config.Monggo.Database != "" {
 			db.Mongo, err = mongoConnection(config.Monggo.URI, config.Monggo.Database)
 			if err != nil {
-				errs = append(errs, err)
+				errs = append(errs, errors.New("Can't connect database mongo"))
 			}
 			continue
 		}
