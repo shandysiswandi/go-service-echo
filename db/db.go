@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 	"go-rest-echo/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,14 +28,13 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		return db, append(errs, errors.New("Configuration is nil"))
 	}
 
-	// check SchemaDatabases is set or not
 	if len(config.SchemaDatabases) < 1 {
 		return db, append(errs, errors.New("This application not using any database"))
 	}
 
 	// loop SchemaDatabases and passing to database connection
 	for _, s := range config.SchemaDatabases {
-		if s == "mysql" {
+		if s == "mysql" && config.Gorm.MysqDSN != "" {
 			db.Mysql, err = mysqlConnection(config.Gorm.MysqDSN)
 			if err != nil {
 				errs = append(errs, err)
@@ -42,7 +42,7 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 			continue
 		}
 
-		if s == "postgresql" {
+		if s == "postgresql" && config.Gorm.PostgresqlDSN != "" {
 			db.Posrgresql, err = postgresqlConnection(config.Gorm.PostgresqlDSN)
 			if err != nil {
 				errs = append(errs, err)
@@ -50,16 +50,16 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 			continue
 		}
 
-		if s == "mongo" {
+		if s == "mongo" && config.Monggo.URI != "" && config.Monggo.Database != "" {
 			db.Mongo, err = mongoConnection(config.Monggo.URI, config.Monggo.Database)
 			if err != nil {
 				errs = append(errs, err)
 			}
 			continue
 		}
+		errs = append(errs, fmt.Errorf("schema database '%s' is not support", s))
 	}
 
-	// check the errors
 	if len(errs) > 0 {
 		return db, errs
 	}
