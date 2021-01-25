@@ -16,7 +16,7 @@ func Create(data Post) (*Post, error) {
 		return nil, jsonplaceholder.ErrPostCreate
 	}
 
-	response, err := http.Post(jsonplaceholder.PostsPath, "application/json", bytes.NewBuffer(reqBody))
+	response, err := http.Post(jsonplaceholder.PostsPath, "application/json; charset=utf-8", bytes.NewBuffer(reqBody))
 	if err != nil {
 		return nil, jsonplaceholder.ErrPostCreate
 	}
