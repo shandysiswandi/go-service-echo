@@ -11,7 +11,9 @@ const (
 
 // The common error from post
 var (
-	ErrPostFetch  = errors.New("Failed Fetch From " + PostsPath)
-	ErrPostGet    = errors.New("Failed Get From " + PostsPath)
-	ErrPostCreate = errors.New("Failed Create From " + PostsPath)
+	ErrPostFetch  = errors.New("Failed Fetch From `posts`" + BaseURL)
+	ErrPostGet    = errors.New("Failed Get From `posts`" + BaseURL)
+	ErrPostCreate = errors.New("Failed Create From `posts`" + BaseURL)
+	ErrPostUpdate = errors.New("Failed Update From `posts`" + BaseURL)
+	ErrPostDelete = errors.New("Failed Delete From `posts`" + BaseURL)
 )
