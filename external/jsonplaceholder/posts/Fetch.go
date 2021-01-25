@@ -8,7 +8,7 @@ import (
 
 // Fetch is
 func Fetch() (*[]Post, error) {
-	post := new([]Post)
+	posts := new([]Post)
 
 	response, err := http.Get(jsonplaceholder.PostsPath)
 	if err != nil {
@@ -16,9 +16,9 @@ func Fetch() (*[]Post, error) {
 	}
 	defer response.Body.Close()
 
-	if err = json.NewDecoder(response.Body).Decode(post); err != nil {
+	if err = json.NewDecoder(response.Body).Decode(posts); err != nil {
 		return nil, jsonplaceholder.ErrPostFetch
 	}
 
-	return post, nil
+	return posts, nil
 }
