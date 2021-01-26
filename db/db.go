@@ -17,7 +17,7 @@ import (
 // Database is
 type Database struct {
 	Mysql      *gorm.DB
-	Posrgresql *gorm.DB
+	Postgresql *gorm.DB
 	Mongo      *mongo.Database
 }
 
@@ -47,7 +47,7 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		}
 
 		if s == "postgresql" && config.Gorm.PostgresqlDSN != "" {
-			db.Posrgresql, err = postgresqlConnection(config.Gorm.PostgresqlDSN)
+			db.Postgresql, err = postgresqlConnection(config.Gorm.PostgresqlDSN)
 			if err != nil {
 				errs = append(errs, errors.New("Can't connect database postgresql"))
 			}

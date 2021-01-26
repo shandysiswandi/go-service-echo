@@ -31,7 +31,7 @@ func main() {
 		}
 	}
 	log.Println("is db mysql connect", db.Mysql != nil)
-	log.Println("is db postgresql connect", db.Posrgresql != nil)
+	log.Println("is db postgresql connect", db.Postgresql != nil)
 	log.Println("is db mongo connect", db.Mongo != nil)
 
 	err = app.NewApplication(conf, db)

@@ -162,7 +162,7 @@ func TestNewDatabase_ParamConfigSchemaDatabasesIsPostgresql(t *testing.T) {
 	conf.Gorm.PostgresqlDSN = "user=root password=password dbname=go-rest-echo host=127.0.0.1 port=5300 sslmode=disable TimeZone=Asia/Jakarta"
 	got, _ = db.NewDatabase(conf)
 
-	assert.NotEqual(t, nil, got.Posrgresql)
+	assert.NotEqual(t, nil, got.Postgresql)
 }
 
 func TestNewDatabase_ParamConfigSchemaDatabasesIsMongo(t *testing.T) {
