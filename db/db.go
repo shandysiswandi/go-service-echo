@@ -1,11 +1,16 @@
 package db
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"go-rest-echo/config"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -64,4 +69,62 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 	}
 
 	return db, nil
+}
+
+// mysql connection
+func mysqlConnection(dsn string) (db *gorm.DB, err error) {
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{PrepareStmt: true})
+	if err != nil {
+		return nil, err
+	}
+
+	// pooling connection
+	sqlCon, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlCon.SetMaxIdleConns(10 / 2)
+	sqlCon.SetMaxOpenConns(100 / 2)
+	sqlCon.SetConnMaxLifetime(time.Hour / 2)
+
+	return db, nil
+}
+
+// postgresql connection
+func postgresqlConnection(dsn string) (db *gorm.DB, err error) {
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	sqlCon, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlCon.SetMaxIdleConns(10 / 2)
+	sqlCon.SetMaxOpenConns(100 / 2)
+	sqlCon.SetConnMaxLifetime(time.Hour / 2)
+
+	return db, nil
+}
+
+// mongo connection
+func mongoConnection(uri, database string) (*mongo.Database, error) {
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.NewClient(clientOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return client.Database(database), nil
 }
