@@ -4,32 +4,22 @@ is
 ## Project Structure
     .
     ├── app
-    ├── database
-    │   ├── mongo
-    │   ├── mysql
-    │   └── postgres
-    ├── domain
-    │   ├── task
-    |   |   ├── delivery
-    |   |   ├── repository
-    |   |   └── usecase
-    │   └── user
-    |   |   ├── delivery
-    |   |   ├── repository
-    |   |   └── usecase
-    ├── entity
-    │   ├── base
-    │   |    ├── increment.go
-    │   |    ├── timestamp.go
-    │   |    └── user.go
-    │   ├── task.go
-    │   └── user.go
-    ├── helper
-    │   ├── bcrypt.go
-    │   └── env.go
-    ├── test
+    ├── config
     │   ├── .env.test
-    │   └── ...
+    │   ├── config_test.go
+    │   └── config.go
+    ├── db
+    │   ├── db_test.go
+    │   └── db.go
+    ├── external
+    │   └── .gitkeep
+    ├── internal
+    │   ├── users
+    │   └── tasks
+    ├── service
+    │   └── .gitkeep
+    ├── util
+    │   └── .gitkeep
     ├── .dockerignore
     ├── .env.example
     ├── .gitignore
@@ -38,6 +28,9 @@ is
     ├── go.sum
     ├── main.go
     ├── Makefile
-    └── README.md
+    ├── mysql.sql
+    ├── README.md
+    ├── requests.http
+    └── serverless.yml
 
 ## Route List
