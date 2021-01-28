@@ -33,34 +33,35 @@ func NewDatabase(config *config.Config) (*Database, []error) {
 		return db, append(errs, errors.New("Configuration is nil"))
 	}
 
-	if len(config.SchemaDatabases) < 1 {
+	if len(config.Database.Drivers) < 1 {
 		return db, append(errs, errors.New("This application not using any database"))
 	}
 
-	for _, s := range config.SchemaDatabases {
-		if s == "mysql" && config.Gorm.MysqDSN != "" {
-			db.Mysql, err = mysqlConnection(config.Gorm.MysqDSN)
+	for _, s := range config.Database.Drivers {
+		if s == "mysql" && config.Database.MysqlDSN != "" {
+			db.Mysql, err = mysqlConnection(config.Database.MysqlDSN)
 			if err != nil {
 				errs = append(errs, errors.New("Can't connect database mysql"))
 			}
 			continue
 		}
 
-		if s == "postgresql" && config.Gorm.PostgresqlDSN != "" {
-			db.Postgresql, err = postgresqlConnection(config.Gorm.PostgresqlDSN)
+		if s == "postgresql" && config.Database.PostgresqlDSN != "" {
+			db.Postgresql, err = postgresqlConnection(config.Database.PostgresqlDSN)
 			if err != nil {
 				errs = append(errs, errors.New("Can't connect database postgresql"))
 			}
 			continue
 		}
 
-		if s == "mongo" && config.Monggo.URI != "" && config.Monggo.Database != "" {
-			db.Mongo, err = mongoConnection(config.Monggo.URI, config.Monggo.Database)
+		if s == "mongo" && config.Database.Mongo.URI != "" && config.Database.Mongo.DB != "" {
+			db.Mongo, err = mongoConnection(config.Database.Mongo.URI, config.Database.Mongo.DB)
 			if err != nil {
 				errs = append(errs, errors.New("Can't connect database mongo"))
 			}
 			continue
 		}
+
 		errs = append(errs, fmt.Errorf("schema database '%s' is not support", s))
 	}
 
