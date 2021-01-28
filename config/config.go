@@ -8,18 +8,24 @@ import (
 // Config is
 type Config struct {
 	App struct {
-		Env  string
-		Port string
-		Name string
+		Env      string
+		Port     string
+		Name     string
+		Timezone string
 	}
-	SchemaDatabases []string
-	Gorm            struct {
-		MysqDSN       string
+	Database struct {
+		Drivers       []string
+		MysqlDSN      string
 		PostgresqlDSN string
+		Mongo         struct {
+			URI string
+			DB  string
+		}
 	}
-	Monggo struct {
-		URI      string
-		Database string
+	JwtSecret string
+	SentryDSN string
+	External  struct {
+		JsonplaceholderURL string
 	}
 }
 
@@ -30,14 +36,18 @@ func NewConfiguration() *Config {
 	config.App.Env = os.Getenv("APP_ENV")
 	config.App.Port = os.Getenv("APP_PORT")
 	config.App.Name = os.Getenv("APP_NAME")
+	config.App.Timezone = os.Getenv("APP_TZ")
 
-	config.SchemaDatabases = strings.Split(os.Getenv("SCHEMA_DATABASES"), ",")
+	config.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
+	config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
+	config.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
+	config.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
+	config.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
 
-	config.Gorm.MysqDSN = os.Getenv("GORM_MYSQL_DSN")
-	config.Gorm.PostgresqlDSN = os.Getenv("GORM_POSTGRESQL_DSN")
+	config.JwtSecret = os.Getenv("JWT_SECRET")
+	config.SentryDSN = os.Getenv("SENTRY_DSN")
 
-	config.Monggo.URI = os.Getenv("MONGO_URI")
-	config.Monggo.Database = os.Getenv("MONGO_DATABASE")
+	config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
 
 	return config
 }
