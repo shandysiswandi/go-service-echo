@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -24,7 +25,14 @@ type Config struct {
 	}
 	JwtSecret string
 	SentryDSN string
-	External  struct {
+	Service   struct {
+		Redis struct {
+			Addr     string
+			Password string
+			Database int
+		}
+	}
+	External struct {
 		JsonplaceholderURL string
 	}
 }
@@ -46,6 +54,10 @@ func NewConfiguration() *Config {
 
 	config.JwtSecret = os.Getenv("JWT_SECRET")
 	config.SentryDSN = os.Getenv("SENTRY_DSN")
+
+	config.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
+	config.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
+	config.Service.Redis.Database, _ = strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
 
 	config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
 
