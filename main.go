@@ -15,14 +15,15 @@ const (
 	Build   = "0.0.1"
 )
 
-func main() {
+func init() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Println(err)
 	}
+}
 
+func main() {
 	conf := config.NewConfiguration()
-	log.Println("is configuration exist", conf != nil)
 
 	db, errs := db.NewDatabase(conf)
 	if errs != nil {
@@ -30,12 +31,6 @@ func main() {
 			log.Println(e)
 		}
 	}
-	log.Println("is db mysql connect", db.Mysql != nil)
-	log.Println("is db postgresql connect", db.Postgresql != nil)
-	log.Println("is db mongo connect", db.Mongo != nil)
 
-	err = app.NewApplication(conf, db)
-	if err != nil {
-		log.Println(err)
-	}
+	app.NewApplicationAndServe(conf, db)
 }
