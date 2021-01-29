@@ -12,14 +12,13 @@ import (
 
 // NewApplicationAndServe is
 func NewApplicationAndServe(conf *config.Config, db *db.Database) {
-	// instance of echo framework
 	e := echo.New()
 
 	// extend echo Context
-	context.NewCustomContext(e)
+	context.New(e)
 
 	// register validation
-	validation.NewValidation(e)
+	validation.New(e)
 
 	// middlewares
 	middleware.RemoveTrailingSlash(e)
