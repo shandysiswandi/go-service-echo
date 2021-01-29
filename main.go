@@ -4,6 +4,7 @@ import (
 	"go-rest-echo/app"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/service"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -32,5 +33,7 @@ func main() {
 		}
 	}
 
-	app.NewApplicationAndServe(conf, db)
+	serv := service.New(conf)
+
+	app.NewApplicationAndServe(conf, db, serv)
 }
