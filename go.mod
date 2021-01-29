@@ -5,11 +5,14 @@ go 1.15
 require (
 	github.com/aws/aws-sdk-go v1.36.31 // indirect
 	github.com/go-playground/validator/v10 v10.4.1
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/google/uuid v1.1.4
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.11.7 // indirect
 	github.com/labstack/echo/v4 v4.1.17
+	github.com/onsi/ginkgo v1.14.2 // indirect
+	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/stretchr/testify v1.7.0
 	go.mongodb.org/mongo-driver v1.4.5
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
