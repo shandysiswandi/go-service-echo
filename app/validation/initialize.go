@@ -9,8 +9,8 @@ type valid struct {
 	validator *validator.Validate
 }
 
-// NewValidation is
-func NewValidation(e *echo.Echo) {
+// New is
+func New(e *echo.Echo) {
 	e.Validator = &valid{validator: validator.New()}
 }
 
