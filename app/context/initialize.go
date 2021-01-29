@@ -20,14 +20,16 @@ func NewCustomContext(e *echo.Echo) {
 	// set custom error
 	e.HTTPErrorHandler = func(e error, c echo.Context) {
 		code := http.StatusInternalServerError
+		message := "Internal Server Error"
 
 		if he, ok := e.(*echo.HTTPError); ok {
 			code = he.Code
+			message = he.Message.(string)
 		}
 
 		c.JSON(code, responseError{
 			Status:  false,
-			Message: "Internal Server Error",
+			Message: message,
 			Error:   e,
 		})
 	}
