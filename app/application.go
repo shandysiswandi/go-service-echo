@@ -5,12 +5,13 @@ import (
 	"go-rest-echo/app/validation"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/service"
 
 	"github.com/labstack/echo/v4"
 )
 
 // NewApplicationAndServe is
-func NewApplicationAndServe(conf *config.Config, db *db.Database) {
+func NewApplicationAndServe(conf *config.Config, db *db.Database, serv *service.Service) {
 	e := echo.New()
 
 	// extend echo Context
