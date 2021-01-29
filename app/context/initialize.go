@@ -18,19 +18,29 @@ func NewCustomContext(e *echo.Echo) {
 	})
 
 	// set custom error
-	e.HTTPErrorHandler = func(e error, c echo.Context) {
-		code := http.StatusInternalServerError
-		message := "Internal Server Error"
+	e.HTTPErrorHandler = httpErrorHandler
+}
 
-		if he, ok := e.(*echo.HTTPError); ok {
-			code = he.Code
-			message = he.Message.(string)
+func httpErrorHandler(e error, c echo.Context) {
+	code := http.StatusInternalServerError
+	message := "Internal Server Error"
+
+	if he, ok := e.(*echo.HTTPError); ok {
+		switch he.Code {
+		case 404:
+			message = "The URL you want is not in this application."
+			break
+		case 405:
+			message = "The URL you want is not using this METHOD."
+			break
 		}
 
-		c.JSON(code, responseError{
-			Status:  false,
-			Message: message,
-			Error:   e,
-		})
+		code = he.Code
 	}
+
+	c.JSON(code, responseError{
+		Success: false,
+		Message: message,
+		Error:   e,
+	})
 }
