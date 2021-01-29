@@ -3,7 +3,6 @@ package app
 import (
 	"go-rest-echo/app/context"
 	"go-rest-echo/app/middleware"
-	"go-rest-echo/app/route"
 	"go-rest-echo/app/validation"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
@@ -31,10 +30,8 @@ func NewApplicationAndServe(conf *config.Config, db *db.Database) {
 	middleware.Gzip(e)
 	middleware.Secure(e)
 
-	// routes
-	route.HomeRoute(e, conf, db)
-	route.TaskRoute(e, conf, db)
-	route.UserRoute(e, conf, db)
+	routeWithoutJwt(e, conf)
+	routeWithJwt(e, conf, db)
 
 	e.Logger.Fatal(e.Start(":" + conf.App.Port))
 }
