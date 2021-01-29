@@ -11,8 +11,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// NewApplication is
-func NewApplication(conf *config.Config, db *db.Database) error {
+// NewApplicationAndServe is
+func NewApplicationAndServe(conf *config.Config, db *db.Database) {
 	// instance of echo framework
 	e := echo.New()
 
@@ -36,6 +36,5 @@ func NewApplication(conf *config.Config, db *db.Database) error {
 	route.TaskRoute(e, conf, db)
 	route.UserRoute(e, conf, db)
 
-	// run application
-	return e.Start(":" + conf.App.Port)
+	e.Logger.Fatal(e.Start(":" + conf.App.Port))
 }
