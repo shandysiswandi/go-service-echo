@@ -22,13 +22,19 @@ func TestNewConfiguration_Only_App(t *testing.T) {
 	expected.App.Env = "env"
 	expected.App.Port = "port"
 	expected.App.Name = "name"
-	expected.App.Timezone = "timezone"
 
 	got := config.NewConfiguration()
 	assert.Equal(t, expected.App.Env, got.App.Env, "Only Test Config With App Prefix: env")
 	assert.Equal(t, expected.App.Port, got.App.Port, "Only Test Config With App Prefix: port")
 	assert.Equal(t, expected.App.Name, got.App.Name, "Only Test Config With App Prefix: name")
-	assert.Equal(t, expected.App.Timezone, got.App.Timezone, "Only Test Config With App Prefix: timezone")
+}
+
+func TestNewConfiguration_Only_TZ(t *testing.T) {
+	expected := new(config.Config)
+	expected.Timezone = "timezone"
+
+	got := config.NewConfiguration()
+	assert.Equal(t, expected.Timezone, got.Timezone, "Only Test Config With TZ: timezone")
 }
 
 func TestNewConfiguration_Only_JWT(t *testing.T) {

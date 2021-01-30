@@ -9,11 +9,11 @@ import (
 // Config is
 type Config struct {
 	App struct {
-		Env      string
-		Port     string
-		Name     string
-		Timezone string
+		Env  string
+		Port string
+		Name string
 	}
+	Timezone string
 	Database struct {
 		Drivers       []string
 		MysqlDSN      string
@@ -44,7 +44,8 @@ func NewConfiguration() *Config {
 	config.App.Env = os.Getenv("APP_ENV")
 	config.App.Port = os.Getenv("APP_PORT")
 	config.App.Name = os.Getenv("APP_NAME")
-	config.App.Timezone = os.Getenv("APP_TZ")
+
+	config.Timezone = os.Getenv("TZ")
 
 	config.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
 	config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
