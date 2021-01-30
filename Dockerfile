@@ -1,9 +1,9 @@
 FROM golang:1.15-alpine AS builder
 
-ARG builder
+ARG TAGGED
 
 LABEL maintainer="SHANDY SISWANDI <shandysiswandi@gmail.com>"
-LABEL buildername=$builder
+LABEL tagged=$TAGGED
 
 WORKDIR /app
 
