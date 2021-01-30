@@ -1,6 +1,9 @@
 package context
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/labstack/echo/v4"
+)
 
 type (
 	// ResponseError is
@@ -13,6 +16,13 @@ type (
 	// CustomContext is
 	CustomContext struct {
 		echo.Context
+	}
+
+	// JwtClaims is
+	JwtClaims struct {
+		Email string `json:"email"`
+		Name  string `json:"name"`
+		jwt.StandardClaims
 	}
 
 	// ResponseSuccess is
