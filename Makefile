@@ -32,6 +32,7 @@ lint:
 	@go fmt ./...
 
 dev:
+	@clear
 	@reflex -r '\.go' -s -- sh -c "go run ."
 
 start: lint
