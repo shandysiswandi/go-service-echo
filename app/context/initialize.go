@@ -224,6 +224,8 @@ func (c *CustomContext) getMessageValidation(e validator.FieldError) (msg string
 		msg = "value must be greater than"
 	case "required":
 		msg = "value must be required"
+	case "email":
+		msg = "value must be a valid email"
 	default:
 		msg = "value must be validate"
 	}
