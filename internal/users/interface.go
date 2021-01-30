@@ -8,6 +8,7 @@ import (
 type UserRepository interface {
 	Fetch() (*[]User, error)
 	Get(string) (*User, error)
+	GetByEmail(email string) (*User, error)
 
 	Create(*User) error
 	Update(*User, string) error
