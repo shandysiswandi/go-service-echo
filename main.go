@@ -4,6 +4,7 @@ import (
 	"go-rest-echo/app"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/external"
 	"go-rest-echo/service"
 	"log"
 
@@ -35,5 +36,7 @@ func main() {
 
 	serv := service.New(conf)
 
-	app.NewApplicationAndServe(conf, db, serv)
+	ext := external.New()
+
+	app.NewApplicationAndServe(conf, db, serv, ext)
 }
