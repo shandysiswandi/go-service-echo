@@ -47,6 +47,18 @@ func TestNewConfiguration_Only_Sentry(t *testing.T) {
 	assert.Equal(t, expected.SentryDSN, got.SentryDSN, "Only Test Config With Sentry Prefix: sentry_dsn")
 }
 
+func TestNewConfiguration_Only_Service(t *testing.T) {
+	expected := new(config.Config)
+	expected.Service.Redis.Addr = "addr"
+	expected.Service.Redis.Password = "pass"
+	expected.Service.Redis.Database = 0
+
+	actual := config.NewConfiguration()
+	assert.Equal(t, expected.Service.Redis.Addr, actual.Service.Redis.Addr)
+	assert.Equal(t, expected.Service.Redis.Password, actual.Service.Redis.Password)
+	assert.Equal(t, expected.Service.Redis.Database, actual.Service.Redis.Database)
+}
+
 func TestNewConfiguration_Only_External(t *testing.T) {
 	expected := new(config.Config)
 	expected.External.JsonplaceholderURL = "external_jsonplaceholder_url"
