@@ -35,6 +35,16 @@ func (m *mysqlRepository) Get(ID string) (*User, error) {
 	return u, nil
 }
 
+func (m *mysqlRepository) GetByEmail(email string) (*User, error) {
+	u := new(User)
+
+	if err := m.db.First(u, "email", email).Error; err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
 func (m *mysqlRepository) Create(u *User) error {
 	q := m.db.Create(u)
 	if q.Error != nil {
