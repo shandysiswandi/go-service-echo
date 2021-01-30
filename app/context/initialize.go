@@ -49,30 +49,41 @@ func New(e *echo.Echo) {
 	})
 
 	// set custom error
-	e.HTTPErrorHandler = func(e error, c echo.Context) {
-		code := http.StatusInternalServerError
-		message := "Internal Server Error"
+	e.HTTPErrorHandler = httpErrorHandler
+}
 
-		if he, ok := e.(*echo.HTTPError); ok {
-			switch he.Code {
-			case 404:
-				message = "The URL you want is not in this application."
-				break
-			case 405:
-				message = "The URL you want is not using this METHOD."
-				break
-			}
+func httpErrorHandler(e error, c echo.Context) {
+	code := http.StatusInternalServerError
+	message := "Internal Server Error"
 
-			code = he.Code
+	if he, ok := e.(*echo.HTTPError); ok {
+		switch he.Code {
+		case 400:
+			message = "The URL you want is protected, you must supplied token."
+			e = errors.New("400")
+			break
+		case 401:
+			message = "The token you supplied is invalid."
+			e = errors.New("401")
+			break
+		case 404:
+			message = "The URL you want is not in this application."
+			e = errors.New("404")
+			break
+		case 405:
+			message = "The URL you want is not using this METHOD."
+			e = errors.New("405")
+			break
 		}
 
-		c.JSON(code, ResponseError{
-			Success: false,
-			Message: message,
-			Error:   e,
-		})
+		code = he.Code
 	}
-	//
+
+	c.JSON(code, ResponseError{
+		Success: false,
+		Message: message,
+		Error:   e,
+	})
 }
 
 // Success is | 200, 201, 204
