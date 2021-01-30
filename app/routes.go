@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func routeWithoutJwt(e *echo.Echo, c *config.Config, db *db.Database) {
@@ -31,7 +30,7 @@ func routeWithoutJwt(e *echo.Echo, c *config.Config, db *db.Database) {
 
 func routeWithJwt(e *echo.Echo, c *config.Config, db *db.Database) {
 	api := e.Group("/api")
-	api.Use(middleware.JWT(c.JwtSecret))
+	api = middlewareJWT(api, c)
 
 	// define variables and inject
 	var (
