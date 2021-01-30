@@ -5,13 +5,14 @@ import (
 	"go-rest-echo/app/validation"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/external"
 	"go-rest-echo/service"
 
 	"github.com/labstack/echo/v4"
 )
 
 // NewApplicationAndServe is
-func NewApplicationAndServe(conf *config.Config, db *db.Database, serv *service.Service) {
+func NewApplicationAndServe(c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
 	e := echo.New()
 
 	// extend echo Context
@@ -22,8 +23,8 @@ func NewApplicationAndServe(conf *config.Config, db *db.Database, serv *service.
 
 	middlewares(e)
 
-	routeWithoutJwt(e, conf, db)
-	routeWithJwt(e, conf, db)
+	routeWithoutJwt(e, c, db)
+	routeWithJwt(e, c, db)
 
-	e.Logger.Fatal(e.Start(":" + conf.App.Port))
+	e.Logger.Fatal(e.Start(":" + c.App.Port))
 }
