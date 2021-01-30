@@ -20,8 +20,8 @@ func routeWithoutJwt(e *echo.Echo, c *config.Config, db *db.Database) {
 
 	var (
 		// auth
-		authRepo     = authentication.NewMysql(db)
-		authUsecase  = authentication.NewUsecase(authRepo)
+		userRepo     = users.NewMysql(db)
+		authUsecase  = authentication.NewUsecase(userRepo, c.JwtSecret)
 		authDelivery = authentication.NewWeb(authUsecase)
 	)
 
