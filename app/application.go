@@ -22,7 +22,7 @@ func NewApplicationAndServe(conf *config.Config, db *db.Database, serv *service.
 
 	middlewares(e)
 
-	routeWithoutJwt(e, conf)
+	routeWithoutJwt(e, conf, db)
 	routeWithJwt(e, conf, db)
 
 	e.Logger.Fatal(e.Start(":" + conf.App.Port))
