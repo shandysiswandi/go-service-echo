@@ -3,6 +3,7 @@ package app
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/internal/authentication"
 	"go-rest-echo/internal/blogs"
 	"go-rest-echo/internal/tasks"
 	"go-rest-echo/internal/users"
@@ -12,10 +13,20 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func routeWithoutJwt(e *echo.Echo, c *config.Config) {
+func routeWithoutJwt(e *echo.Echo, c *config.Config, db *db.Database) {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"message": "Welcome to our API"})
 	})
+
+	var (
+		// auth
+		authRepo     = authentication.NewMysql(db)
+		authUsecase  = authentication.NewUsecase(authRepo)
+		authDelivery = authentication.NewWeb(authUsecase)
+	)
+
+	r := e.Group("/auth")
+	r.POST("/login", authDelivery.Login)
 }
 
 func routeWithJwt(e *echo.Echo, c *config.Config, db *db.Database) {
