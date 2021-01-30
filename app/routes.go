@@ -3,6 +3,7 @@ package app
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/internal/blogs"
 	"go-rest-echo/internal/tasks"
 	"go-rest-echo/internal/users"
 	"net/http"
@@ -33,6 +34,11 @@ func routeWithJwt(e *echo.Echo, c *config.Config, db *db.Database) {
 		userRepo     = users.NewMysql(db)
 		userUsecase  = users.NewUsecase(userRepo)
 		userDelivery = users.NewDelivery(userUsecase)
+
+		// blogs
+		blogRepo     = blogs.NewMysql(db)
+		blogUsecase  = blogs.NewUsecase(blogRepo)
+		blogDelivery = blogs.NewWeb(blogUsecase)
 	)
 
 	r = api.Group("/tasks")
@@ -48,4 +54,11 @@ func routeWithJwt(e *echo.Echo, c *config.Config, db *db.Database) {
 	r.POST("", userDelivery.Create)
 	r.PUT("/:id", userDelivery.Update)
 	r.DELETE("/:id", userDelivery.Delete)
+
+	r = api.Group("/blogs")
+	r.GET("", blogDelivery.Fetch)
+	r.GET("/:id", blogDelivery.Get)
+	r.POST("", blogDelivery.Create)
+	r.PUT("/:id", blogDelivery.Update)
+	r.DELETE("/:id", blogDelivery.Delete)
 }
