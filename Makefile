@@ -5,11 +5,11 @@ include .env
 CONTAINER_NAME=$(docker ps -aq --filter name=IMAGE_NAME)
 
 # -------------------- define command target ----------------------------- #
-up: build run
+up: lint build run
 
 build:
-	@docker build --build-arg builder=builder-${IMAGE_NAME} -f Dockerfile -t "$(IMAGE_NAME)" .
-	@docker image prune --filter label=buildername=builder-${IMAGE_NAME} --force
+	@docker build --build-arg TAGGED=builder-${IMAGE_NAME} -f Dockerfile -t "$(IMAGE_NAME)" .
+	@docker image prune --filter label=tagged=builder-${IMAGE_NAME} --force
 
 run: destroy
 	@docker run -d --name "$(IMAGE_NAME)" -p $(PORT):$(PORT) $(IMAGE_NAME)
@@ -31,7 +31,7 @@ lint:
 	@golint ./...
 	@go fmt ./...
 
-dev:
+dev: lint
 	@clear
 	@reflex -r '\.go' -s -- sh -c "go run ."
 
