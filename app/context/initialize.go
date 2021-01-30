@@ -3,43 +3,12 @@ package context
 import (
 	"errors"
 	"go-rest-echo/util"
+	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-)
-
-type (
-	// ResponseError is
-	ResponseError struct {
-		Success bool        `json:"success"`
-		Message string      `json:"message"`
-		Error   interface{} `json:"error"`
-	}
-
-	// CustomContext is
-	CustomContext struct {
-		echo.Context
-	}
-
-	// ResponseSuccess is
-	ResponseSuccess struct {
-		Success bool        `json:"success"`
-		Message string      `json:"message"`
-		Data    interface{} `json:"data"`
-	}
-
-	// Pagination is
-	Pagination struct{}
-
-	// ResponseSuccessWithPaginate is
-	ResponseSuccessWithPaginate struct {
-		Success    bool        `json:"success"`
-		Message    string      `json:"message"`
-		Data       interface{} `json:"data"`
-		Pagination Pagination  `json:"pagination"`
-	}
 )
 
 // New is constructor
@@ -114,15 +83,6 @@ func (c *CustomContext) BadRequest(err interface{}) error {
 	)
 }
 
-// NotFound is | 404
-func (c *CustomContext) NotFound(err interface{}) error {
-	return c.commonError(
-		http.StatusNotFound,
-		"Not Found, your request data not found in our database",
-		err,
-	)
-}
-
 // UnprocessableEntity is | 422
 func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 	var e []map[string]interface{}
@@ -142,70 +102,23 @@ func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 	)
 }
 
-// InternalServerError is | 500
-func (c *CustomContext) InternalServerError(err interface{}) error {
-	return c.commonError(
-		http.StatusInternalServerError,
-		"Internal Server Error",
-		err,
-	)
-}
-
-// HandleErrors is | 4xx - 50x
+// HandleErrors is | 4xx - 5xx
 func (c *CustomContext) HandleErrors(e error) error {
+	log.Println("Error:", e)
+
 	if errors.Is(e, gorm.ErrRecordNotFound) {
-		return c.NotFound(gorm.ErrRecordNotFound)
+		return c.commonError(http.StatusNotFound, ErrNotFoundMessage, gorm.ErrRecordNotFound)
 	}
 
-	if errors.Is(e, gorm.ErrInvalidTransaction) {
-		return c.InternalServerError(gorm.ErrInvalidTransaction)
+	if errors.Is(e, ErrInvalidCredential) {
+		return c.commonError(http.StatusUnauthorized, ErrInvalidCredentialMessage, ErrInvalidCredential)
 	}
 
-	if errors.Is(e, gorm.ErrNotImplemented) {
-		return c.InternalServerError(gorm.ErrNotImplemented)
+	if errors.Is(e, ErrFailedGenerateToken) {
+		return c.commonError(http.StatusInternalServerError, ErrFailedGenerateTokenMessage, ErrFailedGenerateToken)
 	}
 
-	if errors.Is(e, gorm.ErrMissingWhereClause) {
-		return c.InternalServerError(gorm.ErrMissingWhereClause)
-	}
-
-	if errors.Is(e, gorm.ErrUnsupportedRelation) {
-		return c.InternalServerError(gorm.ErrUnsupportedRelation)
-	}
-
-	if errors.Is(e, gorm.ErrPrimaryKeyRequired) {
-		return c.InternalServerError(gorm.ErrPrimaryKeyRequired)
-	}
-
-	if errors.Is(e, gorm.ErrModelValueRequired) {
-		return c.InternalServerError(gorm.ErrModelValueRequired)
-	}
-
-	if errors.Is(e, gorm.ErrInvalidData) {
-		return c.InternalServerError(gorm.ErrInvalidData)
-	}
-
-	if errors.Is(e, gorm.ErrUnsupportedDriver) {
-		return c.InternalServerError(gorm.ErrUnsupportedDriver)
-	}
-
-	if errors.Is(e, gorm.ErrRegistered) {
-		return c.InternalServerError(gorm.ErrRegistered)
-	}
-
-	if errors.Is(e, gorm.ErrInvalidField) {
-		return c.InternalServerError(gorm.ErrInvalidField)
-	}
-
-	if errors.Is(e, gorm.ErrEmptySlice) {
-		return c.InternalServerError(gorm.ErrEmptySlice)
-	}
-
-	if errors.Is(e, gorm.ErrDryRunModeUnsupported) {
-		return c.InternalServerError(gorm.ErrDryRunModeUnsupported)
-	}
-
-	return c.InternalServerError(e)
+	return c.commonError(http.StatusInternalServerError, ErrInternalServerMessage, e)
 }
 
 /*---------- private methods or functions ----------*/
@@ -221,7 +134,7 @@ func (c *CustomContext) commonError(code int, m string, e interface{}) error {
 func (c *CustomContext) getMessageValidation(e validator.FieldError) (msg string) {
 	switch e.Tag() {
 	case "min":
-		msg = "value must be greater than"
+		msg = "value must be at least"
 	case "required":
 		msg = "value must be required"
 	case "email":
