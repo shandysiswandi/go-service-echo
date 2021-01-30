@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -53,6 +54,12 @@ func httpErrorHandler(e error, c echo.Context) {
 		Message: message,
 		Error:   e,
 	})
+}
+
+// GetJWT is
+func (c *CustomContext) GetJWT() *JwtClaims {
+	user := c.Get("user").(*jwt.Token)
+	return user.Claims.(*JwtClaims)
 }
 
 // Success is | 200, 201, 204
