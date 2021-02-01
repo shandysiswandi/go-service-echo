@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // Config is
@@ -37,30 +38,38 @@ type Config struct {
 	}
 }
 
+var (
+	once   sync.Once
+	config *Config
+)
+
 // NewConfiguration is
 func NewConfiguration() *Config {
-	config := new(Config)
 
-	config.App.Env = os.Getenv("APP_ENV")
-	config.App.Port = os.Getenv("APP_PORT")
-	config.App.Name = os.Getenv("APP_NAME")
+	once.Do(func() {
+		config = new(Config)
 
-	config.Timezone = os.Getenv("TZ")
+		config.App.Env = os.Getenv("APP_ENV")
+		config.App.Port = os.Getenv("APP_PORT")
+		config.App.Name = os.Getenv("APP_NAME")
 
-	config.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
-	config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
-	config.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
-	config.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
-	config.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
+		config.Timezone = os.Getenv("TZ")
 
-	config.JwtSecret = os.Getenv("JWT_SECRET")
-	config.SentryDSN = os.Getenv("SENTRY_DSN")
+		config.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
+		config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
+		config.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
+		config.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
+		config.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
 
-	config.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
-	config.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
-	config.Service.Redis.Database, _ = strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
+		config.JwtSecret = os.Getenv("JWT_SECRET")
+		config.SentryDSN = os.Getenv("SENTRY_DSN")
 
-	config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
+		config.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
+		config.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
+		config.Service.Redis.Database, _ = strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
+
+		config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
+	})
 
 	return config
 }
