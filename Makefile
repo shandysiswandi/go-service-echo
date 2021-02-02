@@ -17,6 +17,10 @@ run: destroy
 destroy:
 	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm "$(IMAGE_NAME)" --force; fi;
 
+cert:
+	@openssl genrsa -out ./resource/key/private.pem 4096
+	@openssl rsa -in ./resource/key/private.pem -pubout -out ./resource/key/public.pem
+
 test: lint
 	@clear
 	@go test -timeout 90s --race -v ./...
