@@ -17,74 +17,26 @@ func init() {
 	}
 }
 
-func TestNewConfiguration_Only_App(t *testing.T) {
-	expected := new(config.Config)
-	expected.App.Env = "env"
-	expected.App.Port = "port"
-	expected.App.Name = "name"
-
-	got := config.NewConfiguration()
-	assert.Equal(t, expected.App.Env, got.App.Env)
-	assert.Equal(t, expected.App.Port, got.App.Port)
-	assert.Equal(t, expected.App.Name, got.App.Name)
-}
-
-func TestNewConfiguration_Only_TZ(t *testing.T) {
-	expected := new(config.Config)
-	expected.Timezone = "timezone"
-
-	got := config.NewConfiguration()
-	assert.Equal(t, expected.Timezone, got.Timezone)
-}
-
-func TestNewConfiguration_Only_JWT(t *testing.T) {
-	expected := new(config.Config)
-	expected.JwtSecret = "your_secret_for_jwt"
-
-	got := config.NewConfiguration()
-	assert.Equal(t, expected.JwtSecret, got.JwtSecret)
-}
-
-func TestNewConfiguration_Only_Sentry(t *testing.T) {
-	expected := new(config.Config)
-	expected.SentryDSN = "sentry_dsn"
-
-	got := config.NewConfiguration()
-	assert.Equal(t, expected.SentryDSN, got.SentryDSN)
-}
-
-func TestNewConfiguration_Only_Service(t *testing.T) {
-	expected := new(config.Config)
-	expected.Service.Redis.Addr = "addr"
-	expected.Service.Redis.Password = "pass"
-	expected.Service.Redis.Database = 0
-
+func TestNewConfiguration(t *testing.T) {
 	actual := config.NewConfiguration()
-	assert.Equal(t, expected.Service.Redis.Addr, actual.Service.Redis.Addr)
-	assert.Equal(t, expected.Service.Redis.Password, actual.Service.Redis.Password)
-	assert.Equal(t, expected.Service.Redis.Database, actual.Service.Redis.Database)
-}
 
-func TestNewConfiguration_Only_External(t *testing.T) {
-	expected := new(config.Config)
-	expected.External.JsonplaceholderURL = "external_jsonplaceholder_url"
+	assert.Equal(t, "env", actual.App.Env)
+	assert.Equal(t, "port", actual.App.Port)
+	assert.Equal(t, "name", actual.App.Name)
 
-	got := config.NewConfiguration()
-	assert.Equal(t, expected.External.JsonplaceholderURL, got.External.JsonplaceholderURL)
-}
+	assert.Equal(t, []string{"mysql", "postgresql", "mongo"}, actual.Database.Drivers)
+	assert.Equal(t, "mysql_dsn", actual.Database.MysqlDSN)
+	assert.Equal(t, "postgresql_dsn", actual.Database.PostgresqlDSN)
+	assert.Equal(t, "mongo_uri", actual.Database.Mongo.URI)
+	assert.Equal(t, "mongo_db", actual.Database.Mongo.DB)
 
-func TestNewConfiguration_Only_Database(t *testing.T) {
-	expected := new(config.Config)
-	expected.Database.Drivers = []string{"mysql", "postgresql", "mongo"}
-	expected.Database.MysqlDSN = "mysql_dsn"
-	expected.Database.PostgresqlDSN = "postgresql_dsn"
-	expected.Database.Mongo.URI = "mongo_uri"
-	expected.Database.Mongo.DB = "mongo_db"
+	assert.Equal(t, "sentry_dsn", actual.Service.SentryDSN)
+	assert.Equal(t, "addr", actual.Service.Redis.Addr)
+	assert.Equal(t, "pass", actual.Service.Redis.Password)
+	assert.Equal(t, 0, actual.Service.Redis.Database)
 
-	got := config.NewConfiguration()
-	assert.Equal(t, expected.Database.Drivers, got.Database.Drivers)
-	assert.Equal(t, expected.Database.MysqlDSN, got.Database.MysqlDSN)
-	assert.Equal(t, expected.Database.PostgresqlDSN, got.Database.PostgresqlDSN)
-	assert.Equal(t, expected.Database.Mongo.URI, got.Database.Mongo.URI)
-	assert.Equal(t, expected.Database.Mongo.DB, got.Database.Mongo.DB)
+	assert.Equal(t, "external_jsonplaceholder_url", actual.External.JsonplaceholderURL)
+
+	assert.Equal(t, "timezone", actual.Timezone)
+	assert.Equal(t, "your_secret_for_jwt", actual.JwtSecret)
 }
