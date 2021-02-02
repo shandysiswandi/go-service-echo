@@ -13,9 +13,10 @@ var (
 // Config is
 type Config struct {
 	App       *app
+	Constant  *constant
 	Database  *database
-	Service   *service
 	External  *external
+	Service   *service
 	Timezone  string
 	JwtSecret string
 }
@@ -26,9 +27,10 @@ func NewConfiguration() *Config {
 		instance = new(Config)
 
 		instance.App = newAppConfig()
+		instance.Constant = newConstantConfig()
 		instance.Database = newDatabaseConfig()
-		instance.Service = newServiceConfig()
 		instance.External = newExternalConfig()
+		instance.Service = newServiceConfig()
 
 		instance.Timezone = os.Getenv("TZ")
 		instance.JwtSecret = os.Getenv("JWT_SECRET")
