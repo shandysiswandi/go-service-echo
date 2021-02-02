@@ -7,6 +7,11 @@ import (
 	"sync"
 )
 
+var (
+	once     sync.Once
+	instance *Config
+)
+
 // Config is
 type Config struct {
 	App struct {
@@ -38,38 +43,32 @@ type Config struct {
 	}
 }
 
-var (
-	once   sync.Once
-	config *Config
-)
-
 // NewConfiguration is
 func NewConfiguration() *Config {
-
 	once.Do(func() {
-		config = new(Config)
+		instance = new(Config)
 
-		config.App.Env = os.Getenv("APP_ENV")
-		config.App.Port = os.Getenv("APP_PORT")
-		config.App.Name = os.Getenv("APP_NAME")
+		instance.App.Env = os.Getenv("APP_ENV")
+		instance.App.Port = os.Getenv("APP_PORT")
+		instance.App.Name = os.Getenv("APP_NAME")
 
-		config.Timezone = os.Getenv("TZ")
+		instance.Timezone = os.Getenv("TZ")
 
-		config.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
-		config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
-		config.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
-		config.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
-		config.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
+		instance.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
+		instance.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
+		instance.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
+		instance.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
+		instance.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
 
-		config.JwtSecret = os.Getenv("JWT_SECRET")
-		config.SentryDSN = os.Getenv("SENTRY_DSN")
+		instance.JwtSecret = os.Getenv("JWT_SECRET")
+		instance.SentryDSN = os.Getenv("SENTRY_DSN")
 
-		config.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
-		config.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
-		config.Service.Redis.Database, _ = strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
+		instance.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
+		instance.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
+		instance.Service.Redis.Database, _ = strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
 
-		config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
+		instance.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
 	})
 
-	return config
+	return instance
 }
