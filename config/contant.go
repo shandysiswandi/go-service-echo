@@ -1,9 +1,7 @@
 package config
 
-type constant struct {
-	//
-}
-
-func newConstantConfig() *constant {
-	return &constant{}
-}
+// Version and Build is
+const (
+	Version string = "1.0.0"
+	Build   string = "0.0.1"
+)
