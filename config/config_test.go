@@ -33,8 +33,8 @@ func TestNewConfiguration(t *testing.T) {
 	ass.Equal("mongo_db", actual.Database.Mongo.DB)
 
 	ass.Equal("sentry_dsn", actual.Service.SentryDSN)
-	ass.Equal("access", actual.Service.JWT.AccessSecret)
-	ass.Equal("refresh", actual.Service.JWT.RefreshSecret)
+	ass.Equal([]byte("access"), actual.Service.JWT.AccessSecret)
+	ass.Equal([]byte("refresh"), actual.Service.JWT.RefreshSecret)
 	ass.Equal("addr", actual.Service.Redis.Addr)
 	ass.Equal("pass", actual.Service.Redis.Password)
 	ass.Equal(0, actual.Service.Redis.Database)

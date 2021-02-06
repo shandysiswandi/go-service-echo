@@ -34,8 +34,8 @@ type Config struct {
 	}
 	Service struct {
 		JWT struct {
-			AccessSecret  string
-			RefreshSecret string
+			AccessSecret  []byte
+			RefreshSecret []byte
 		}
 		Redis struct {
 			Addr     string
@@ -72,8 +72,8 @@ func NewConfiguration() *Config {
 		instance.Service.SentryDSN = os.Getenv("SERVICE_SENTRY_DSN")
 
 		// jwt for authentification & authorization
-		instance.Service.JWT.AccessSecret = os.Getenv("SERVICE_JWT_ACCESS_SECRET")
-		instance.Service.JWT.RefreshSecret = os.Getenv("SERVICE_JWT_REFRESH_SECRET")
+		instance.Service.JWT.AccessSecret = []byte(os.Getenv("SERVICE_JWT_ACCESS_SECRET"))
+		instance.Service.JWT.RefreshSecret = []byte(os.Getenv("SERVICE_JWT_REFRESH_SECRET"))
 
 		// redis for caching
 		instance.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
