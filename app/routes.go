@@ -16,8 +16,8 @@ import (
 )
 
 func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
-	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Welcome to our API"})
+	e.GET("/", func(ec echo.Context) error {
+		return ec.JSON(http.StatusOK, map[string]string{"message": "Welcome to our API"})
 	})
 
 	var (
