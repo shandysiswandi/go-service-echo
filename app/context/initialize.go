@@ -57,9 +57,9 @@ func httpErrorHandler(e error, c echo.Context) {
 }
 
 // GetJWT is
-func (c *CustomContext) GetJWT() *JwtClaims {
+func (c *CustomContext) GetJWT() (*JwtClaims, string) {
 	user := c.Get("user").(*jwt.Token)
-	return user.Claims.(*JwtClaims)
+	return user.Claims.(*JwtClaims), user.Raw
 }
 
 // Success is | 200, 201, 204
