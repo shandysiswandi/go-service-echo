@@ -58,7 +58,7 @@ func NewConfiguration() *Config {
 		instance.App.Timezone = os.Getenv("TZ")
 
 		/* database configuration */
-		instance.Database.Drivers = strings.Split(os.Getenv("DB_DRIVERS"), ",")
+		instance.Database.Drivers = getDBDriver()
 		instance.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
 		instance.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
 		instance.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
@@ -68,7 +68,7 @@ func NewConfiguration() *Config {
 		instance.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
 
 		/* service configuration */
-		// sentry for logging
+		// sentry for logging online
 		instance.Service.SentryDSN = os.Getenv("SERVICE_SENTRY_DSN")
 
 		// jwt for authentification & authorization
@@ -78,12 +78,30 @@ func NewConfiguration() *Config {
 		// redis for caching
 		instance.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
 		instance.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
-		srd, err := strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
-		if err != nil {
-			srd = 0
-		}
-		instance.Service.Redis.Database = srd
+		instance.Service.Redis.Database = getServiceRedisDatabase()
 	})
 
 	return instance
+}
+
+func getDBDriver() []string {
+	var drivers []string
+	split := strings.Split(os.Getenv("DB_DRIVERS"), ",")
+
+	for _, s := range split {
+		if strings.TrimSpace(s) != "" {
+			drivers = append(drivers, s)
+		}
+	}
+
+	return drivers
+}
+
+func getServiceRedisDatabase() int {
+	srd, err := strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
+	if err != nil {
+		srd = 0
+	}
+
+	return srd
 }
