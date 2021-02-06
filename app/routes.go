@@ -3,53 +3,49 @@ package app
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/external"
 	"go-rest-echo/internal/authentication"
 	"go-rest-echo/internal/blogs"
 	"go-rest-echo/internal/tasks"
 	"go-rest-echo/internal/users"
+	"go-rest-echo/service"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-func routeWithoutJwt(e *echo.Echo, c *config.Config, db *db.Database) {
+func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"message": "Welcome to our API"})
 	})
 
 	var (
-		// auth
-		userRepo     = users.NewMysql(db)
-		authUsecase  = authentication.NewUsecase(userRepo, c.JwtSecret)
-		authDelivery = authentication.NewWeb(authUsecase)
-	)
-
-	r := e.Group("/auth")
-	r.POST("/login", authDelivery.Login)
-}
-
-func routeWithJwt(e *echo.Echo, c *config.Config, db *db.Database) {
-	api := e.Group("/api")
-	api = middlewareJWT(api, c)
-
-	// define variables and inject
-	var (
-		r *echo.Group
-		// tasks
-		taskRepo     = tasks.NewMysql(db)
-		taskUsecase  = tasks.NewUsecase(taskRepo)
-		taskDelivery = tasks.NewDelivery(taskUsecase)
-
 		// users
 		userRepo     = users.NewMysql(db)
 		userUsecase  = users.NewUsecase(userRepo)
 		userDelivery = users.NewDelivery(userUsecase)
+
+		// auth
+		authUsecase  = authentication.NewUsecase(userRepo, s)
+		authDelivery = authentication.NewWeb(authUsecase)
+
+		// tasks
+		taskRepo     = tasks.NewMysql(db)
+		taskUsecase  = tasks.NewUsecase(taskRepo)
+		taskDelivery = tasks.NewDelivery(taskUsecase)
 
 		// blogs
 		blogRepo     = blogs.NewMysql(db)
 		blogUsecase  = blogs.NewUsecase(blogRepo)
 		blogDelivery = blogs.NewWeb(blogUsecase)
 	)
+
+	r := e.Group("/auth")
+	r.POST("/login", authDelivery.Login)
+
+	/******--^--*****/
+	api := e.Group("/api")
+	api = middlewareJWT(api, c)
 
 	r = api.Group("/tasks")
 	r.GET("", taskDelivery.Fetch)
