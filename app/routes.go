@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
@@ -43,9 +44,9 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 	r := e.Group("/auth")
 	r.POST("/login", authDelivery.Login)
 
-	/******--^--*****/
+	/******--Restricted--*****/
 	api := e.Group("/api")
-	api = middlewareJWT(api, c)
+	api.Use(middleware.JWT(c.Service.JWT.AccessSecret))
 
 	r = api.Group("/tasks")
 	r.GET("", taskDelivery.Fetch)

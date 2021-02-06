@@ -2,8 +2,6 @@ package app
 
 import (
 	"fmt"
-	"go-rest-echo/app/context"
-	"go-rest-echo/config"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -51,15 +49,4 @@ func middlewares(e *echo.Echo) {
 	}))
 
 	e.Pre(middleware.Recover())
-}
-
-func middlewareJWT(g *echo.Group, c *config.Config) *echo.Group {
-	config := middleware.JWTConfig{
-		Claims:     &context.JwtClaims{},
-		SigningKey: []byte(c.JwtSecret),
-	}
-
-	g.Use(middleware.JWTWithConfig(config))
-
-	return g
 }
