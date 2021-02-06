@@ -15,16 +15,10 @@ import (
 func NewApplicationAndServe(c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
 	e := echo.New()
 
-	// extend echo Context
 	context.New(e)
-
-	// register validation
 	validation.New(e)
-
 	middlewares(e)
-
-	routeWithoutJwt(e, c, db)
-	routeWithJwt(e, c, db)
+	routes(e, c, db, s, ex)
 
 	e.Logger.Fatal(e.Start(":" + c.App.Port))
 }
