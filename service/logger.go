@@ -1,6 +1,10 @@
 package service
 
-import "go-rest-echo/config"
+import (
+	"go-rest-echo/config"
+
+	log "github.com/sirupsen/logrus"
+)
 
 // Logger is
 type Logger struct {
@@ -14,6 +18,7 @@ func NewLogger(c *config.Config) *Logger {
 
 // Info is
 func (logger *Logger) Info() error {
+	log.Info("")
 	return nil
 }
 
