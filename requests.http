@@ -2,19 +2,19 @@
 |                   END POINT `/`                           |
 -------------------------------------------------------------
 ### ----------------------------------- HOME
-GET http://localhost:3000
+GET http://localhost:50000
 
 -------------------------------------------------------------
 |                   END POINT `/users`                      |
 -------------------------------------------------------------
 ### ----------------------------------- Fetch All Users
-GET http://localhost:3000/users
+GET http://localhost:50000/api/users
 
 ### ----------------------------------- Get User By ID
-GET http://localhost:3000/users/1
+GET http://localhost:50000/api/users/1
 
 ### ----------------------------------- Create One User
-POST http://localhost:3000/users
+POST http://localhost:50000/api/users
 content-type: application/json
 
 {
@@ -24,7 +24,7 @@ content-type: application/json
 }
 
 ### ----------------------------------- Update One User By ID
-PUT http://localhost:3000/users/1
+PUT http://localhost:50000/api/users/1
 content-type: application/json
 
 {
@@ -34,19 +34,19 @@ content-type: application/json
 }
 
 ### ----------------------------------- Delete One User
-DELETE http://localhost:3000/users/1
+DELETE http://localhost:50000/api/users/1
 
 -------------------------------------------------------------
 |                   END POINT `/tasks`                      |
 -------------------------------------------------------------
 ### ----------------------------------- Fetch All Tasks
-GET http://localhost:3000/tasks
+GET http://localhost:50000/api/tasks
 
 ### ----------------------------------- Get Task By ID
-GET http://localhost:3000/tasks/1
+GET http://localhost:50000/api/tasks/1
 
 ### ----------------------------------- Create One User
-POST http://localhost:3000/tasks
+POST http://localhost:50000/api/tasks
 content-type: application/json
 
 {
@@ -56,7 +56,7 @@ content-type: application/json
 }
 
 ### ----------------------------------- Update One User By ID
-PUT http://localhost:3000/tasks/1
+PUT http://localhost:50000/api/tasks/1
 content-type: application/json
 
 {
@@ -66,4 +66,4 @@ content-type: application/json
 }
 
 ### ----------------------------------- Delete One User
-DELETE http://localhost:3000/tasks/1
+DELETE http://localhost:50000/api/tasks/1
