@@ -46,7 +46,10 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 
 	/******--Restricted--*****/
 	api := e.Group("/api")
-	api.Use(middleware.JWT(c.Service.JWT.AccessSecret))
+	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		Claims:     &service.JWTClaim{},
+		SigningKey: c.Service.JWT.AccessSecret,
+	}))
 
 	r = api.Group("/tasks")
 	r.GET("", taskDelivery.Fetch)
