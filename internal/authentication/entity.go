@@ -9,8 +9,9 @@ type (
 
 	// ResponseLogin is
 	ResponseLogin struct {
-		Email string `json:"email"`
-		Name  string `json:"name"`
-		Token string `json:"token"`
+		Email        string `json:"email"`
+		Name         string `json:"name"`
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
 	}
 )
