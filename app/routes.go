@@ -8,19 +8,19 @@ import (
 	"go-rest-echo/internal/blogs"
 	"go-rest-echo/internal/tasks"
 	"go-rest-echo/internal/users"
+	"go-rest-echo/internal/welcomes"
 	"go-rest-echo/service"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
-	e.GET("/", func(ec echo.Context) error {
-		return ec.JSON(http.StatusOK, map[string]string{"message": "Welcome to our API"})
-	})
 
 	var (
+		// welcomes
+		welcome = welcomes.NewWeb()
+
 		// users
 		userRepo     = users.NewMysql(db)
 		userUsecase  = users.NewUsecase(userRepo)
@@ -40,6 +40,10 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 		blogUsecase  = blogs.NewUsecase(blogRepo)
 		blogDelivery = blogs.NewWeb(blogUsecase)
 	)
+
+	e.GET("/", welcome.Home)
+	e.GET("/monitor-database", welcome.MonitorDatabase)
+	e.GET("/monitor-service", welcome.MonitorService)
 
 	r := e.Group("/auth")
 	r.POST("/login", authDelivery.Login)
