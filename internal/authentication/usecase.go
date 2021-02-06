@@ -29,8 +29,7 @@ func (u *usecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 	}
 
 	// call generate token
-	data := map[string]interface{}{"id": 1}
-	tok, err := u.service.JWT.Generate(data)
+	tok, err := u.service.JWT.Generate(service.JWTClaimData{ID: user.ID, Email: user.Email, Name: user.Name})
 	if err != nil {
 		return nil, err
 	}
