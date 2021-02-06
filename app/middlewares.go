@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	sentryecho "github.com/getsentry/sentry-go/echo"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -49,4 +50,10 @@ func middlewares(e *echo.Echo) {
 	}))
 
 	e.Pre(middleware.Recover())
+
+	e.Use(sentryecho.New(sentryecho.Options{
+		Repanic:         true,
+		WaitForDelivery: false,
+		Timeout:         0,
+	}))
 }
