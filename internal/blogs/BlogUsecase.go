@@ -35,7 +35,20 @@ func (u *usecase) Update(payload BlogPayloadPut, ID string) error {
 }
 
 func (u *usecase) UpdateField(payload BlogPayloadPatch, ID string) error {
-	return u.blogRepository.UpdateField(payload, ID)
+	b := new(Blog)
+
+	if payload.Title == "" && payload.Body == "" {
+		return nil
+	}
+
+	if payload.Title != "" {
+		b.Title = payload.Title
+	}
+	if payload.Body != "" {
+		b.Body = payload.Body
+	}
+
+	return u.blogRepository.UpdateField(b, ID)
 }
 
 func (u *usecase) Delete(ID string) error {
