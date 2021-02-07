@@ -37,8 +37,9 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 		taskDelivery = tasks.NewDelivery(taskUsecase)
 
 		// blogs
-		blogRepo     = blogs.NewMysql(db)
-		blogUsecase  = blogs.NewUsecase(blogRepo)
+		blogMysqlRepository = blogs.NewMysql(db)
+		// blogPostgresqlRepository = blogs.NewPostgresql(db)
+		blogUsecase  = blogs.NewUsecase(blogMysqlRepository)
 		blogDelivery = blogs.NewWeb(blogUsecase)
 	)
 
@@ -48,6 +49,11 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 
 	r := e.Group("/auth")
 	r.POST("/login", authDelivery.Login)
+	r.POST("/register", authDelivery.Login)
+	r.POST("/forgot-password", authDelivery.Login)
+	r.POST("/reset-password", authDelivery.Login)
+	r.POST("/refresh", authDelivery.Login)
+	r.POST("/logout", authDelivery.Login)
 
 	/******--Restricted--*****/
 	api := e.Group("/api")
