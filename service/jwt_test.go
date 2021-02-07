@@ -16,14 +16,14 @@ func init() {
 	}
 }
 
-func TestNewJWT_Generate(t *testing.T) {
+func TestJWT_Generate(t *testing.T) {
 	c := config.NewConfiguration()
 	jwt := service.NewJWT(c)
 	claim := service.JWTClaimData{}
 	gen, err := jwt.Generate(claim)
 
 	assert.Equal(t, nil, err)
-	assert.NotEqual(t, nil, gen)
+	assert.NotNil(t, gen)
 	assert.NotEqual(t, "", gen.AccessToken)
 	assert.NotEqual(t, "", gen.RefreshToken)
 }
