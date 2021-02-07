@@ -5,7 +5,7 @@ import "github.com/labstack/echo/v4"
 type (
 	// Repository is
 	Repository interface {
-		Fetch() (*[]Blog, error)
+		Fetch() ([]Blog, error)
 		Get(string) (*Blog, error)
 
 		Create(*Blog) error
@@ -16,7 +16,7 @@ type (
 
 	// Usecase is
 	Usecase interface {
-		Fetch() (*[]Blog, error)
+		Fetch() ([]Blog, error)
 		Get(string) (*Blog, error)
 
 		Create(BlogPayloadCreate) error

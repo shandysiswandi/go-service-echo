@@ -15,19 +15,17 @@ func NewMysql(db *db.Database) Repository {
 	return &mysqlRepository{db: db.Mysql}
 }
 
-func (m *mysqlRepository) Fetch() (*[]Blog, error) {
-	t := new([]Blog)
+func (m *mysqlRepository) Fetch() ([]Blog, error) {
+	b := []Blog{}
 
-	if err := m.db.Find(t).Error; err != nil {
+	if err := m.db.Find(&b).Error; err != nil {
 		return nil, err
 	}
 
-	return t, nil
+	return b, nil
 }
 
 func (m *mysqlRepository) Get(ID string) (*Blog, error) {
-	// t := new(Blog)
-
 	b := &Blog{ID: ID}
 
 	if err := m.db.First(b).Error; err != nil {
@@ -60,8 +58,7 @@ func (m *mysqlRepository) Update(b *Blog, ID string) error {
 }
 
 func (m *mysqlRepository) UpdateField(b *Blog, ID string) error {
-	model := Blog{ID: ID}
-	q := m.db.Model(&model).Updates(b)
+	q := m.db.Model(&Blog{ID: ID}).Updates(b)
 
 	if q.Error != nil {
 		return q.Error

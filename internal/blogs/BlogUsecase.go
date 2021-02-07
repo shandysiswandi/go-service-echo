@@ -9,7 +9,7 @@ func NewUsecase(br Repository) Usecase {
 	return &usecase{br}
 }
 
-func (u *usecase) Fetch() (*[]Blog, error) {
+func (u *usecase) Fetch() ([]Blog, error) {
 	return u.blogRepository.Fetch()
 }
 

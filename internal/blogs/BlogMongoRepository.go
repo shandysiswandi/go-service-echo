@@ -15,7 +15,7 @@ func NewMongo(db *db.Database) Repository {
 	return &mongoRepository{db: db.Mongo}
 }
 
-func (m *mongoRepository) Fetch() (*[]Blog, error) {
+func (m *mongoRepository) Fetch() ([]Blog, error) {
 	return nil, nil
 }
 

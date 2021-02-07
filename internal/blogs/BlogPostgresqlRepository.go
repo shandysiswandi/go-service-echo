@@ -12,27 +12,27 @@ type postgresqlRepository struct {
 
 // NewPostgresql is contstructor
 func NewPostgresql(db *db.Database) Repository {
-	return &postgresqlRepository{db: db.Postgresql}
+	return &postgresqlRepository{db.Postgresql}
 }
 
-func (m *postgresqlRepository) Fetch() (*[]Blog, error) {
-	t := new([]Blog)
+func (m *postgresqlRepository) Fetch() ([]Blog, error) {
+	b := []Blog{}
 
-	if err := m.db.Find(t).Error; err != nil {
+	if err := m.db.Find(&b).Error; err != nil {
 		return nil, err
 	}
 
-	return t, nil
+	return b, nil
 }
 
 func (m *postgresqlRepository) Get(ID string) (*Blog, error) {
-	t := new(Blog)
+	b := &Blog{ID: ID}
 
-	if err := m.db.First(t).Error; err != nil {
+	if err := m.db.First(&b).Error; err != nil {
 		return nil, err
 	}
 
-	return t, nil
+	return b, nil
 }
 
 func (m *postgresqlRepository) Create(b *Blog) error {
@@ -44,8 +44,7 @@ func (m *postgresqlRepository) Create(b *Blog) error {
 }
 
 func (m *postgresqlRepository) Update(b *Blog, ID string) error {
-	model := Blog{ID: ID}
-	q := m.db.Model(&model).Updates(b)
+	q := m.db.Model(&Blog{ID: ID}).Updates(b)
 
 	if q.Error != nil {
 		return q.Error
@@ -59,8 +58,7 @@ func (m *postgresqlRepository) Update(b *Blog, ID string) error {
 }
 
 func (m *postgresqlRepository) UpdateField(b *Blog, ID string) error {
-	model := Blog{ID: ID}
-	q := m.db.Model(&model).Updates(b)
+	q := m.db.Model(&Blog{ID: ID}).Updates(b)
 
 	if q.Error != nil {
 		return q.Error
@@ -74,8 +72,7 @@ func (m *postgresqlRepository) UpdateField(b *Blog, ID string) error {
 }
 
 func (m *postgresqlRepository) Delete(ID string) error {
-	model := new(Blog)
-	q := m.db.Delete(model, ID)
+	q := m.db.Delete(&Blog{ID: ID})
 
 	if q.Error != nil {
 		return q.Error
