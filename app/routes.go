@@ -19,8 +19,8 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 
 	var (
 		// welcomes
-		welcomeUsecase  = welcomes.NewUsecase(db, s)
-		welcomeDelivery = welcomes.NewWeb(s, welcomeUsecase)
+		welcomeUsecase  = welcomes.NewUsecase(db, s, ex)
+		welcomeDelivery = welcomes.NewWeb(welcomeUsecase)
 
 		// users
 		userRepo     = users.NewMysql(db)
@@ -46,6 +46,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 	e.GET("/", welcomeDelivery.Home)
 	e.GET("/monitor-database", welcomeDelivery.MonitorDatabase)
 	e.GET("/monitor-service", welcomeDelivery.MonitorService)
+	e.GET("/monitor-external", welcomeDelivery.MonitorExternal)
 
 	r := e.Group("/auth")
 	r.POST("/login", authDelivery.Login)
