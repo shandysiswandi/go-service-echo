@@ -8,12 +8,12 @@ import (
 )
 
 type web struct {
-	// usecase Usecase
+	usecase Usecase
 }
 
 // NewWeb is
-func NewWeb() WelcomeDelivery {
-	return &web{}
+func NewWeb(u Usecase) WelcomeDelivery {
+	return &web{u}
 }
 
 func (web) Home(cc echo.Context) error {
@@ -24,18 +24,34 @@ func (web) Home(cc echo.Context) error {
 	return c.Success(http.StatusOK, "Welcome to our API", nil)
 }
 
-func (web) MonitorDatabase(cc echo.Context) error {
+func (w *web) MonitorDatabase(cc echo.Context) error {
 	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
+	// usecases
+	mysql := w.usecase.CheckDatabaseMysql()
+	postgresql := w.usecase.CheckDatabasePostgresql()
+	mongo := w.usecase.CheckDatabaseMongo()
+
 	// response
-	return c.Success(http.StatusOK, "Welcome to Monitor Databases", nil)
+	return c.Success(http.StatusOK, "Welcome to Monitor Databases", map[string]interface{}{
+		"mysql":      mysql,
+		"postgresql": postgresql,
+		"mongo":      mongo,
+	})
 }
 
-func (web) MonitorService(cc echo.Context) error {
+func (w *web) MonitorService(cc echo.Context) error {
 	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
+	// usecases
+	sentry := w.usecase.CheckServiceSentry()
+	redis := w.usecase.CheckServiceRedis()
+
 	// response
-	return c.Success(http.StatusOK, "Welcome to Monitor Services", nil)
+	return c.Success(http.StatusOK, "Welcome to Monitor Services", map[string]interface{}{
+		"sentry": sentry,
+		"redis":  redis,
+	})
 }
