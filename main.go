@@ -6,31 +6,25 @@ import (
 	"go-rest-echo/db"
 	"go-rest-echo/external"
 	"go-rest-echo/service"
-	"log"
+	"go-rest-echo/util"
 
 	"github.com/joho/godotenv"
 )
 
-func init() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Println(err)
-	}
-}
-
 func main() {
-	conf := config.NewConfiguration()
+	if err := godotenv.Load(".env"); err != nil {
+		panic("NO .env GUYS")
+	}
 
-	db, errs := db.NewDatabase(conf)
+	config := config.NewConfiguration()
+	db, errs := db.NewDatabase(config)
 	if errs != nil {
 		for _, e := range errs {
-			log.Println(e)
+			util.LogError(e)
 		}
 	}
 
-	serv := service.New(conf)
-
-	ext := external.New()
-
-	app.NewApplicationAndServe(conf, db, serv, ext)
+	service := service.New(config)
+	external := external.New(config)
+	app.NewApplicationAndServe(config, db, service, external)
 }
