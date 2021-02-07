@@ -15,6 +15,24 @@ func NewUsecase(db *db.Database, service *service.Service) Usecase {
 	return &usecase{db, service}
 }
 
+func (u *usecase) CheckServiceJWT() bool {
+	check := u.service.JWT
+	if check == nil {
+		return false
+	}
+
+	return true
+}
+
+func (u *usecase) CheckServiceLogger() bool {
+	check := u.service.Logger
+	if check == nil {
+		return false
+	}
+
+	return true
+}
+
 func (u *usecase) CheckServiceSentry() bool {
 	check := u.service.Sentry
 	if check == nil {
