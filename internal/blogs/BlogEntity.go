@@ -17,8 +17,8 @@ type (
 
 	// BlogPayloadPatch is
 	BlogPayloadPatch struct {
-		Title string `json:"title,omitempty" validate:"min=5"`
-		Body  string `json:"body,omitempty" validate:"min=15"`
+		Title string `json:"title,omitempty" validate:"omitempty,min=5"`
+		Body  string `json:"body,omitempty" validate:"omitempty,min=15"`
 	}
 
 	// Blog is
