@@ -6,7 +6,7 @@ import (
 
 // Service is
 type Service struct {
-	Redis  Redis
+	Redis  *Redis
 	JWT    *JWT
 	Sentry *Sentry
 }
