@@ -1,33 +1,61 @@
 package welcomes
 
-type usecase struct{}
+import (
+	"go-rest-echo/db"
+	"go-rest-echo/service"
+)
+
+type usecase struct {
+	database *db.Database
+	service  *service.Service
+}
 
 // NewUsecase is
-func NewUsecase() Usecase {
-	return &usecase{}
+func NewUsecase(db *db.Database, service *service.Service) Usecase {
+	return &usecase{db, service}
 }
 
-func (usecase) CheckServiceSentry() bool {
+func (u *usecase) CheckServiceSentry() bool {
+	check := u.service.Sentry
+	if check == nil {
+		return false
+	}
 
 	return true
 }
 
-func (usecase) CheckServiceRedis() bool {
+func (u *usecase) CheckServiceRedis() bool {
+	check := u.service.Redis
+	if check == nil {
+		return false
+	}
 
 	return true
 }
 
-func (usecase) CheckDatabaseMysql() bool {
+func (u *usecase) CheckDatabaseMysql() bool {
+	check := u.database.Mysql
+	if check == nil {
+		return false
+	}
 
 	return true
 }
 
-func (usecase) CheckDatabasePostgresql() bool {
+func (u *usecase) CheckDatabasePostgresql() bool {
+	check := u.database.Postgresql
+	if check == nil {
+		return false
+	}
 
 	return true
 }
 
-func (usecase) CheckDatabaseMongo() bool {
+func (u *usecase) CheckDatabaseMongo() bool {
+	check := u.database.Mongo
+	if check == nil {
+		return false
+	}
 
 	return true
 }

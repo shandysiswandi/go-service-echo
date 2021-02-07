@@ -19,7 +19,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 
 	var (
 		// welcomes
-		welcomeUsecase  = welcomes.NewUsecase()
+		welcomeUsecase  = welcomes.NewUsecase(db, s)
 		welcomeDelivery = welcomes.NewWeb(welcomeUsecase)
 
 		// users
