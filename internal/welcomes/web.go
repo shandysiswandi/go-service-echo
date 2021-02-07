@@ -2,23 +2,23 @@ package welcomes
 
 import (
 	"go-rest-echo/app/context"
-	"go-rest-echo/service"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-type web struct {
-	service *service.Service
-	usecase Usecase
+// Web is
+type Web struct {
+	usecase *Usecase
 }
 
 // NewWeb is
-func NewWeb(s *service.Service, u Usecase) WelcomeDelivery {
-	return &web{s, u}
+func NewWeb(u *Usecase) *Web {
+	return &Web{u}
 }
 
-func (w *web) Home(cc echo.Context) error {
+// Home is
+func (w *Web) Home(cc echo.Context) error {
 	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
@@ -26,7 +26,8 @@ func (w *web) Home(cc echo.Context) error {
 	return c.Success(http.StatusOK, "Welcome to our API", nil)
 }
 
-func (w *web) MonitorDatabase(cc echo.Context) error {
+// MonitorDatabase is
+func (w *Web) MonitorDatabase(cc echo.Context) error {
 	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
@@ -43,7 +44,8 @@ func (w *web) MonitorDatabase(cc echo.Context) error {
 	})
 }
 
-func (w *web) MonitorService(cc echo.Context) error {
+// MonitorService is
+func (w *Web) MonitorService(cc echo.Context) error {
 	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
@@ -57,5 +59,22 @@ func (w *web) MonitorService(cc echo.Context) error {
 		"jwt":    jwt,
 		"sentry": sentry,
 		"redis":  redis,
+	})
+}
+
+// MonitorExternal is
+func (w *Web) MonitorExternal(cc echo.Context) error {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// usecases
+	data, err := w.usecase.CheckExternalJSONPlaceHolder()
+	if err != nil {
+		return c.String(502, err.Error())
+	}
+
+	// response
+	return c.Success(http.StatusOK, "Welcome to Monitor Externals", map[string]interface{}{
+		"jsonplaceholder": data,
 	})
 }
