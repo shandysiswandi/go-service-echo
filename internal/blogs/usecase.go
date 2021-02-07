@@ -19,7 +19,12 @@ func (u *usecase) Get(ID string) (*Blog, error) {
 	return u.blogRepository.Get(ID)
 }
 
-func (u *usecase) Create(b *Blog) error {
+func (u *usecase) Create(payload BlogPayloadCreate) error {
+	b := new(Blog)
+	b.SetID()
+	b.Title = payload.Title
+	b.Body = payload.Body
+
 	return u.blogRepository.Create(b)
 }
 
