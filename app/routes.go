@@ -75,5 +75,6 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service,
 	r.GET("/:id", blogDelivery.Get)
 	r.POST("", blogDelivery.Create)
 	r.PUT("/:id", blogDelivery.Update)
+	r.PATCH("/:id", blogDelivery.UpdateField)
 	r.DELETE("/:id", blogDelivery.Delete)
 }
