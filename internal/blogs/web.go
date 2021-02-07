@@ -52,15 +52,15 @@ func (w *web) Create(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
-	b := new(Blog)
+	b := BlogPayloadCreate{}
 
 	// binding
-	if err = c.Bind(b); err != nil {
+	if err = c.Bind(&b); err != nil {
 		return c.BadRequest(err)
 	}
 
 	// validation
-	if err = c.Validate(b); err != nil {
+	if err = c.Validate(&b); err != nil {
 		return c.UnprocessableEntity(err)
 	}
 
