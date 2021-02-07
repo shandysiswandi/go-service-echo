@@ -12,7 +12,7 @@ type web struct {
 }
 
 // NewWeb is
-func NewWeb(bu Usecase) BlogDelivery {
+func NewWeb(bu Usecase) Delivery {
 	return &web{usecase: bu}
 }
 
@@ -78,21 +78,48 @@ func (w *web) Update(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
-	b := new(Blog)
+	b := BlogPayloadPut{}
 	id := c.Param("id")
 
 	// binding
-	if err = c.Bind(b); err != nil {
+	if err = c.Bind(&b); err != nil {
 		return c.BadRequest(err)
 	}
 
 	// validation
-	if err = c.Validate(b); err != nil {
+	if err = c.Validate(&b); err != nil {
 		return c.UnprocessableEntity(err)
 	}
 
 	// usecase
 	if err = w.usecase.Update(b, id); err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "update task", b)
+}
+
+func (w *web) UpdateField(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	b := BlogPayloadPatch{}
+	id := c.Param("id")
+
+	// binding
+	if err = c.Bind(&b); err != nil {
+		return c.BadRequest(err)
+	}
+
+	// validation
+	if err = c.Validate(&b); err != nil {
+		return c.UnprocessableEntity(err)
+	}
+
+	// usecase
+	if err = w.usecase.UpdateField(b, id); err != nil {
 		return c.HandleErrors(err)
 	}
 
