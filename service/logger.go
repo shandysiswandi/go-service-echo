@@ -17,12 +17,13 @@ func NewLogger(c *config.Config) *Logger {
 }
 
 // Info is
-func (logger *Logger) Info() error {
-	log.Info("")
+func (logger *Logger) Info(val ...interface{}) error {
+	log.Info(val)
 	return nil
 }
 
 // Error is
-func (logger *Logger) Error() error {
+func (logger *Logger) Error(val ...interface{}) error {
+	log.Error(val)
 	return nil
 }
