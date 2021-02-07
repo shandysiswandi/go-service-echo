@@ -18,7 +18,7 @@ type (
 		Fetch() (*[]Blog, error)
 		Get(string) (*Blog, error)
 
-		Create(*Blog) error
+		Create(BlogPayloadCreate) error
 		Update(*Blog, string) error
 		Delete(string) error
 	}
