@@ -9,4 +9,14 @@ type (
 		MonitorDatabase(echo.Context) error
 		MonitorService(echo.Context) error
 	}
+
+	// Usecase is
+	Usecase interface {
+		CheckServiceSentry() bool
+		CheckServiceRedis() bool
+
+		CheckDatabaseMysql() bool
+		CheckDatabasePostgresql() bool
+		CheckDatabaseMongo() bool
+	}
 )
