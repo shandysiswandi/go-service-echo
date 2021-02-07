@@ -24,15 +24,6 @@ func (u *usecase) CheckServiceJWT() bool {
 	return true
 }
 
-func (u *usecase) CheckServiceLogger() bool {
-	check := u.service.Logger
-	if check == nil {
-		return false
-	}
-
-	return true
-}
-
 func (u *usecase) CheckServiceSentry() bool {
 	check := u.service.Sentry
 	if check == nil {

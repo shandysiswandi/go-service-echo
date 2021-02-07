@@ -13,7 +13,6 @@ type (
 	// Usecase is
 	Usecase interface {
 		CheckServiceJWT() bool
-		CheckServiceLogger() bool
 		CheckServiceSentry() bool
 		CheckServiceRedis() bool
 

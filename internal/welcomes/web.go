@@ -22,9 +22,6 @@ func (w *web) Home(cc echo.Context) error {
 	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
-	//
-	w.service.Logger.Info("asas", 11111)
-
 	// response
 	return c.Success(http.StatusOK, "Welcome to our API", nil)
 }
@@ -52,14 +49,12 @@ func (w *web) MonitorService(cc echo.Context) error {
 
 	// usecases
 	jwt := w.usecase.CheckServiceJWT()
-	logger := w.usecase.CheckServiceLogger()
 	sentry := w.usecase.CheckServiceSentry()
 	redis := w.usecase.CheckServiceRedis()
 
 	// response
 	return c.Success(http.StatusOK, "Welcome to Monitor Services", map[string]interface{}{
 		"jwt":    jwt,
-		"logger": logger,
 		"sentry": sentry,
 		"redis":  redis,
 	})
