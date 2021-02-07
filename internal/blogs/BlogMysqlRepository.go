@@ -11,7 +11,7 @@ type mysqlRepository struct {
 }
 
 // NewMysql is contstructor
-func NewMysql(db *db.Database) BlogRepository {
+func NewMysql(db *db.Database) Repository {
 	return &mysqlRepository{db: db.Mysql}
 }
 
@@ -43,7 +43,22 @@ func (m *mysqlRepository) Create(b *Blog) error {
 	return nil
 }
 
-func (m *mysqlRepository) Update(b *Blog, ID string) error {
+func (m *mysqlRepository) Update(b BlogPayloadPut, ID string) error {
+	model := Blog{ID: ID}
+	q := m.db.Model(&model).Updates(b)
+
+	if q.Error != nil {
+		return q.Error
+	}
+
+	if q.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
+}
+
+func (m *mysqlRepository) UpdateField(b BlogPayloadPatch, ID string) error {
 	model := Blog{ID: ID}
 	q := m.db.Model(&model).Updates(b)
 

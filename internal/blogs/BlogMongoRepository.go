@@ -11,7 +11,7 @@ type mongoRepository struct {
 }
 
 // NewMongo is contstructor
-func NewMongo(db *db.Database) BlogRepository {
+func NewMongo(db *db.Database) Repository {
 	return &mongoRepository{db: db.Mongo}
 }
 
@@ -27,7 +27,12 @@ func (m *mongoRepository) Create(b *Blog) error {
 	return nil
 }
 
-func (m *mongoRepository) Update(b *Blog, ID string) error {
+func (m *mongoRepository) Update(b BlogPayloadPut, ID string) error {
+
+	return nil
+}
+
+func (m *mongoRepository) UpdateField(b BlogPayloadPatch, ID string) error {
 
 	return nil
 }

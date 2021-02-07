@@ -11,7 +11,7 @@ type postgresqlRepository struct {
 }
 
 // NewPostgresql is contstructor
-func NewPostgresql(db *db.Database) BlogRepository {
+func NewPostgresql(db *db.Database) Repository {
 	return &postgresqlRepository{db: db.Postgresql}
 }
 
@@ -43,7 +43,22 @@ func (m *postgresqlRepository) Create(b *Blog) error {
 	return nil
 }
 
-func (m *postgresqlRepository) Update(b *Blog, ID string) error {
+func (m *postgresqlRepository) Update(b BlogPayloadPut, ID string) error {
+	model := Blog{ID: ID}
+	q := m.db.Model(&model).Updates(b)
+
+	if q.Error != nil {
+		return q.Error
+	}
+
+	if q.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
+}
+
+func (m *postgresqlRepository) UpdateField(b BlogPayloadPatch, ID string) error {
 	model := Blog{ID: ID}
 	q := m.db.Model(&model).Updates(b)
 
