@@ -1,11 +1,11 @@
 package blogs
 
 type usecase struct {
-	blogRepository BlogRepository
+	blogRepository Repository
 }
 
 // NewUsecase is
-func NewUsecase(br BlogRepository) Usecase {
+func NewUsecase(br Repository) Usecase {
 	return &usecase{
 		blogRepository: br,
 	}
@@ -28,8 +28,12 @@ func (u *usecase) Create(payload BlogPayloadCreate) error {
 	return u.blogRepository.Create(b)
 }
 
-func (u *usecase) Update(b *Blog, ID string) error {
-	return u.blogRepository.Update(b, ID)
+func (u *usecase) Update(payload BlogPayloadPut, ID string) error {
+	return u.blogRepository.Update(payload, ID)
+}
+
+func (u *usecase) UpdateField(payload BlogPayloadPatch, ID string) error {
+	return u.blogRepository.UpdateField(payload, ID)
 }
 
 func (u *usecase) Delete(ID string) error {
