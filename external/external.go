@@ -1,11 +1,20 @@
 package external
 
+import (
+	"go-rest-echo/config"
+	"go-rest-echo/external/jsonplaceholder.typicode.com"
+)
+
 type (
 	// External is
-	External struct{}
+	External struct {
+		JSONPlaceHolder *jsonplaceholder.Instance
+	}
 )
 
 // New is
-func New() *External {
-	return nil
+func New(c *config.Config) *External {
+	return &External{
+		JSONPlaceHolder: jsonplaceholder.New(c),
+	}
 }
