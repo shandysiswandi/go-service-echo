@@ -27,7 +27,7 @@ func (m *mongoRepository) Create(b *Blog) error {
 	return nil
 }
 
-func (m *mongoRepository) Update(b BlogPayloadPut, ID string) error {
+func (m *mongoRepository) Update(b *Blog, ID string) error {
 
 	return nil
 }

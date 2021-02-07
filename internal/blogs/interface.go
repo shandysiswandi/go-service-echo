@@ -9,7 +9,7 @@ type (
 		Get(string) (*Blog, error)
 
 		Create(*Blog) error
-		Update(BlogPayloadPut, string) error
+		Update(*Blog, string) error
 		UpdateField(BlogPayloadPatch, string) error
 		Delete(string) error
 	}

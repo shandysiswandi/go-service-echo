@@ -6,9 +6,7 @@ type usecase struct {
 
 // NewUsecase is
 func NewUsecase(br Repository) Usecase {
-	return &usecase{
-		blogRepository: br,
-	}
+	return &usecase{br}
 }
 
 func (u *usecase) Fetch() (*[]Blog, error) {
@@ -29,7 +27,11 @@ func (u *usecase) Create(payload BlogPayloadCreate) error {
 }
 
 func (u *usecase) Update(payload BlogPayloadPut, ID string) error {
-	return u.blogRepository.Update(payload, ID)
+	b := new(Blog)
+	b.Title = payload.Title
+	b.Body = payload.Body
+
+	return u.blogRepository.Update(b, ID)
 }
 
 func (u *usecase) UpdateField(payload BlogPayloadPatch, ID string) error {

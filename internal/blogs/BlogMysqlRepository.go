@@ -45,9 +45,8 @@ func (m *mysqlRepository) Create(b *Blog) error {
 	return nil
 }
 
-func (m *mysqlRepository) Update(b BlogPayloadPut, ID string) error {
-	model := Blog{ID: ID}
-	q := m.db.Model(&model).Updates(b)
+func (m *mysqlRepository) Update(b *Blog, ID string) error {
+	q := m.db.Model(&Blog{ID: ID}).Updates(b)
 
 	if q.Error != nil {
 		return q.Error

@@ -43,7 +43,7 @@ func (m *postgresqlRepository) Create(b *Blog) error {
 	return nil
 }
 
-func (m *postgresqlRepository) Update(b BlogPayloadPut, ID string) error {
+func (m *postgresqlRepository) Update(b *Blog, ID string) error {
 	model := Blog{ID: ID}
 	q := m.db.Model(&model).Updates(b)
 
