@@ -8,33 +8,26 @@ import (
 
 type (
 	// Redis is service for caching
-	Redis interface {
-		Get() error
-		Set() error
-	}
-
-	redisClass struct {
+	Redis struct {
 		client *redis.Client
 	}
 )
 
 // NewRedis is constructor
-func NewRedis(c *config.Config) Redis {
-	cl := redis.NewClient(&redis.Options{
+func NewRedis(c *config.Config) *Redis {
+	return &Redis{redis.NewClient(&redis.Options{
 		Addr:     c.Service.Redis.Addr,
 		Password: c.Service.Redis.Password,
 		DB:       c.Service.Redis.Database,
-	})
-
-	return &redisClass{
-		client: cl,
-	}
+	})}
 }
 
-func (redisClass) Get() error {
+// Get is
+func (Redis) Get() error {
 	return nil
 }
 
-func (redisClass) Set() error {
+// Set is
+func (Redis) Set() error {
 	return nil
 }
