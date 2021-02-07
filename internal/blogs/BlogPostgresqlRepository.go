@@ -58,7 +58,7 @@ func (m *postgresqlRepository) Update(b *Blog, ID string) error {
 	return nil
 }
 
-func (m *postgresqlRepository) UpdateField(b BlogPayloadPatch, ID string) error {
+func (m *postgresqlRepository) UpdateField(b *Blog, ID string) error {
 	model := Blog{ID: ID}
 	q := m.db.Model(&model).Updates(b)
 

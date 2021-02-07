@@ -10,7 +10,7 @@ type (
 
 		Create(*Blog) error
 		Update(*Blog, string) error
-		UpdateField(BlogPayloadPatch, string) error
+		UpdateField(*Blog, string) error
 		Delete(string) error
 	}
 

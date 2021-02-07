@@ -32,7 +32,7 @@ func (m *mongoRepository) Update(b *Blog, ID string) error {
 	return nil
 }
 
-func (m *mongoRepository) UpdateField(b BlogPayloadPatch, ID string) error {
+func (m *mongoRepository) UpdateField(b *Blog, ID string) error {
 
 	return nil
 }

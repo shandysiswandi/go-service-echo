@@ -59,7 +59,7 @@ func (m *mysqlRepository) Update(b *Blog, ID string) error {
 	return nil
 }
 
-func (m *mysqlRepository) UpdateField(b BlogPayloadPatch, ID string) error {
+func (m *mysqlRepository) UpdateField(b *Blog, ID string) error {
 	model := Blog{ID: ID}
 	q := m.db.Model(&model).Updates(b)
 
