@@ -27,7 +27,7 @@ func (w *web) Fetch(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusOK, "fetch tasks", result)
+	return c.Success(http.StatusOK, "Success Fetch Blog", result)
 }
 
 func (w *web) Get(cc echo.Context) (err error) {
@@ -44,7 +44,7 @@ func (w *web) Get(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusOK, "get task", result)
+	return c.Success(http.StatusOK, "Success Get Blog", result)
 }
 
 func (w *web) Create(cc echo.Context) (err error) {
@@ -70,7 +70,7 @@ func (w *web) Create(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusCreated, "create task", b)
+	return c.Success(http.StatusCreated, "Success Create Blog", b)
 }
 
 func (w *web) Update(cc echo.Context) (err error) {
@@ -97,7 +97,7 @@ func (w *web) Update(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusOK, "update task", b)
+	return c.Success(http.StatusOK, "Success Update Blog", b)
 }
 
 func (w *web) UpdateField(cc echo.Context) (err error) {
@@ -124,7 +124,7 @@ func (w *web) UpdateField(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusOK, "update task", b)
+	return c.Success(http.StatusOK, "Success Update Field Blog", b)
 }
 
 func (w *web) Delete(cc echo.Context) (err error) {
@@ -132,7 +132,6 @@ func (w *web) Delete(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
-	// b := new(Blog)
 	id := c.Param("id")
 
 	// usecase
@@ -141,7 +140,8 @@ func (w *web) Delete(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusOK, "delete user", map[string]interface{}{
+	return c.Success(http.StatusOK, "Success Delete Blog", map[string]interface{}{
+		"id":         id,
 		"is_deleted": true,
 	})
 }

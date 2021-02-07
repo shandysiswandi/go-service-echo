@@ -26,13 +26,15 @@ func (m *mysqlRepository) Fetch() (*[]Blog, error) {
 }
 
 func (m *mysqlRepository) Get(ID string) (*Blog, error) {
-	t := new(Blog)
+	// t := new(Blog)
 
-	if err := m.db.First(t).Error; err != nil {
+	b := &Blog{ID: ID}
+
+	if err := m.db.First(b).Error; err != nil {
 		return nil, err
 	}
 
-	return t, nil
+	return b, nil
 }
 
 func (m *mysqlRepository) Create(b *Blog) error {
@@ -74,8 +76,7 @@ func (m *mysqlRepository) UpdateField(b BlogPayloadPatch, ID string) error {
 }
 
 func (m *mysqlRepository) Delete(ID string) error {
-	model := new(Blog)
-	q := m.db.Delete(model, ID)
+	q := m.db.Delete(&Blog{ID: ID})
 
 	if q.Error != nil {
 		return q.Error
