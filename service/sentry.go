@@ -6,11 +6,6 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
-// Sentry is
-type Sentry struct {
-	config *config.Config
-}
-
 // NewSentry is
 func NewSentry(c *config.Config) *Sentry {
 	err := sentry.Init(sentry.ClientOptions{

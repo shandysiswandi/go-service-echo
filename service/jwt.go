@@ -8,32 +8,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type (
-	// JWT is
-	JWT struct {
-		config *config.Config
-	}
-
-	// JWTToken is
-	JWTToken struct {
-		AccessToken  string
-		RefreshToken string
-	}
-
-	// JWTClaimData is
-	JWTClaimData struct {
-		ID    string `json:"id"`
-		Email string `json:"email"`
-		Name  string `json:"name"`
-	}
-
-	// JWTClaim is
-	JWTClaim struct {
-		Data JWTClaimData `json:"data"`
-		jwt.StandardClaims
-	}
-)
-
 // NewJWT is
 func NewJWT(c *config.Config) *JWT {
 	return &JWT{config: c}

@@ -6,13 +6,6 @@ import (
 	"github.com/go-redis/redis"
 )
 
-type (
-	// Redis is service for caching
-	Redis struct {
-		client *redis.Client
-	}
-)
-
 // NewRedis is constructor
 func NewRedis(c *config.Config) *Redis {
 	return &Redis{redis.NewClient(&redis.Options{
