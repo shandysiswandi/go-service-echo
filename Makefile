@@ -2,20 +2,21 @@
 include .env
 
 # -------------------- define environment variable ----------------------- #
-CONTAINER_NAME=$(docker ps -aq --filter name=IMAGE_NAME)
+IMAGE_NAME=$(DOCKER_IMAGE_NAME)
+CONTAINER_NAME=$(shell docker ps -aq --filter name=${IMAGE_NAME})
 
 # -------------------- define command target ----------------------------- #
 up: lint build run
 
 build:
-	@docker build --build-arg TAGGED=builder-${IMAGE_NAME} -f Dockerfile -t "$(IMAGE_NAME)" .
+	@docker build --build-arg TAGGED=builder-${IMAGE_NAME} --file Dockerfile --tag $(IMAGE_NAME) .
 	@docker image prune --filter label=tagged=builder-${IMAGE_NAME} --force
 
 run: destroy
-	@docker run -d --name "$(IMAGE_NAME)" -p $(PORT):$(PORT) $(IMAGE_NAME)
+	@docker run --detach --name $(IMAGE_NAME) -p $(APP_PORT):$(APP_PORT) $(IMAGE_NAME)
 
 destroy:
-	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm "$(IMAGE_NAME)" --force; fi;
+	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm $(IMAGE_NAME) --force; fi;
 
 cert:
 	@openssl genrsa -out ./resource/key/private.pem 4096
@@ -29,7 +30,7 @@ test-cover: lint
 	@clear
 	@go test -timeout 90s ./... -coverprofile .coverage
 	@go tool cover -html=.coverage
-	
+
 lint:
 	@clear
 	@golint ./...
