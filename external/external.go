@@ -8,7 +8,7 @@ import (
 type (
 	// External is
 	External struct {
-		JSONPlaceHolder *jsonplaceholder.Instance
+		JSONPlaceHolder *jsonplaceholder.JSONPlaceHolder
 	}
 )
 

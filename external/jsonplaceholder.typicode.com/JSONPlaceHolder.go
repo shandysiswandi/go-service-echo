@@ -3,22 +3,15 @@ package jsonplaceholder
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"go-rest-echo/config"
+	"log"
 	"net/http"
 )
 
-// The URL from jsonplaceholder
-const (
-	BaseURL   string = "https://jsonplaceholder.typicode.com"
-	PostsPath string = BaseURL + "/posts"
-	UsersPath string = BaseURL + "/users"
-)
-
 type (
-	// Instance is
-	Instance struct {
+	// JSONPlaceHolder is
+	JSONPlaceHolder struct {
 		config *config.Config
 	}
 
@@ -32,80 +25,79 @@ type (
 )
 
 // New is
-func New(c *config.Config) *Instance {
-	return &Instance{c}
+func New(c *config.Config) *JSONPlaceHolder {
+	return &JSONPlaceHolder{c}
 }
 
 // FetchPost is
-func (j *Instance) FetchPost() ([]Post, error) {
+func (j *JSONPlaceHolder) FetchPost() ([]Post, error) {
 	var posts []Post
 
-	response, err := http.Get(PostsPath)
+	response, err := http.Get(j.config.External.JsonplaceholderURL + "/posts")
 	if err != nil {
-		return nil, errors.New("Failed Fetch From `posts`" + BaseURL)
+		return nil, err
 	}
 	defer response.Body.Close()
 
 	if err = json.NewDecoder(response.Body).Decode(&posts); err != nil {
-		return nil, errors.New("Failed Fetch From `posts`" + BaseURL)
+		log.Println("2", err)
+		return nil, err
 	}
 
 	return posts, nil
 }
 
 // GetPost is
-func (j *Instance) GetPost(ID int) (*Post, error) {
-	post := new(Post)
-	link := fmt.Sprintf("%s/%d", PostsPath, ID)
+func (j *JSONPlaceHolder) GetPost(ID int) (*Post, error) {
+	var post Post
 
-	response, err := http.Get(link)
+	response, err := http.Get(fmt.Sprintf("%s/posts/%d", j.config.External.JsonplaceholderURL, ID))
 	if err != nil {
-		return nil, errors.New("Failed Get From `posts`" + BaseURL)
+		return nil, err
 	}
 	defer response.Body.Close()
 
-	if err = json.NewDecoder(response.Body).Decode(post); err != nil {
-		return nil, errors.New("Failed Get From `posts`" + BaseURL)
+	if err = json.NewDecoder(response.Body).Decode(&post); err != nil {
+		return nil, err
 	}
 
-	return post, nil
+	return &post, nil
 }
 
 // CreatePost is
-func (j *Instance) CreatePost(data Post) (*Post, error) {
-	post := new(Post)
+func (j *JSONPlaceHolder) CreatePost(data Post) (*Post, error) {
+	var post Post
 
 	reqBody, err := json.Marshal(data)
 	if err != nil {
-		return nil, errors.New("Failed Create From `posts`" + BaseURL)
+		return nil, err
 	}
 
-	response, err := http.Post(PostsPath, "application/json; charset=utf-8", bytes.NewBuffer(reqBody))
+	response, err := http.Post(j.config.External.JsonplaceholderURL+"/posts", "application/json; charset=utf-8", bytes.NewBuffer(reqBody))
 	if err != nil {
-		return nil, errors.New("Failed Create From `posts`" + BaseURL)
+		return nil, err
 	}
 	defer response.Body.Close()
 
-	if err = json.NewDecoder(response.Body).Decode(post); err != nil {
-		return nil, errors.New("Failed Create From `posts`" + BaseURL)
+	if err = json.NewDecoder(response.Body).Decode(&post); err != nil {
+		return nil, err
 	}
 
-	return post, nil
+	return &post, nil
 }
 
 // UpdatePost is
-func (j *Instance) UpdatePost(data Post, ID int) (*Post, error) {
-	post := new(Post)
-	link := fmt.Sprintf("%s/%d", PostsPath, ID)
+func (j *JSONPlaceHolder) UpdatePost(data Post, ID int) (*Post, error) {
+	var post Post
 
 	reqBody, err := json.Marshal(data)
 	if err != nil {
-		return nil, errors.New("Failed Update From `posts`" + BaseURL)
+		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodPut, link, bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/posts/%d", j.config.External.JsonplaceholderURL, ID), bytes.NewBuffer(reqBody))
 	if err != nil {
-		return nil, errors.New("Failed Update From `posts`" + BaseURL)
+		return nil, err
 	}
 
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
@@ -113,30 +105,29 @@ func (j *Instance) UpdatePost(data Post, ID int) (*Post, error) {
 
 	response, err := client.Do(req)
 	if err != nil {
-		return nil, errors.New("Failed Update From `posts`" + BaseURL)
+		return nil, err
 	}
 	defer response.Body.Close()
 
-	if err = json.NewDecoder(response.Body).Decode(post); err != nil {
-		return nil, errors.New("Failed Update From `posts`" + BaseURL)
+	if err = json.NewDecoder(response.Body).Decode(&post); err != nil {
+		return nil, err
 	}
 
-	return post, nil
+	return &post, nil
 }
 
 // DeletePost is
-func (j *Instance) DeletePost(ID int) error {
-	link := fmt.Sprintf("%s/%d", PostsPath, ID)
-	client := new(http.Client)
+func (j *JSONPlaceHolder) DeletePost(ID int) error {
+	var client = http.Client{}
 
-	req, err := http.NewRequest(http.MethodDelete, link, nil)
+	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/posts/%d", j.config.External.JsonplaceholderURL, ID), nil)
 	if err != nil {
-		return errors.New("Failed Delete From `posts`" + BaseURL)
+		return err
 	}
 
 	response, err := client.Do(req)
 	if err != nil {
-		return errors.New("Failed Delete From `posts`" + BaseURL)
+		return err
 	}
 	defer response.Body.Close()
 
@@ -144,5 +135,5 @@ func (j *Instance) DeletePost(ID int) error {
 		return nil
 	}
 
-	return errors.New("Failed Delete From `posts`" + BaseURL)
+	return err
 }
