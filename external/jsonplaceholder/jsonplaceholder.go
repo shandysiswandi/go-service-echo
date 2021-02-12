@@ -13,7 +13,7 @@ func New(url string) *JSONPlaceHolder {
 		return nil
 	}
 
-	posts := fmt.Sprintf("%s/%s", url, "/posts")
+	posts := fmt.Sprintf("%s/%s", url, "posts")
 	return &JSONPlaceHolder{posts}
 }
 
