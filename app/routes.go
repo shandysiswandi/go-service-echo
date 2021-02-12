@@ -3,7 +3,7 @@ package app
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
-	"go-rest-echo/external"
+	"go-rest-echo/external/jsonplaceholder"
 	"go-rest-echo/internal/authentication"
 	"go-rest-echo/internal/blogs"
 	"go-rest-echo/internal/tasks"
@@ -15,11 +15,17 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func routes(e *echo.Echo, c *config.Config, db *db.Database, s *service.Service, ex *external.External) {
+func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 
 	var (
+		// service
+		s = service.New(c)
+
+		// external (thrid-party)
+		jph = jsonplaceholder.New(c.External.JsonplaceholderURL)
+
 		// welcomes
-		welcomeUsecase  = welcomes.NewUsecase(db, s, ex)
+		welcomeUsecase  = welcomes.NewUsecase(db, s, jph)
 		welcomeDelivery = welcomes.NewWeb(welcomeUsecase)
 
 		// users
