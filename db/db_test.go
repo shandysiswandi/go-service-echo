@@ -13,7 +13,7 @@ import (
 func TestNewDatabase(t *testing.T) {
 	is := assert.New(t)
 
-	if err := godotenv.Load(".env.test"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Println(err)
 	}
 
