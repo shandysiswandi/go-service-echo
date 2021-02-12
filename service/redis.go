@@ -24,3 +24,13 @@ func (Redis) Get() error {
 func (Redis) Set() error {
 	return nil
 }
+
+// Increment is
+func (Redis) Increment() error {
+	return nil
+}
+
+// Decrement is
+func (Redis) Decrement() error {
+	return nil
+}
