@@ -7,27 +7,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHashPassword(t *testing.T) {
-	// instance assert
-	assert := assert.New(t)
+func TestHashPassword_Check_Five_Character_From_Front_No_Error(t *testing.T) {
+	is := assert.New(t)
 
-	t.Run("1 Check five character from front no error", func(t *testing.T) {
-		actual, err := util.HashPassword("password")
-		expected := "$2a$10"
+	actual, err := util.HashPassword("password")
+	expected := "$2a$10"
 
-		assert.Nil(err)
-		assert.Equalf(actual[0:6], expected, "Expected `%s`, but actual %s", expected, actual)
-	})
+	is.Nil(err)
+	is.Equal(expected, actual[0:6])
 }
 
 func TestCheckPasswordHash(t *testing.T) {
-	// instance assert
-	assert := assert.New(t)
+	is := assert.New(t)
 
-	t.Run("1 Check password is valid", func(t *testing.T) {
-		actual := util.CheckPasswordHash("password", "$2a$10$mjqqoczR7odoHg/npdnwcuJCk4GHUDYTrkX48vuy/tNq7P/V/wAGi")
-		expected := true
+	actual := util.CheckPasswordHash("password", "$2a$10$mjqqoczR7odoHg/npdnwcuJCk4GHUDYTrkX48vuy/tNq7P/V/wAGi")
+	expected := true
 
-		assert.Equalf(expected, actual, "Expected `%v`, but actual %v", expected, actual)
-	})
+	is.Equal(expected, actual)
 }
