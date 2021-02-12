@@ -22,34 +22,34 @@ func NewUsecase(db *db.Database, j *jwtlib.JWT, r *redislib.Redis, s *sentrylib.
 	return &Usecase{db, j, r, s, jph}
 }
 
-// CheckServiceJWT is
-func (u *Usecase) CheckServiceJWT() bool {
-	return u.jwt == nil
+// CheckLibraryJWT is
+func (u *Usecase) CheckLibraryJWT() bool {
+	return u.jwt != nil
 }
 
-// CheckServiceSentry is
-func (u *Usecase) CheckServiceSentry() bool {
-	return u.sentry == nil
+// CheckLibrarySentry is
+func (u *Usecase) CheckLibrarySentry() bool {
+	return u.sentry != nil
 }
 
-// CheckServiceRedis is
-func (u *Usecase) CheckServiceRedis() bool {
-	return u.redis == nil
+// CheckLibraryRedis is
+func (u *Usecase) CheckLibraryRedis() bool {
+	return u.redis != nil
 }
 
 // CheckDatabaseMysql is
 func (u *Usecase) CheckDatabaseMysql() bool {
-	return u.database.Mysql == nil
+	return u.database.Mysql != nil
 }
 
 // CheckDatabasePostgresql is
 func (u *Usecase) CheckDatabasePostgresql() bool {
-	return u.database.Postgresql == nil
+	return u.database.Postgresql != nil
 }
 
 // CheckDatabaseMongo is
 func (u *Usecase) CheckDatabaseMongo() bool {
-	return u.database.Mongo == nil
+	return u.database.Mongo != nil
 }
 
 // CheckExternalJSONPlaceHolder is map[string]interface{}
