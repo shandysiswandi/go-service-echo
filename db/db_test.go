@@ -10,25 +10,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func init() {
-	err := godotenv.Load(".env.test")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-}
-
 func TestNewDatabase(t *testing.T) {
-	var actual, errs = db.NewDatabase(config.NewConfiguration())
+	is := assert.New(t)
 
-	assert.Equal(t, []error(nil), errs)
+	if err := godotenv.Load(".env.test"); err != nil {
+		log.Println(err)
+	}
 
-	assert.Equal(t, nil, actual.Mysql.Error)
-	assert.Equal(t, int64(0), actual.Mysql.RowsAffected)
+	actual, _ := db.NewDatabase(config.NewConfiguration())
 
-	assert.Equal(t, nil, actual.Postgresql.Error)
-	assert.Equal(t, int64(0), actual.Postgresql.RowsAffected)
+	is.Nil(actual.Mysql.Error)
+	is.Equal(int64(0), actual.Mysql.RowsAffected)
 
-	assert.Equal(t, "go-rest-echo", actual.Mongo.Name())
+	is.Nil(nil, actual.Postgresql.Error)
+	is.Equal(int64(0), actual.Postgresql.RowsAffected)
+
+	is.Equal("go-rest-echo", actual.Mongo.Name())
 
 }
