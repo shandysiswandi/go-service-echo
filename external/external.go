@@ -14,7 +14,11 @@ type (
 
 // New is
 func New(c *config.Config) *External {
+	if c == nil {
+		return nil
+	}
+
 	return &External{
-		JSONPlaceHolder: jsonplaceholder.New(c),
+		JSONPlaceHolder: jsonplaceholder.New(c.External.JsonplaceholderURL),
 	}
 }
