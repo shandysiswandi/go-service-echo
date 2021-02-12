@@ -2,19 +2,19 @@ package authentication
 
 import (
 	"go-rest-echo/app/context"
+	"go-rest-echo/app/library/jwtlib"
 	"go-rest-echo/internal/users"
-	"go-rest-echo/service"
 	"go-rest-echo/util"
 )
 
 type usecase struct {
-	service        *service.Service
+	jwt            *jwtlib.JWT
 	userRepository users.UserRepository
 }
 
 // NewUsecase is
-func NewUsecase(ur users.UserRepository, service *service.Service) AuthUsecase {
-	return &usecase{userRepository: ur, service: service}
+func NewUsecase(ur users.UserRepository, jwt *jwtlib.JWT) AuthUsecase {
+	return &usecase{jwt, ur}
 }
 
 func (u *usecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
@@ -28,17 +28,16 @@ func (u *usecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 		return nil, context.ErrInvalidCredential
 	}
 
-	// call generate token
-	tok, err := u.service.JWT.Generate(service.JWTClaimData{ID: user.ID, Email: user.Email, Name: user.Name})
-	if err != nil {
-		return nil, err
-	}
-
 	rl := new(ResponseLogin)
 	rl.Email = user.Email
 	rl.Name = user.Name
-	rl.AccessToken = tok.AccessToken
-	rl.RefreshToken = tok.RefreshToken
+
+	// call generate token
+	data := jwtlib.ClaimData{ID: user.ID, Email: user.Email, Name: user.Name}
+	rl.AccessToken, rl.RefreshToken, err = u.jwt.Generate(data)
+	if err != nil {
+		return nil, err
+	}
 
 	return rl, nil
 }
