@@ -18,7 +18,7 @@ func init() {
 }
 
 func TestSentry_CaptureMessage_And_CaptureError(t *testing.T) {
-	c := config.NewConfiguration()
+	c := config.New()
 	sentry := service.NewSentry(c)
 	msg := sentry.CaptureMessage("message")
 	exc := sentry.CaptureError(errors.New("error"))

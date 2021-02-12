@@ -17,7 +17,7 @@ func init() {
 }
 
 func TestRedis_Get_And_Set(t *testing.T) {
-	c := config.NewConfiguration()
+	c := config.New()
 	redis := service.NewRedis(c)
 	get := redis.Get()
 	set := redis.Set()

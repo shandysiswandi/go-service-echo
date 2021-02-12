@@ -9,7 +9,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	c := config.NewConfiguration()
+	c := config.New()
 	service := service.New(c)
 
 	assert.NotNil(t, service)

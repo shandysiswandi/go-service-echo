@@ -17,7 +17,7 @@ func init() {
 }
 
 func TestJWT_Generate(t *testing.T) {
-	c := config.NewConfiguration()
+	c := config.New()
 	jwt := service.NewJWT(c)
 	claim := service.JWTClaimData{}
 	gen, err := jwt.Generate(claim)
