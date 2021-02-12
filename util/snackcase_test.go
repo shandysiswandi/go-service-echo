@@ -8,42 +8,21 @@ import (
 )
 
 func TestSnakeCase(t *testing.T) {
-	// instance assert
-	assert := assert.New(t)
+	is := assert.New(t)
 
-	// execution with closure or callback or step
-	t.Run("1 All text is capitalize only one word", func(t *testing.T) {
-		actual := util.SnakeCase("CAPITALIZE")
-		expected := "capitalize"
+	cases := []struct {
+		desc     string
+		input    string
+		expected string
+	}{
+		{"All text is capitalize only one word", "CAPITALIZE", "capitalize"},
+		{"All text is lower with one word", "lower", "lower"},
+		{"Text input is IsUUID", "IsUUID", "is_uuid"},
+		{"Text input is UserId", "UserId", "user_id"},
+		{"Text input is theURL", "theURL", "the_url"},
+	}
 
-		assert.Equalf(actual, expected, "Expected `%s`, but actual %s", expected, actual)
-	})
-
-	t.Run("2 All text is lower with one word", func(t *testing.T) {
-		actual := util.SnakeCase("lower")
-		expected := "lower"
-
-		assert.Equalf(actual, expected, "Expected `%s`, but actual %s", expected, actual)
-	})
-
-	t.Run("3 Text input is IsUUID", func(t *testing.T) {
-		actual := util.SnakeCase("IsUUID")
-		expected := "is_uuid"
-
-		assert.Equalf(actual, expected, "Expected `%s`, but actual %s", expected, actual)
-	})
-
-	t.Run("4 Text input is UserId", func(t *testing.T) {
-		actual := util.SnakeCase("UserId")
-		expected := "user_id"
-
-		assert.Equalf(actual, expected, "Expected `%s`, but actual %s", expected, actual)
-	})
-
-	t.Run("5 Text input is theURL", func(t *testing.T) {
-		actual := util.SnakeCase("theURL")
-		expected := "the_url"
-
-		assert.Equalf(actual, expected, "Expected `%s`, but actual %s", expected, actual)
-	})
+	for _, tc := range cases {
+		is.Equal(tc.expected, util.SnakeCase(tc.input))
+	}
 }
