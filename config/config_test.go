@@ -9,35 +9,31 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func init() {
-	err := godotenv.Load(".env.test")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-}
-
 func TestNewConfiguration(t *testing.T) {
-	ass := assert.New(t)
+	if err := godotenv.Load(".env"); err != nil {
+		log.Println(err)
+	}
+
+	is := assert.New(t)
 	actual := config.NewConfiguration()
 
-	ass.Equal("env", actual.App.Env)
-	ass.Equal("port", actual.App.Port)
-	ass.Equal("name", actual.App.Name)
-	ass.Equal("timezone", actual.App.Timezone)
+	is.Equal("testing", actual.App.Env)
+	is.Equal("3000", actual.App.Port)
+	is.Equal("go service", actual.App.Name)
+	is.Equal("UTC", actual.App.Timezone)
 
-	ass.Equal([]string{"mysql", "postgresql", "mongo"}, actual.Database.Drivers)
-	ass.Equal("mysql_dsn", actual.Database.MysqlDSN)
-	ass.Equal("postgresql_dsn", actual.Database.PostgresqlDSN)
-	ass.Equal("mongo_uri", actual.Database.Mongo.URI)
-	ass.Equal("mongo_db", actual.Database.Mongo.DB)
+	is.Equal([]string{"mysql"}, actual.Database.Drivers)
+	is.Equal("mysql_dsn", actual.Database.MysqlDSN)
+	is.Equal("postgresql_dsn", actual.Database.PostgresqlDSN)
+	is.Equal("mongo_uri", actual.Database.Mongo.URI)
+	is.Equal("mongo_db_name", actual.Database.Mongo.DB)
 
-	ass.Equal("sentry_dsn", actual.Service.SentryDSN)
-	ass.Equal([]byte("access"), actual.Service.JWT.AccessSecret)
-	ass.Equal([]byte("refresh"), actual.Service.JWT.RefreshSecret)
-	ass.Equal("addr", actual.Service.Redis.Addr)
-	ass.Equal("pass", actual.Service.Redis.Password)
-	ass.Equal(0, actual.Service.Redis.Database)
+	is.Equal("sentry_dsn", actual.Service.SentryDSN)
+	is.Equal([]byte("access"), actual.Service.JWT.AccessSecret)
+	is.Equal([]byte("refresh"), actual.Service.JWT.RefreshSecret)
+	is.Equal("localhost:6379", actual.Service.Redis.Addr)
+	is.Equal("your_password_redis", actual.Service.Redis.Password)
+	is.Equal(0, actual.Service.Redis.Database)
 
-	ass.Equal("external_jsonplaceholder_url", actual.External.JsonplaceholderURL)
+	is.Equal("external_jsonplaceholder_url", actual.External.JsonplaceholderURL)
 }
