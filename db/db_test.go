@@ -17,7 +17,7 @@ func TestNewDatabase(t *testing.T) {
 		log.Println(err)
 	}
 
-	actual, _ := db.NewDatabase(config.NewConfiguration())
+	actual, _ := db.NewDatabase(config.New())
 
 	is.Nil(actual.Mysql.Error)
 	is.Equal(int64(0), actual.Mysql.RowsAffected)
