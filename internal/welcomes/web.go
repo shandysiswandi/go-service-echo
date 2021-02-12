@@ -21,33 +21,37 @@ func NewWeb(u *Usecase) *Web {
 func (w *Web) Home(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
-	return c.Success(http.StatusOK, "Welcome to our API", nil)
+	return c.Success(http.StatusOK, "Welcome to our API", map[string]interface{}{
+		"route_check_database": "/check-database",
+		"route_check_library":  "/check-library",
+		"route_check_external": "/check-external",
+	})
 }
 
-// MonitorDatabase is
-func (w *Web) MonitorDatabase(cc echo.Context) error {
+// CheckDatabase is
+func (w *Web) CheckDatabase(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
-	return c.Success(http.StatusOK, "Welcome to Monitor Databases", map[string]interface{}{
+	return c.Success(http.StatusOK, "Welcome to Check Databases", map[string]interface{}{
 		"mysql":      w.usecase.CheckDatabaseMysql(),
 		"postgresql": w.usecase.CheckDatabasePostgresql(),
 		"mongo":      w.usecase.CheckDatabaseMongo(),
 	})
 }
 
-// MonitorService is
-func (w *Web) MonitorService(cc echo.Context) error {
+// CheckLibrary is
+func (w *Web) CheckLibrary(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
-	return c.Success(http.StatusOK, "Welcome to Monitor Services", map[string]interface{}{
-		"jwt":    w.usecase.CheckServiceJWT(),
-		"sentry": w.usecase.CheckServiceSentry(),
-		"redis":  w.usecase.CheckServiceRedis(),
+	return c.Success(http.StatusOK, "Welcome to Check Libraries", map[string]interface{}{
+		"jwt":    w.usecase.CheckLibraryJWT(),
+		"sentry": w.usecase.CheckLibrarySentry(),
+		"redis":  w.usecase.CheckLibraryRedis(),
 	})
 }
 
-// MonitorExternal is
-func (w *Web) MonitorExternal(cc echo.Context) error {
+// CheckExternal is
+func (w *Web) CheckExternal(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
 	data, err := w.usecase.CheckExternalJSONPlaceHolder()
@@ -55,7 +59,7 @@ func (w *Web) MonitorExternal(cc echo.Context) error {
 		return c.String(502, err.Error())
 	}
 
-	return c.Success(http.StatusOK, "Welcome to Monitor Externals", map[string]interface{}{
+	return c.Success(http.StatusOK, "Welcome to Check Externals", map[string]interface{}{
 		"jsonplaceholder": data,
 	})
 }
