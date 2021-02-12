@@ -18,7 +18,8 @@ RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /app/application
 
 FROM alpine
 
-COPY --from=builder /app/ /app/
+COPY --from=builder /app/application /app/application
+COPY --from=builder /app/.env /app/.env
 
 WORKDIR /app
 
