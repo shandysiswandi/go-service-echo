@@ -19,24 +19,19 @@ func NewWeb(u *Usecase) *Web {
 
 // Home is
 func (w *Web) Home(cc echo.Context) error {
-	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
-	// response
 	return c.Success(http.StatusOK, "Welcome to our API", nil)
 }
 
 // MonitorDatabase is
 func (w *Web) MonitorDatabase(cc echo.Context) error {
-	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
-	// usecases
 	mysql := w.usecase.CheckDatabaseMysql()
 	postgresql := w.usecase.CheckDatabasePostgresql()
 	mongo := w.usecase.CheckDatabaseMongo()
 
-	// response
 	return c.Success(http.StatusOK, "Welcome to Monitor Databases", map[string]interface{}{
 		"mysql":      mysql,
 		"postgresql": postgresql,
@@ -46,15 +41,12 @@ func (w *Web) MonitorDatabase(cc echo.Context) error {
 
 // MonitorService is
 func (w *Web) MonitorService(cc echo.Context) error {
-	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
-	// usecases
 	jwt := w.usecase.CheckServiceJWT()
 	sentry := w.usecase.CheckServiceSentry()
 	redis := w.usecase.CheckServiceRedis()
 
-	// response
 	return c.Success(http.StatusOK, "Welcome to Monitor Services", map[string]interface{}{
 		"jwt":    jwt,
 		"sentry": sentry,
@@ -64,16 +56,13 @@ func (w *Web) MonitorService(cc echo.Context) error {
 
 // MonitorExternal is
 func (w *Web) MonitorExternal(cc echo.Context) error {
-	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
-	// usecases
 	data, err := w.usecase.CheckExternalJSONPlaceHolder()
 	if err != nil {
 		return c.String(502, err.Error())
 	}
 
-	// response
 	return c.Success(http.StatusOK, "Welcome to Monitor Externals", map[string]interface{}{
 		"jsonplaceholder": data,
 	})

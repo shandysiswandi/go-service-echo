@@ -2,21 +2,20 @@ package welcomes
 
 import (
 	"go-rest-echo/db"
-	"go-rest-echo/external"
-	"go-rest-echo/external/jsonplaceholder.typicode.com"
+	"go-rest-echo/external/jsonplaceholder"
 	"go-rest-echo/service"
 )
 
 // Usecase is
 type Usecase struct {
-	database *db.Database
-	service  *service.Service
-	external *external.External
+	database        *db.Database
+	service         *service.Service
+	jsonPlaceHolder *jsonplaceholder.JSONPlaceHolder
 }
 
 // NewUsecase is
-func NewUsecase(db *db.Database, service *service.Service, external *external.External) *Usecase {
-	return &Usecase{db, service, external}
+func NewUsecase(db *db.Database, s *service.Service, jph *jsonplaceholder.JSONPlaceHolder) *Usecase {
+	return &Usecase{db, s, jph}
 }
 
 // CheckServiceJWT is
@@ -81,29 +80,29 @@ func (u *Usecase) CheckDatabaseMongo() bool {
 
 // CheckExternalJSONPlaceHolder is map[string]interface{}
 func (u *Usecase) CheckExternalJSONPlaceHolder() (map[string]interface{}, error) {
-	fetch, err := u.external.JSONPlaceHolder.FetchPost()
+	fetch, err := u.jsonPlaceHolder.FetchPost()
 	if err != nil {
 		return nil, err
 	}
 
-	get, err := u.external.JSONPlaceHolder.GetPost(1)
+	get, err := u.jsonPlaceHolder.GetPost(1)
 	if err != nil {
 		return nil, err
 	}
 
 	pCreate := jsonplaceholder.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
-	create, err := u.external.JSONPlaceHolder.CreatePost(pCreate)
+	create, err := u.jsonPlaceHolder.CreatePost(pCreate)
 	if err != nil {
 		return nil, err
 	}
 
 	pUpdate := jsonplaceholder.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
-	update, err := u.external.JSONPlaceHolder.UpdatePost(pUpdate, 1)
+	update, err := u.jsonPlaceHolder.UpdatePost(pUpdate, 1)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = u.external.JSONPlaceHolder.DeletePost(1); err != nil {
+	if err = u.jsonPlaceHolder.DeletePost(1); err != nil {
 		return nil, err
 	}
 
