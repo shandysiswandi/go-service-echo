@@ -1,81 +1,55 @@
 package welcomes
 
 import (
+	"go-rest-echo/app/library/jwtlib"
+	"go-rest-echo/app/library/redislib"
+	"go-rest-echo/app/library/sentrylib"
 	"go-rest-echo/db"
 	"go-rest-echo/external/jsonplaceholder"
-	"go-rest-echo/service"
 )
 
 // Usecase is
 type Usecase struct {
 	database        *db.Database
-	service         *service.Service
+	jwt             *jwtlib.JWT
+	redis           *redislib.Redis
+	sentry          *sentrylib.Sentry
 	jsonPlaceHolder *jsonplaceholder.JSONPlaceHolder
 }
 
 // NewUsecase is
-func NewUsecase(db *db.Database, s *service.Service, jph *jsonplaceholder.JSONPlaceHolder) *Usecase {
-	return &Usecase{db, s, jph}
+func NewUsecase(db *db.Database, j *jwtlib.JWT, r *redislib.Redis, s *sentrylib.Sentry, jph *jsonplaceholder.JSONPlaceHolder) *Usecase {
+	return &Usecase{db, j, r, s, jph}
 }
 
 // CheckServiceJWT is
 func (u *Usecase) CheckServiceJWT() bool {
-	check := u.service.JWT
-	if check == nil {
-		return false
-	}
-
-	return true
+	return u.jwt == nil
 }
 
 // CheckServiceSentry is
 func (u *Usecase) CheckServiceSentry() bool {
-	check := u.service.Sentry
-	if check == nil {
-		return false
-	}
-
-	return true
+	return u.sentry == nil
 }
 
 // CheckServiceRedis is
 func (u *Usecase) CheckServiceRedis() bool {
-	check := u.service.Redis
-	if check == nil {
-		return false
-	}
-
-	return true
+	return u.redis == nil
 }
 
 // CheckDatabaseMysql is
 func (u *Usecase) CheckDatabaseMysql() bool {
-	check := u.database.Mysql
-	if check == nil {
-		return false
-	}
-
-	return true
+	return u.database.Mysql == nil
 }
 
 // CheckDatabasePostgresql is
 func (u *Usecase) CheckDatabasePostgresql() bool {
-	check := u.database.Postgresql
-	if check == nil {
-		return false
-	}
-
-	return true
+	return u.database.Postgresql == nil
 }
 
 // CheckDatabaseMongo is
 func (u *Usecase) CheckDatabaseMongo() bool {
-	check := u.database.Mongo
-	if check == nil {
-		return false
-	}
-
-	return true
+	return u.database.Mongo == nil
 }
 
 // CheckExternalJSONPlaceHolder is map[string]interface{}

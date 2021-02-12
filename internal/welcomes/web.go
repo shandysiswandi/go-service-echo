@@ -28,14 +28,10 @@ func (w *Web) Home(cc echo.Context) error {
 func (w *Web) MonitorDatabase(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
-	mysql := w.usecase.CheckDatabaseMysql()
-	postgresql := w.usecase.CheckDatabasePostgresql()
-	mongo := w.usecase.CheckDatabaseMongo()
-
 	return c.Success(http.StatusOK, "Welcome to Monitor Databases", map[string]interface{}{
-		"mysql":      mysql,
-		"postgresql": postgresql,
-		"mongo":      mongo,
+		"mysql":      w.usecase.CheckDatabaseMysql(),
+		"postgresql": w.usecase.CheckDatabasePostgresql(),
+		"mongo":      w.usecase.CheckDatabaseMongo(),
 	})
 }
 
@@ -43,14 +39,10 @@ func (w *Web) MonitorDatabase(cc echo.Context) error {
 func (w *Web) MonitorService(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
-	jwt := w.usecase.CheckServiceJWT()
-	sentry := w.usecase.CheckServiceSentry()
-	redis := w.usecase.CheckServiceRedis()
-
 	return c.Success(http.StatusOK, "Welcome to Monitor Services", map[string]interface{}{
-		"jwt":    jwt,
-		"sentry": sentry,
-		"redis":  redis,
+		"jwt":    w.usecase.CheckServiceJWT(),
+		"sentry": w.usecase.CheckServiceSentry(),
+		"redis":  w.usecase.CheckServiceRedis(),
 	})
 }
 
