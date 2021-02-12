@@ -1,6 +1,9 @@
 package app
 
 import (
+	"go-rest-echo/app/library/jwtlib"
+	"go-rest-echo/app/library/redislib"
+	"go-rest-echo/app/library/sentrylib"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
 	"go-rest-echo/external/jsonplaceholder"
@@ -9,23 +12,23 @@ import (
 	"go-rest-echo/internal/tasks"
 	"go-rest-echo/internal/users"
 	"go-rest-echo/internal/welcomes"
-	"go-rest-echo/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func routes(e *echo.Echo, c *config.Config, db *db.Database) {
-
 	var (
-		// service
-		s = service.New(c)
+		// library
+		jwt    = jwtlib.New(c)
+		redis  = redislib.New(c)
+		sentry = sentrylib.New(c)
 
 		// external (thrid-party)
 		jph = jsonplaceholder.New(c.External.JsonplaceholderURL)
 
 		// welcomes
-		welcomeUsecase  = welcomes.NewUsecase(db, s, jph)
+		welcomeUsecase  = welcomes.NewUsecase(db, jwt, redis, sentry, jph)
 		welcomeDelivery = welcomes.NewWeb(welcomeUsecase)
 
 		// users
@@ -34,7 +37,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 		userDelivery = users.NewDelivery(userUsecase)
 
 		// auth
-		authUsecase  = authentication.NewUsecase(userRepo, s)
+		authUsecase  = authentication.NewUsecase(userRepo, jwt)
 		authDelivery = authentication.NewWeb(authUsecase)
 
 		// tasks
@@ -65,7 +68,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	/******--Restricted--*****/
 	api := e.Group("/api")
 	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &service.JWTClaim{},
+		Claims:     &jwtlib.Claim{},
 		SigningKey: c.Service.JWT.AccessSecret,
 	}))
 
