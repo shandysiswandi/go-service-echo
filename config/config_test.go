@@ -15,7 +15,7 @@ func TestNewConfiguration(t *testing.T) {
 	}
 
 	is := assert.New(t)
-	actual := config.NewConfiguration()
+	actual := config.New()
 
 	is.Equal("testing", actual.App.Env)
 	is.Equal("3000", actual.App.Port)

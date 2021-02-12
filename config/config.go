@@ -4,12 +4,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
-)
-
-var (
-	once     sync.Once
-	instance *Config
 )
 
 // Config is
@@ -46,42 +40,40 @@ type Config struct {
 	}
 }
 
-// NewConfiguration is
-func NewConfiguration() *Config {
-	once.Do(func() {
-		instance = new(Config)
+// New is
+func New() *Config {
+	config := new(Config)
 
-		/* application configuration */
-		instance.App.Env = os.Getenv("APP_ENV")
-		instance.App.Port = os.Getenv("APP_PORT")
-		instance.App.Name = os.Getenv("APP_NAME")
-		instance.App.Timezone = os.Getenv("TZ")
+	/* application configuration */
+	config.App.Env = os.Getenv("APP_ENV")
+	config.App.Port = os.Getenv("APP_PORT")
+	config.App.Name = os.Getenv("APP_NAME")
+	config.App.Timezone = os.Getenv("TZ")
 
-		/* database configuration */
-		instance.Database.Drivers = getDBDriver()
-		instance.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
-		instance.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
-		instance.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
-		instance.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
+	/* database configuration */
+	config.Database.Drivers = getDBDriver()
+	config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
+	config.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
+	config.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
+	config.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
 
-		/* external configuration */
-		instance.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
+	/* external configuration */
+	config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
 
-		/* service configuration */
-		// sentry for logging online
-		instance.Service.SentryDSN = os.Getenv("SERVICE_SENTRY_DSN")
+	/* service configuration */
+	// sentry for logging online
+	config.Service.SentryDSN = os.Getenv("SERVICE_SENTRY_DSN")
 
-		// jwt for authentification & authorization
-		instance.Service.JWT.AccessSecret = []byte(os.Getenv("SERVICE_JWT_ACCESS_SECRET"))
-		instance.Service.JWT.RefreshSecret = []byte(os.Getenv("SERVICE_JWT_REFRESH_SECRET"))
+	// jwt for authentification & authorization
+	config.Service.JWT.AccessSecret = []byte(os.Getenv("SERVICE_JWT_ACCESS_SECRET"))
+	config.Service.JWT.RefreshSecret = []byte(os.Getenv("SERVICE_JWT_REFRESH_SECRET"))
 
-		// redis for caching
-		instance.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
-		instance.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
-		instance.Service.Redis.Database = getServiceRedisDatabase()
-	})
+	// redis for caching
+	config.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
+	config.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
+	config.Service.Redis.Database = getServiceRedisDatabase()
 
-	return instance
+	return config
 }
 
 func getDBDriver() []string {
