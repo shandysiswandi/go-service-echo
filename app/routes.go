@@ -53,9 +53,9 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	)
 
 	e.GET("/", welcomeDelivery.Home)
-	e.GET("/monitor-database", welcomeDelivery.MonitorDatabase)
-	e.GET("/monitor-service", welcomeDelivery.MonitorService)
-	e.GET("/monitor-external", welcomeDelivery.MonitorExternal)
+	e.GET("/check-database", welcomeDelivery.CheckDatabase)
+	e.GET("/check-library", welcomeDelivery.CheckLibrary)
+	e.GET("/check-external", welcomeDelivery.CheckExternal)
 
 	r := e.Group("/auth")
 	r.POST("/login", authDelivery.Login)
