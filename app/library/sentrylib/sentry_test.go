@@ -11,15 +11,17 @@ import (
 )
 
 func TestSentry_CaptureMessage_And_CaptureError(t *testing.T) {
-	if err := godotenv.Load(".env.test"); err != nil {
-		return
+	is := assert.New(t)
+
+	if err := godotenv.Load(".sentry"); err != nil {
+		is.Nil(err)
 	}
 
 	s := sentrylib.New(config.New())
 	msg := s.CaptureMessage("message")
 	exc := s.CaptureError(errors.New("error"))
 
-	assert.NotEqual(t, nil, s)
-	assert.NotEqual(t, nil, msg)
-	assert.NotEqual(t, nil, exc)
+	is.NotNil(s)
+	is.NotNil(msg)
+	is.NotNil(exc)
 }
