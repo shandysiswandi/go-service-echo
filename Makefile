@@ -2,21 +2,31 @@
 include .env
 
 # -------------------- define environment variable ----------------------- #
-IMAGE_NAME=$(DOCKER_IMAGE_NAME)
-CONTAINER_NAME=$(shell docker ps -aq --filter name=${IMAGE_NAME})
+NAME=$(DOCKER_IMAGE_NAME)
+VERSION=$(shell git describe --tags --always)
+
+CONTAINER_NAME=$(shell docker ps -aq --filter name=${NAME})
+IMAGE_NAME=$(shell docker ps -aq --filter name=${NAME})
 
 # -------------------- define command target ----------------------------- #
 up: lint build run
 
-build:
-	@docker build --build-arg TAGGED=builder-${IMAGE_NAME} --file Dockerfile --tag $(IMAGE_NAME) .
-	@docker image prune --filter label=tagged=builder-${IMAGE_NAME} --force
+build: clean
+	@docker build --build-arg TAGGED=builder-${NAME} --file Dockerfile --tag $(NAME):$(VERSION) .
+	@docker image prune --filter label=tagged=builder-${NAME} --force
 
-run: destroy
-	@docker run --detach --name $(IMAGE_NAME) -p $(APP_PORT):$(APP_PORT) $(IMAGE_NAME)
+run: destroy-container
+	@docker run --detach --name $(NAME) -p $(APP_PORT):$(APP_PORT) $(NAME):$(VERSION)
 
-destroy:
-	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm $(IMAGE_NAME) --force; fi;
+clean:
+	@echo "delete container if exist --force"
+	@echo "delete image if exist --force"
+
+destroy-image:
+	@if [ -n "$(NAME)" ]; then docker image rm $(NAME) --force; fi;
+
+destroy-container:
+	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm $(NAME) --force; fi;
 
 cert:
 	@openssl genrsa -out ./resource/key/private.pem 4096
