@@ -2,6 +2,11 @@ package welcomes
 
 import (
 	"go-rest-echo/app/context"
+	"go-rest-echo/app/library/jwtlib"
+	"go-rest-echo/app/library/redislib"
+	"go-rest-echo/app/library/sentrylib"
+	"go-rest-echo/db"
+	"go-rest-echo/external/jsonplaceholder"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -9,12 +14,16 @@ import (
 
 // Web is
 type Web struct {
-	usecase *Usecase
+	database        *db.Database
+	jwt             *jwtlib.JWT
+	redis           *redislib.Redis
+	sentry          *sentrylib.Sentry
+	jsonPlaceHolder *jsonplaceholder.JSONPlaceHolder
 }
 
 // NewWeb is
-func NewWeb(u *Usecase) *Web {
-	return &Web{u}
+func NewWeb(db *db.Database, j *jwtlib.JWT, r *redislib.Redis, s *sentrylib.Sentry, jph *jsonplaceholder.JSONPlaceHolder) *Web {
+	return &Web{db, j, r, s, jph}
 }
 
 // Home is
@@ -33,9 +42,8 @@ func (w *Web) CheckDatabase(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
 	return c.Success(http.StatusOK, "Welcome to Check Databases", map[string]interface{}{
-		"mysql":      w.usecase.CheckDatabaseMysql(),
-		"postgresql": w.usecase.CheckDatabasePostgresql(),
-		"mongo":      w.usecase.CheckDatabaseMongo(),
+		"mysql_or_postgresql": w.database.SQL != nil,
+		"mongo":               w.database.Mongo != nil,
 	})
 }
 
@@ -44,9 +52,9 @@ func (w *Web) CheckLibrary(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
 	return c.Success(http.StatusOK, "Welcome to Check Libraries", map[string]interface{}{
-		"jwt":    w.usecase.CheckLibraryJWT(),
-		"sentry": w.usecase.CheckLibrarySentry(),
-		"redis":  w.usecase.CheckLibraryRedis(),
+		"jwt":    w.jwt != nil,
+		"sentry": w.sentry != nil,
+		"redis":  w.redis != nil,
 	})
 }
 
@@ -54,12 +62,39 @@ func (w *Web) CheckLibrary(cc echo.Context) error {
 func (w *Web) CheckExternal(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
-	data, err := w.usecase.CheckExternalJSONPlaceHolder()
+	fetch, err := w.jsonPlaceHolder.FetchPost()
 	if err != nil {
 		return c.String(502, err.Error())
 	}
 
+	get, err := w.jsonPlaceHolder.GetPost(1)
+	if err != nil {
+		return c.String(502, err.Error())
+	}
+
+	pCreate := jsonplaceholder.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
+	create, err := w.jsonPlaceHolder.CreatePost(pCreate)
+	if err != nil {
+		return c.String(502, err.Error())
+	}
+
+	pUpdate := jsonplaceholder.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
+	update, err := w.jsonPlaceHolder.UpdatePost(pUpdate, 1)
+	if err != nil {
+		return c.String(502, err.Error())
+	}
+
+	if err = w.jsonPlaceHolder.DeletePost(1); err != nil {
+		return c.String(502, err.Error())
+	}
+
 	return c.Success(http.StatusOK, "Welcome to Check Externals", map[string]interface{}{
-		"jsonplaceholder": data,
+		"jsonplaceholder": map[string]interface{}{
+			"fetch_post":  fetch[1:2],
+			"get_post":    get,
+			"create_post": create,
+			"update_post": update,
+			"delete_post": true,
+		},
 	})
 }
