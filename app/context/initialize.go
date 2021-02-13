@@ -25,36 +25,28 @@ func New(e *echo.Echo) {
 
 func httpErrorHandler(e error, c echo.Context) {
 	code := http.StatusInternalServerError
-	message := "Internal Server Error"
+	message := ErrInternalServerMessage
 
 	if he, ok := e.(*echo.HTTPError); ok {
 		switch he.Code {
 		case 400:
-			message = "The URL you want is protected, you must supplied token."
+			message = err400
 			e = errors.New("400")
-			break
 		case 401:
-			message = "The token you supplied is invalid."
+			message = err401
 			e = errors.New("401")
-			break
 		case 404:
-			message = "The URL you want is not in this application."
+			message = err404
 			e = errors.New("404")
-			break
 		case 405:
-			message = "The URL you want is not using this METHOD."
+			message = err405
 			e = errors.New("405")
-			break
 		}
 
 		code = he.Code
 	}
 
-	c.JSON(code, ResponseError{
-		Success: false,
-		Message: message,
-		Error:   e,
-	})
+	c.JSON(code, ResponseError{false, message, e})
 }
 
 // GetJWT is
@@ -65,30 +57,17 @@ func (c *CustomContext) GetJWT() (*jwtlib.Claim, string) {
 
 // Success is | 200, 201, 204
 func (c *CustomContext) Success(s int, m string, d interface{}) error {
-	return c.JSON(s, ResponseSuccess{
-		Success: true,
-		Message: m,
-		Data:    d,
-	})
+	return c.JSON(s, ResponseSuccess{true, m, d})
 }
 
 // SuccessWithPaginate is | 200, 201, 204
 func (c *CustomContext) SuccessWithPaginate(code int, m string, p Pagination, d interface{}) error {
-	return c.JSON(code, ResponseSuccessWithPaginate{
-		Success:    true,
-		Message:    m,
-		Pagination: p,
-		Data:       d,
-	})
+	return c.JSON(code, ResponseSuccessWithPaginate{true, m, d, p})
 }
 
 // BadRequest is | 400
 func (c *CustomContext) BadRequest(err interface{}) error {
-	return c.commonError(
-		http.StatusBadRequest,
-		"Bad Request, something wrong on your request",
-		err,
-	)
+	return c.commonError(http.StatusBadRequest, ErrBadRequest, err)
 }
 
 // UnprocessableEntity is | 422
@@ -103,11 +82,7 @@ func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 		})
 	}
 
-	return c.commonError(
-		http.StatusUnprocessableEntity,
-		"Validation Failed",
-		e,
-	)
+	return c.commonError(http.StatusUnprocessableEntity, ErrUnprocessableEntity, e)
 }
 
 // HandleErrors is | 4xx - 5xx
@@ -131,24 +106,20 @@ func (c *CustomContext) HandleErrors(e error) error {
 
 /*---------- private methods or functions ----------*/
 func (c *CustomContext) commonError(code int, m string, e interface{}) error {
-	return c.JSON(code, ResponseError{
-		Success: false,
-		Message: m,
-		Error:   e,
-	})
+	return c.JSON(code, ResponseError{false, m, e})
 }
 
 // private function to get message validation by flag | tag | reflect
 func (c *CustomContext) getMessageValidation(e validator.FieldError) (msg string) {
 	switch e.Tag() {
 	case "min":
-		msg = "value must be at least"
+		msg = minMsg
 	case "required":
-		msg = "value must be required"
+		msg = requiredMsg
 	case "email":
-		msg = "value must be a valid email"
+		msg = emailMsg
 	default:
-		msg = "value must be validate"
+		msg = defaultMsg
 	}
 
 	if e.Param() != "" {
