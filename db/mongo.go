@@ -23,5 +23,10 @@ func mongoConnection(uri, database string) (*mongo.Database, error) {
 		return nil, err
 	}
 
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
 	return client.Database(database), nil
 }
