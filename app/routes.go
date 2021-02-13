@@ -69,7 +69,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	api := e.Group("/api")
 	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Claims:     &jwtlib.Claim{},
-		SigningKey: c.Service.JWT.AccessSecret,
+		SigningKey: c.Library.JWT.AccessSecret,
 	}))
 
 	r = api.Group("/tasks")
