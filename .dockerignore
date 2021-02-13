@@ -1,7 +1,13 @@
 README.md
 Makefile
 mysql.sql
+docker-compose.yaml
+Dockerfile
 requests.http
+serverless.yaml
+swagger.yaml
+.dockerignore
+.editorconfig
 .git
 .gitignore
 .coverage
