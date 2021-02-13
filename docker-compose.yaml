@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: application
+    ports:
+      - "${APP_PORT}:${APP_PORT}" # http
+      - "443:443" # https
+    env_file:
+      - .env
+    depends_on:
+      - mysql-app
+      - postgresql-app
+      - mongo-app
+    volumes:
+      - app:/app
+    networks:
+      - fullstack
+
+  mysql-app:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql-app
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      # - ./mysql.sql:/docker-entrypoint-initdb.d
+      - app-mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: golang-application
+    networks:
+      - fullstack
+
+  postgresql-app:
+    image: postgres:13-alpine
+    container_name: postgresql-app
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      # - ./postgresql.sql:/docker-entrypoint-initdb.d
+      - app-postgresql-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+    networks:
+      - fullstack
+
+  mongo-app:
+    image: mongo:4.0-xenial
+    container_name: mongo-app
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      # - ./init.js:/docker-entrypoint-initdb.d/init.js:ro
+      - app-mongo-data:/data/db
+    ports:
+        - 27017:27017
+    networks:
+      - fullstack
+
+volumes:
+  app:
+  app-mysql-data:
+  app-postgresql-data:
+  app-mongo-data:
+
+networks:
+  fullstack:
+    driver: bridge
