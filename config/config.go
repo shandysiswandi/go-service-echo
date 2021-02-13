@@ -3,42 +3,7 @@ package config
 import (
 	"os"
 	"strconv"
-	"strings"
 )
-
-// Config is
-type Config struct {
-	App struct {
-		Env      string
-		Port     string
-		Name     string
-		Timezone string
-	}
-	Database struct {
-		Drivers       []string
-		MysqlDSN      string
-		PostgresqlDSN string
-		Mongo         struct {
-			URI string
-			DB  string
-		}
-	}
-	External struct {
-		JsonplaceholderURL string
-	}
-	Service struct {
-		JWT struct {
-			AccessSecret  []byte
-			RefreshSecret []byte
-		}
-		Redis struct {
-			Addr     string
-			Password string
-			Database int
-		}
-		SentryDSN string
-	}
-}
 
 // New is
 func New() *Config {
@@ -51,49 +16,27 @@ func New() *Config {
 	config.App.Timezone = os.Getenv("TZ")
 
 	/* database configuration */
-	config.Database.Drivers = getDBDriver()
-	config.Database.MysqlDSN = os.Getenv("DB_MYSQL_DSN")
-	config.Database.PostgresqlDSN = os.Getenv("DB_POSTGRESQL_DSN")
-	config.Database.Mongo.URI = os.Getenv("DB_MONGO_URI")
-	config.Database.Mongo.DB = os.Getenv("DB_MONGO_DATABASE")
+	config.Database.Driver = os.Getenv("DB_DRIVER")
+	config.Database.Host = os.Getenv("DB_HOST")
+	config.Database.Port = os.Getenv("DB_PORT")
+	config.Database.Username = os.Getenv("DB_USERNAME")
+	config.Database.Password = os.Getenv("DB_PASSWORD")
+	config.Database.Name = os.Getenv("DB_NAME")
 
 	/* external configuration */
 	config.External.JsonplaceholderURL = os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL")
 
-	/* service configuration */
-	// sentry for logging online
-	config.Service.SentryDSN = os.Getenv("SERVICE_SENTRY_DSN")
-
-	// jwt for authentification & authorization
-	config.Service.JWT.AccessSecret = []byte(os.Getenv("SERVICE_JWT_ACCESS_SECRET"))
-	config.Service.JWT.RefreshSecret = []byte(os.Getenv("SERVICE_JWT_REFRESH_SECRET"))
-
-	// redis for caching
-	config.Service.Redis.Addr = os.Getenv("SERVICE_REDIS_ADDR")
-	config.Service.Redis.Password = os.Getenv("SERVICE_REDIS_PASSWORD")
-	config.Service.Redis.Database = getServiceRedisDatabase()
-
-	return config
-}
-
-func getDBDriver() []string {
-	var drivers []string
-	split := strings.Split(os.Getenv("DB_DRIVERS"), ",")
-
-	for _, s := range split {
-		if strings.TrimSpace(s) != "" {
-			drivers = append(drivers, s)
-		}
-	}
-
-	return drivers
-}
-
-func getServiceRedisDatabase() int {
-	srd, err := strconv.Atoi(os.Getenv("SERVICE_REDIS_DATABASE"))
+	/* library configuration */
+	config.Library.SentryDSN = os.Getenv("LIBRARY_SENTRY_DSN")
+	config.Library.JWT.AccessSecret = []byte(os.Getenv("LIBRARY_JWT_ACCESS_SECRET"))
+	config.Library.JWT.RefreshSecret = []byte(os.Getenv("LIBRARY_JWT_REFRESH_SECRET"))
+	config.Library.Redis.Addr = os.Getenv("LIBRARY_REDIS_ADDR")
+	config.Library.Redis.Password = os.Getenv("LIBRARY_REDIS_PASSWORD")
+	srd, err := strconv.Atoi(os.Getenv("LIBRARY_REDIS_DATABASE"))
 	if err != nil {
 		srd = 0
 	}
+	config.Library.Redis.Database = srd
 
-	return srd
+	return config
 }
