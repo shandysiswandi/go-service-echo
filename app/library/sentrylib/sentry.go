@@ -14,7 +14,7 @@ type Sentry struct {
 // New is
 func New(c *config.Config) *Sentry {
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn:         c.Service.SentryDSN,
+		Dsn:         c.Library.SentryDSN,
 		Environment: c.App.Env,
 	})
 	if err != nil {

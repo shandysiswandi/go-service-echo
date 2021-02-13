@@ -14,9 +14,9 @@ type Redis struct {
 // New is constructor
 func New(c *config.Config) *Redis {
 	return &Redis{redis.NewClient(&redis.Options{
-		Addr:     c.Service.Redis.Addr,
-		Password: c.Service.Redis.Password,
-		DB:       c.Service.Redis.Database,
+		Addr:     c.Library.Redis.Addr,
+		Password: c.Library.Redis.Password,
+		DB:       c.Library.Redis.Database,
 	})}
 }
 

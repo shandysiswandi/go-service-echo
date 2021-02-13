@@ -37,12 +37,12 @@ func New(c *config.Config) *JWT {
 func (j *JWT) Generate(data ClaimData) (string, string, error) {
 	err := errors.New("token not valid")
 
-	accessToken, err := j.accessToken(data, j.config.Service.JWT.AccessSecret)
+	accessToken, err := j.accessToken(data, j.config.Library.JWT.AccessSecret)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := j.refreshToken(data, j.config.Service.JWT.RefreshSecret)
+	refreshToken, err := j.refreshToken(data, j.config.Library.JWT.RefreshSecret)
 	if err != nil {
 		return "", "", err
 	}
