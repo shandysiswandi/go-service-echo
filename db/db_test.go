@@ -47,6 +47,8 @@ func TestNewDatabase_DriverPostgresqlButError(t *testing.T) {
 
 	conf := &config.Config{}
 	conf.Database.Driver = "postgresql"
+	conf.Database.Port = "1000"
+	conf.App.Timezone = "postgresql"
 	db, err := db.NewDatabase(conf)
 
 	is.Nil(db)
@@ -58,6 +60,11 @@ func TestNewDatabase_DriverMongoButError(t *testing.T) {
 
 	conf := &config.Config{}
 	conf.Database.Driver = "mongo"
+	conf.Database.Host = "mongo"
+	conf.Database.Port = "mongo"
+	conf.Database.Username = "mongo"
+	conf.Database.Password = "mongo"
+	conf.Database.Name = "mongo"
 	db, err := db.NewDatabase(conf)
 
 	is.Nil(db)
