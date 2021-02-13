@@ -1,0 +1,6 @@
+DB_DRIVER=mongo
+DB_HOST=127.0.0.1
+DB_PORT=4300
+DB_USERNAME=root
+DB_PASSWORD=password
+DB_NAME=go-rest-echo

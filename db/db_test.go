@@ -4,6 +4,7 @@ import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -13,72 +14,110 @@ import (
 func TestNewDatabase_ConfigIsNil(t *testing.T) {
 	is := assert.New(t)
 
-	db, errs := db.NewDatabase(nil)
+	db, err := db.NewDatabase(nil)
 
 	is.Nil(db)
-	is.EqualError(errs[0], "Configuration is nil")
+	is.EqualError(err, "Configuration is nil")
 }
 
-func TestNewDatabase_DriversIsEmpty(t *testing.T) {
+func TestNewDatabase_DriverIsEmpty(t *testing.T) {
 	is := assert.New(t)
 
 	conf := &config.Config{}
-	conf.Database.Drivers = []string{}
-	db, errs := db.NewDatabase(conf)
+	conf.Database.Driver = ""
+	db, err := db.NewDatabase(conf)
 
 	is.Nil(db)
-	is.EqualError(errs[0], "This application not using any database")
+	is.EqualError(err, "This application not using any database")
 }
 
-func TestNewDatabase_DriversNotEmptyButError(t *testing.T) {
+func TestNewDatabase_DriverMysqlButError(t *testing.T) {
 	is := assert.New(t)
 
 	conf := &config.Config{}
-	conf.Database.Drivers = []string{"mysql", "postgresql", "mongo"}
-	conf.Database.MysqlDSN = "username:password@tcp(127.0.0.1:3306)/database_name?charset=utf8mb4&parseTime=True&loc=Local"
-	conf.Database.PostgresqlDSN = "user=username password=password dbname=database_name host=127.0.0.1 port=5432 sslmode=disable TimeZone=Asia/Jakarta"
-	conf.Database.Mongo.URI = "mongodb://username:password@127.0.0.1:27017/?readPreference=primary&ssl=false"
-	conf.Database.Mongo.DB = "database_name"
-	db, errs := db.NewDatabase(conf)
+	conf.Database.Driver = "mysql"
+	db, err := db.NewDatabase(conf)
 
-	is.NotNil(db)
-	is.Nil(db.Mysql)
-	is.Nil(db.Postgresql)
-	is.Nil(db.Mongo)
-
-	is.EqualError(errs[0], "Can't connect database mysql")
-	is.EqualError(errs[1], "Can't connect database postgresql")
-	is.EqualError(errs[2], "Can't connect database mongo")
+	is.Nil(db)
+	is.EqualError(err, "can't connect database mysql")
 }
 
-func TestNewDatabase_DriversIsNotSupport(t *testing.T) {
+func TestNewDatabase_DriverPostgresqlButError(t *testing.T) {
 	is := assert.New(t)
 
 	conf := &config.Config{}
-	conf.Database.Drivers = []string{"wa"}
-	db, errs := db.NewDatabase(conf)
+	conf.Database.Driver = "postgresql"
+	db, err := db.NewDatabase(conf)
 
-	is.NotNil(db)
-	is.Nil(db.Mysql)
-	is.Nil(db.Postgresql)
-	is.Nil(db.Mongo)
-	is.EqualError(errs[0], "schema database 'wa' is not support")
+	is.Nil(db)
+	is.EqualError(err, "can't connect database postgresql")
 }
 
-func TestNewDatabase(t *testing.T) {
+func TestNewDatabase_DriverMongoButError(t *testing.T) {
 	is := assert.New(t)
 
-	if err := godotenv.Load(".env"); err != nil {
-		log.Println(err)
+	conf := &config.Config{}
+	conf.Database.Driver = "mongo"
+	db, err := db.NewDatabase(conf)
+
+	is.Nil(db)
+	is.EqualError(err, "can't connect database mongo")
+}
+
+func TestNewDatabase_DriverNotSupport(t *testing.T) {
+	is := assert.New(t)
+
+	conf := &config.Config{}
+	conf.Database.Driver = "blabla"
+	db, err := db.NewDatabase(conf)
+
+	is.Nil(db)
+	is.EqualError(err, "driver database not support")
+}
+
+func TestNewDatabase_MysqlConfigFromEnv(t *testing.T) {
+	is := assert.New(t)
+
+	if err := godotenv.Overload(".mysql"); err != nil {
+		is.Nil(err)
 	}
 
-	actual, _ := db.NewDatabase(config.New())
+	db, err := db.NewDatabase(config.New())
 
-	is.Nil(actual.Mysql.Error)
-	is.Equal(int64(0), actual.Mysql.RowsAffected)
+	is.NotNil(db)
+	is.NotNil(db.SQL)
+	is.Nil(db.Mongo)
+	is.Nil(err)
+}
 
-	is.Nil(nil, actual.Postgresql.Error)
-	is.Equal(int64(0), actual.Postgresql.RowsAffected)
+func TestNewDatabase_PostgresqlConfigFromEnv(t *testing.T) {
+	is := assert.New(t)
 
-	is.Equal("go-rest-echo", actual.Mongo.Name())
+	if err := godotenv.Overload(".postgresql"); err != nil {
+		is.Nil(err)
+	}
+
+	db, err := db.NewDatabase(config.New())
+
+	is.NotNil(db)
+	is.NotNil(db.SQL)
+	is.Nil(db.Mongo)
+	is.Nil(err)
+}
+
+func TestNewDatabase_MongoConfigFromEnv(t *testing.T) {
+	is := assert.New(t)
+
+	if err := godotenv.Overload(".mongo"); err != nil {
+		is.Nil(err)
+	}
+
+	log.Println(os.Getenv("DB_DRIVER"))
+
+	db, err := db.NewDatabase(config.New())
+
+	is.NotNil(db)
+	is.NotNil(db.Mongo)
+	is.Nil(db.SQL)
+	is.Nil(err)
 }

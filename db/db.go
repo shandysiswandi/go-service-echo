@@ -11,58 +11,65 @@ import (
 
 // Database is
 type Database struct {
-	Mysql      *gorm.DB
-	Postgresql *gorm.DB
-	Mongo      *mongo.Database
+	SQL   *gorm.DB
+	Mongo *mongo.Database
 }
 
 // NewDatabase is
-func NewDatabase(config *config.Config) (*Database, []error) {
-	var (
-		errs []error
-		err  error
-	)
-
-	if config == nil {
-		return nil, append(errs, errors.New("Configuration is nil"))
+func NewDatabase(c *config.Config) (*Database, error) {
+	if c == nil {
+		return nil, errors.New("Configuration is nil")
 	}
 
-	if len(config.Database.Drivers) < 1 {
-		return nil, append(errs, errors.New("This application not using any database"))
+	if c.Database.Driver == "" {
+		return nil, errors.New("This application not using any database")
 	}
 
-	db := new(Database)
+	var err error
+	var db = &Database{}
 
-	for _, s := range config.Database.Drivers {
-		if s == "mysql" && config.Database.MysqlDSN != "" {
-			db.Mysql, err = mysqlConnection(config.Database.MysqlDSN)
-			if err != nil {
-				errs = append(errs, errors.New("Can't connect database mysql"))
-			}
-			continue
+	switch c.Database.Driver {
+	case "mysql":
+		dsn := fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			c.Database.Username,
+			c.Database.Password,
+			c.Database.Host,
+			c.Database.Port,
+			c.Database.Name,
+		)
+		db.SQL, err = mysqlConnection(dsn)
+		if err != nil {
+			return nil, errors.New("can't connect database mysql")
 		}
-
-		if s == "postgresql" && config.Database.PostgresqlDSN != "" {
-			db.Postgresql, err = postgresqlConnection(config.Database.PostgresqlDSN)
-			if err != nil {
-				errs = append(errs, errors.New("Can't connect database postgresql"))
-			}
-			continue
+	case "postgresql":
+		dsn := fmt.Sprintf(
+			"user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s",
+			c.Database.Username,
+			c.Database.Password,
+			c.Database.Host,
+			c.Database.Port,
+			c.Database.Name,
+			c.App.Timezone,
+		)
+		db.SQL, err = postgresqlConnection(dsn)
+		if err != nil {
+			return nil, errors.New("can't connect database postgresql")
 		}
-
-		if s == "mongo" && config.Database.Mongo.URI != "" && config.Database.Mongo.DB != "" {
-			db.Mongo, err = mongoConnection(config.Database.Mongo.URI, config.Database.Mongo.DB)
-			if err != nil {
-				errs = append(errs, errors.New("Can't connect database mongo"))
-			}
-			continue
+	case "mongo":
+		uri := fmt.Sprintf(
+			"mongodb://%s:%s@%s:%s/?readPreference=primary&ssl=false",
+			c.Database.Username,
+			c.Database.Password,
+			c.Database.Host,
+			c.Database.Port,
+		)
+		db.Mongo, err = mongoConnection(uri, c.Database.Name)
+		if err != nil {
+			return nil, errors.New("can't connect database mongo")
 		}
-
-		errs = append(errs, fmt.Errorf("schema database '%s' is not support", s))
-	}
-
-	if len(errs) > 0 {
-		return db, errs
+	default:
+		return nil, errors.New("driver database not support")
 	}
 
 	return db, nil
