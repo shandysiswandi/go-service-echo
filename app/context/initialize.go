@@ -2,6 +2,7 @@ package context
 
 import (
 	"errors"
+	"go-rest-echo/app/library/jwtlib"
 	"go-rest-echo/util"
 	"log"
 	"net/http"
@@ -57,9 +58,9 @@ func httpErrorHandler(e error, c echo.Context) {
 }
 
 // GetJWT is
-func (c *CustomContext) GetJWT() (*JwtClaims, string) {
+func (c *CustomContext) GetJWT() (*jwtlib.Claim, string) {
 	user := c.Get("user").(*jwt.Token)
-	return user.Claims.(*JwtClaims), user.Raw
+	return user.Claims.(*jwtlib.Claim), user.Raw
 }
 
 // Success is | 200, 201, 204
