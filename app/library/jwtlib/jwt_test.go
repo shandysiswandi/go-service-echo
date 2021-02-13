@@ -10,11 +10,12 @@ import (
 )
 
 func TestJWT_Generate(t *testing.T) {
-	if err := godotenv.Load(".env"); err != nil {
-		t.Error("no .env file")
+	is := assert.New(t)
+
+	if err := godotenv.Load(".jwt"); err != nil {
+		is.Nil(err)
 	}
 
-	is := assert.New(t)
 	jwt := jwtlib.New(config.New())
 	accessToken, refreshToken, err := jwt.Generate(jwtlib.ClaimData{})
 
