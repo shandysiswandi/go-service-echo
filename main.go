@@ -20,5 +20,5 @@ func main() {
 		print(err)
 	}
 
-	app.NewApplicationAndServe(config, db)
+	app.New(config, db)
 }
