@@ -28,8 +28,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 		jph = jsonplaceholder.New(c.External.JsonplaceholderURL)
 
 		// welcomes
-		welcomeUsecase  = welcomes.NewUsecase(db, jwt, redis, sentry, jph)
-		welcomeDelivery = welcomes.NewWeb(welcomeUsecase)
+		welcomeDelivery = welcomes.NewWeb(db, jwt, redis, sentry, jph)
 
 		// users
 		userRepo     = users.NewMysql(db)
