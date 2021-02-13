@@ -9,8 +9,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// NewApplicationAndServe is
-func NewApplicationAndServe(c *config.Config, db *db.Database) {
+// New is
+func New(c *config.Config, db *db.Database) {
 	e := echo.New()
 
 	context.New(e)
