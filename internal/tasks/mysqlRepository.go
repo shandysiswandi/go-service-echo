@@ -13,7 +13,7 @@ type mysqlRepository struct {
 
 // NewMysql is contstructor
 func NewMysql(db *db.Database) TaskRepository {
-	return &mysqlRepository{db: db.Mysql}
+	return &mysqlRepository{db: db.SQL}
 }
 
 func (m *mysqlRepository) Fetch() (*[]Task, error) {
