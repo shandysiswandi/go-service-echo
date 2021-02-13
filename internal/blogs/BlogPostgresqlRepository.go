@@ -12,7 +12,7 @@ type postgresqlRepository struct {
 
 // NewPostgresql is contstructor
 func NewPostgresql(db *db.Database) Repository {
-	return &postgresqlRepository{db.Postgresql}
+	return &postgresqlRepository{db.SQL}
 }
 
 func (m *postgresqlRepository) Fetch() ([]Blog, error) {
