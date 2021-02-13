@@ -52,6 +52,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	)
 
 	e.GET("/", welcomeDelivery.Home)
+	e.GET("/favicon.ico", welcomeDelivery.Favicon)
 	e.GET("/check-database", welcomeDelivery.CheckDatabase)
 	e.GET("/check-library", welcomeDelivery.CheckLibrary)
 	e.GET("/check-external", welcomeDelivery.CheckExternal)

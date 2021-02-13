@@ -37,6 +37,11 @@ func (w *Web) Home(cc echo.Context) error {
 	})
 }
 
+// Favicon is
+func (w *Web) Favicon(c echo.Context) error {
+	return c.File("resource/media/favicon.ico")
+}
+
 // CheckDatabase is
 func (w *Web) CheckDatabase(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
