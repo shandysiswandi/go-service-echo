@@ -9,6 +9,24 @@ import (
 	"gorm.io/gorm"
 )
 
+// all errros from db
+var (
+	ErrConfigIsNil          = errors.New("configuration is nil")
+	ErrNotUseDatabase       = errors.New("this application not using any database")
+	ErrNotConnectMysql      = errors.New("can't connect database mysql")
+	ErrNotConnectPostgresql = errors.New("can't connect database postgresql")
+	ErrNotConnectMongo      = errors.New("can't connect database mongo")
+	ErrDriverNotSupport     = errors.New("driver database not support")
+	ErrDialectNotSupport    = errors.New("dialect not support")
+)
+
+// all driver database support
+var (
+	MysqlDriver      = "mysql"
+	PostgresqlDriver = "postgresql"
+	MongoDriver      = "mongo"
+)
+
 // Database is
 type Database struct {
 	SQL   *gorm.DB
@@ -16,60 +34,45 @@ type Database struct {
 }
 
 // NewDatabase is
-func NewDatabase(c *config.Config) (*Database, error) {
-	if c == nil {
-		return nil, errors.New("Configuration is nil")
+func NewDatabase(dc *config.DatabaseConfig, tz string) (*Database, error) {
+	if dc == nil {
+		return nil, ErrConfigIsNil
 	}
 
-	if c.Database.Driver == "" {
-		return nil, errors.New("This application not using any database")
+	if dc.Driver == "" {
+		return nil, ErrNotUseDatabase
 	}
 
 	var err error
 	var db = &Database{}
 
-	switch c.Database.Driver {
-	case "mysql":
-		dsn := fmt.Sprintf(
-			"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			c.Database.Username,
-			c.Database.Password,
-			c.Database.Host,
-			c.Database.Port,
-			c.Database.Name,
-		)
-		db.SQL, err = mysqlConnection(dsn)
+	switch dc.Driver {
+	case MysqlDriver:
+		temp := "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+		dsn := fmt.Sprintf(temp, dc.Username, dc.Password, dc.Host, dc.Port, dc.Name)
+
+		db.SQL, err = gormConnection(dsn, MysqlDriver)
 		if err != nil {
-			return nil, errors.New("can't connect database mysql")
+			return nil, ErrNotConnectMysql
 		}
-	case "postgresql":
-		dsn := fmt.Sprintf(
-			"user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s",
-			c.Database.Username,
-			c.Database.Password,
-			c.Database.Host,
-			c.Database.Port,
-			c.Database.Name,
-			c.App.Timezone,
-		)
-		db.SQL, err = postgresqlConnection(dsn)
+	case PostgresqlDriver:
+		temp := "user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=%s"
+		dsn := fmt.Sprintf(temp, dc.Username, dc.Password, dc.Host, dc.Port, dc.Name, tz)
+
+		db.SQL, err = gormConnection(dsn, PostgresqlDriver)
 		if err != nil {
-			return nil, errors.New("can't connect database postgresql")
+			return nil, ErrNotConnectPostgresql
 		}
-	case "mongo":
-		uri := fmt.Sprintf(
-			"mongodb://%s:%s@%s:%s/?readPreference=primary&ssl=false",
-			c.Database.Username,
-			c.Database.Password,
-			c.Database.Host,
-			c.Database.Port,
-		)
-		db.Mongo, err = mongoConnection(uri, c.Database.Name)
+	case MongoDriver:
+		temp := "mongodb://%s:%s@%s:%s/?readPreference=primary&ssl=false"
+		dsn := fmt.Sprintf(temp, dc.Username, dc.Password, dc.Host, dc.Port)
+
+		db.Mongo, err = mongoConnection(dsn, dc.Name)
 		if err != nil {
-			return nil, errors.New("can't connect database mongo")
+			return nil, ErrNotConnectMongo
 		}
 	default:
-		return nil, errors.New("driver database not support")
+		return nil, ErrDriverNotSupport
 	}
 
 	return db, nil
