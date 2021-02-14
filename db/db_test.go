@@ -3,128 +3,69 @@ package db_test
 import (
 	"go-rest-echo/config"
 	"go-rest-echo/db"
-	"log"
-	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewDatabase_ConfigIsNil(t *testing.T) {
+func TestNewDatabase_Error(t *testing.T) {
 	is := assert.New(t)
 
-	db, err := db.NewDatabase(nil)
-
-	is.Nil(db)
-	is.EqualError(err, "Configuration is nil")
-}
-
-func TestNewDatabase_DriverIsEmpty(t *testing.T) {
-	is := assert.New(t)
-
-	conf := &config.Config{}
-	conf.Database.Driver = ""
-	db, err := db.NewDatabase(conf)
-
-	is.Nil(db)
-	is.EqualError(err, "This application not using any database")
-}
-
-func TestNewDatabase_DriverMysqlButError(t *testing.T) {
-	is := assert.New(t)
-
-	conf := &config.Config{}
-	conf.Database.Driver = "mysql"
-	db, err := db.NewDatabase(conf)
-
-	is.Nil(db)
-	is.EqualError(err, "can't connect database mysql")
-}
-
-func TestNewDatabase_DriverPostgresqlButError(t *testing.T) {
-	is := assert.New(t)
-
-	conf := &config.Config{}
-	conf.Database.Driver = "postgresql"
-	conf.Database.Port = "1000"
-	conf.App.Timezone = "postgresql"
-	db, err := db.NewDatabase(conf)
-
-	is.Nil(db)
-	is.EqualError(err, "can't connect database postgresql")
-}
-
-func TestNewDatabase_DriverMongoButError(t *testing.T) {
-	is := assert.New(t)
-
-	conf := &config.Config{}
-	conf.Database.Driver = "mongo"
-	conf.Database.Host = "mongo"
-	conf.Database.Port = "mongo"
-	conf.Database.Username = "mongo"
-	conf.Database.Password = "mongo"
-	conf.Database.Name = "mongo"
-	db, err := db.NewDatabase(conf)
-
-	is.Nil(db)
-	is.EqualError(err, "can't connect database mongo")
-}
-
-func TestNewDatabase_DriverNotSupport(t *testing.T) {
-	is := assert.New(t)
-
-	conf := &config.Config{}
-	conf.Database.Driver = "blabla"
-	db, err := db.NewDatabase(conf)
-
-	is.Nil(db)
-	is.EqualError(err, "driver database not support")
-}
-
-func TestNewDatabase_MysqlConfigFromEnv(t *testing.T) {
-	is := assert.New(t)
-
-	if err := godotenv.Overload(".mysql"); err != nil {
-		is.Nil(err)
+	ts := []struct {
+		name     string
+		dc       *config.DatabaseConfig
+		expected error
+	}{
+		{"config is nil", nil, db.ErrConfigIsNil},
+		{"driver is empty", &config.DatabaseConfig{Driver: ""}, db.ErrNotUseDatabase},
+		{"driver mysql but error", &config.DatabaseConfig{Driver: "mysql"}, db.ErrNotConnectMysql},
+		{"driver postgresql but error", &config.DatabaseConfig{Driver: "postgresql"}, db.ErrNotConnectPostgresql},
+		{"driver mongo but error", &config.DatabaseConfig{Driver: "mongo"}, db.ErrNotConnectMongo},
+		{"driver not support", &config.DatabaseConfig{Driver: "blabla"}, db.ErrDriverNotSupport},
 	}
 
-	db, err := db.NewDatabase(config.New())
-
-	is.NotNil(db)
-	is.NotNil(db.SQL)
-	is.Nil(db.Mongo)
-	is.Nil(err)
+	for _, tc := range ts {
+		t.Run(tc.name, func(t *testing.T) {
+			actual, err := db.NewDatabase(tc.dc, "UTC")
+			is.Nil(actual, tc.name)
+			is.Equal(err, tc.expected, tc.name)
+		})
+	}
 }
 
-func TestNewDatabase_PostgresqlConfigFromEnv(t *testing.T) {
+func TestNewDatabase_Success(t *testing.T) {
 	is := assert.New(t)
 
-	if err := godotenv.Overload(".postgresql"); err != nil {
-		is.Nil(err)
+	ts := []struct {
+		name string
+		file string
+	}{
+		{"mysql config from env", ".mysql"},
+		{"postgresql config from env", ".postgresql"},
+		{"mongo config from env", ".mongo"},
 	}
 
-	db, err := db.NewDatabase(config.New())
+	for _, tc := range ts {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := godotenv.Overload(tc.file); err != nil {
+				is.Nil(err)
+			}
 
-	is.NotNil(db)
-	is.NotNil(db.SQL)
-	is.Nil(db.Mongo)
-	is.Nil(err)
-}
+			dbConfig := config.New().Database
+			actual, err := db.NewDatabase(dbConfig, "UTC")
 
-func TestNewDatabase_MongoConfigFromEnv(t *testing.T) {
-	is := assert.New(t)
-
-	if err := godotenv.Overload(".mongo"); err != nil {
-		is.Nil(err)
+			if dbConfig.Driver == "mongo" {
+				is.NotNil(actual)
+				is.NotNil(actual.Mongo)
+				is.Nil(actual.SQL)
+				is.Nil(err)
+			} else {
+				is.NotNil(actual)
+				is.NotNil(actual.SQL)
+				is.Nil(actual.Mongo)
+				is.Nil(err)
+			}
+		})
 	}
-
-	log.Println(os.Getenv("DB_DRIVER"))
-
-	db, err := db.NewDatabase(config.New())
-
-	is.NotNil(db)
-	is.NotNil(db.Mongo)
-	is.Nil(db.SQL)
-	is.Nil(err)
 }
