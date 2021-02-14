@@ -8,9 +8,15 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// all errors jwtlib
+var (
+	ErrGenerateAccessToken  = errors.New("failed generate access token")
+	ErrGenerateRefreshToken = errors.New("failed generate refresh token")
+)
+
 // JWT is
 type JWT struct {
-	config *config.Config
+	jwt *config.JWTConfig
 }
 
 // ClaimData is
@@ -27,28 +33,12 @@ type Claim struct {
 }
 
 // New is
-func New(c *config.Config) *JWT {
-	return &JWT{config: c}
+func New(c *config.JWTConfig) *JWT {
+	return &JWT{c}
 }
 
-// Generate is
-func (j *JWT) Generate(data ClaimData) (string, string, error) {
-	err := errors.New("token not valid")
-
-	accessToken, err := j.accessToken(data, j.config.Library.JWT.AccessSecret)
-	if err != nil {
-		return "", "", err
-	}
-
-	refreshToken, err := j.refreshToken(data, j.config.Library.JWT.RefreshSecret)
-	if err != nil {
-		return "", "", err
-	}
-
-	return accessToken, refreshToken, nil
-}
-
-func (JWT) accessToken(data ClaimData, secret []byte) (string, error) {
+// GenerateAccessToken is
+func (j *JWT) GenerateAccessToken(data ClaimData) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claim{
 		data, jwt.StandardClaims{
 			Audience:  "ACCESS_TOKEN_AUDIENCE",
@@ -59,15 +49,16 @@ func (JWT) accessToken(data ClaimData, secret []byte) (string, error) {
 		},
 	})
 
-	accessToken, err := token.SignedString(secret)
+	accessToken, err := token.SignedString(j.jwt.AccessSecret)
 	if err != nil {
-		return "", err
+		return "", ErrGenerateAccessToken
 	}
 
 	return accessToken, nil
 }
 
-func (JWT) refreshToken(data ClaimData, secret []byte) (string, error) {
+// GenerateRefreshToken is
+func (j *JWT) GenerateRefreshToken(data ClaimData) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claim{
 		data, jwt.StandardClaims{
 			Audience:  "REFRESH_TOKEN_AUDIENCE",
@@ -78,7 +69,7 @@ func (JWT) refreshToken(data ClaimData, secret []byte) (string, error) {
 		},
 	})
 
-	refreshToken, err := token.SignedString(secret)
+	refreshToken, err := token.SignedString(j.jwt.RefreshSecret)
 	if err != nil {
 		return "", err
 	}
