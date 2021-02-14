@@ -2,6 +2,7 @@ package context
 
 import (
 	"errors"
+	"fmt"
 	"go-rest-echo/app/library/jwtlib"
 	"go-rest-echo/util/stringy"
 	"log"
@@ -49,7 +50,23 @@ func httpErrorHandler(e error, c echo.Context) {
 	c.JSON(code, ResponseError{false, message, e})
 }
 
-// GetJWT is
+// ValidateVar is
+func (c *CustomContext) ValidateVar(value interface{}, tag string) map[string]interface{} {
+	var v = validator.New()
+	var e map[string]interface{}
+
+	if err := v.Var(value, tag); err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			e = map[string]interface{}{"message": fmt.Sprintf("`%v` %s", err.Value(), c.getMessageValidation(err))}
+		}
+
+		return e
+	}
+
+	return nil
+}
+
+// GetJWT is function to get data from jwt token
 func (c *CustomContext) GetJWT() (*jwtlib.Claim, string) {
 	user := c.Get("user").(*jwt.Token)
 	return user.Claims.(*jwtlib.Claim), user.Raw
