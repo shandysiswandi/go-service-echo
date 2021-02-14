@@ -1,7 +1,7 @@
-package util_test
+package stringy_test
 
 import (
-	"go-rest-echo/util"
+	"go-rest-echo/util/stringy"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,6 +23,6 @@ func TestSnakeCase(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		is.Equal(tc.expected, util.SnakeCase(tc.input))
+		is.Equal(tc.expected, stringy.SnakeCase(tc.input))
 	}
 }
