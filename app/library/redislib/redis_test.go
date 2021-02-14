@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 		is.Nil(err)
 	}
 
-	redis := redislib.New(config.New())
+	redis := redislib.New(config.New().Library.Redis)
 
 	is.NotNil(redis)
 }
@@ -28,7 +28,7 @@ func TestNew_Get(t *testing.T) {
 		is.Nil(err)
 	}
 
-	redis := redislib.New(config.New())
+	redis := redislib.New(config.New().Library.Redis)
 	err := redis.Get()
 
 	is.Nil(err)
@@ -41,7 +41,7 @@ func TestNew_Set(t *testing.T) {
 		is.Nil(err)
 	}
 
-	redis := redislib.New(config.New())
+	redis := redislib.New(config.New().Library.Redis)
 	err := redis.Set()
 
 	is.Nil(err)
@@ -54,7 +54,7 @@ func TestNew_Increment(t *testing.T) {
 		is.Nil(err)
 	}
 
-	redis := redislib.New(config.New())
+	redis := redislib.New(config.New().Library.Redis)
 	err := redis.Increment()
 
 	is.Nil(err)
@@ -67,7 +67,7 @@ func TestNew_Decrement(t *testing.T) {
 		is.Nil(err)
 	}
 
-	redis := redislib.New(config.New())
+	redis := redislib.New(config.New().Library.Redis)
 	err := redis.Decrement()
 
 	is.Nil(err)

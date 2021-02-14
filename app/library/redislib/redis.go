@@ -12,11 +12,11 @@ type Redis struct {
 }
 
 // New is constructor
-func New(c *config.Config) *Redis {
+func New(c *config.RedisConfig) *Redis {
 	return &Redis{redis.NewClient(&redis.Options{
-		Addr:     c.Library.Redis.Addr,
-		Password: c.Library.Redis.Password,
-		DB:       c.Library.Redis.Database,
+		Addr:     c.Addr,
+		Password: c.Password,
+		DB:       c.Database,
 	})}
 }
 
