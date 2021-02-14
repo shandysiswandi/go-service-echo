@@ -30,6 +30,10 @@ func NewWeb(db *db.Database, j *jwtlib.JWT, r *redislib.Redis, s *sentrylib.Sent
 func (w *Web) Home(cc echo.Context) error {
 	c := cc.(*context.CustomContext)
 
+	// if err := c.ValidateVar("a", "required,email,min=3"); err != nil {
+	// 	return c.BadRequest(err)
+	// }
+
 	return c.Success(http.StatusOK, "Welcome to our API", map[string]interface{}{
 		"route_check_database": "/check-database",
 		"route_check_library":  "/check-library",
