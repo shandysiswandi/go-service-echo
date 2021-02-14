@@ -20,8 +20,8 @@ import (
 func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	var (
 		// library
-		jwt    = jwtlib.New(c)
-		redis  = redislib.New(c)
+		jwt    = jwtlib.New(c.Library.JWT)
+		redis  = redislib.New(c.Library.Redis)
 		sentry = sentrylib.New(c)
 
 		// external (thrid-party)
