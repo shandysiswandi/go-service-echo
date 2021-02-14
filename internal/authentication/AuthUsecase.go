@@ -4,7 +4,7 @@ import (
 	"go-rest-echo/app/context"
 	"go-rest-echo/app/library/jwtlib"
 	"go-rest-echo/internal/users"
-	"go-rest-echo/util"
+	"go-rest-echo/util/bcrypt"
 )
 
 type usecase struct {
@@ -23,7 +23,7 @@ func (u *usecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 		return nil, context.ErrInvalidCredential
 	}
 
-	isPassValid := util.CheckPasswordHash(pl.Password, user.Password)
+	isPassValid := bcrypt.CheckPasswordHash(pl.Password, user.Password)
 	if !isPassValid {
 		return nil, context.ErrInvalidCredential
 	}
