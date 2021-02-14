@@ -33,8 +33,8 @@ type Database struct {
 	Mongo *mongo.Database
 }
 
-// NewDatabase is
-func NewDatabase(dc *config.DatabaseConfig, tz string) (*Database, error) {
+// New is
+func New(dc *config.DatabaseConfig, tz string) (*Database, error) {
 	if dc == nil {
 		return nil, ErrConfigIsNil
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewDatabase_Error(t *testing.T) {
+func TestNew_Error(t *testing.T) {
 	is := assert.New(t)
 
 	ts := []struct {
@@ -27,14 +27,14 @@ func TestNewDatabase_Error(t *testing.T) {
 
 	for _, tc := range ts {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := db.NewDatabase(tc.dc, "UTC")
+			actual, err := db.New(tc.dc, "UTC")
 			is.Nil(actual, tc.name)
 			is.Equal(err, tc.expected, tc.name)
 		})
 	}
 }
 
-func TestNewDatabase_Success(t *testing.T) {
+func TestNew_Success(t *testing.T) {
 	is := assert.New(t)
 
 	ts := []struct {
@@ -53,7 +53,7 @@ func TestNewDatabase_Success(t *testing.T) {
 			}
 
 			dbConfig := config.New().Database
-			actual, err := db.NewDatabase(dbConfig, "UTC")
+			actual, err := db.New(dbConfig, "UTC")
 
 			if dbConfig.Driver == "mongo" {
 				is.NotNil(actual)
