@@ -15,7 +15,7 @@ func main() {
 
 	config := config.New()
 
-	db, err := db.NewDatabase(config)
+	db, err := db.NewDatabase(config.Database, config.App.Timezone)
 	if err != nil {
 		print(err)
 	}
