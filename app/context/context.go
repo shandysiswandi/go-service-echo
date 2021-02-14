@@ -3,7 +3,7 @@ package context
 import (
 	"errors"
 	"go-rest-echo/app/library/jwtlib"
-	"go-rest-echo/util"
+	"go-rest-echo/util/stringy"
 	"log"
 	"net/http"
 
@@ -76,7 +76,7 @@ func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 
 	for _, err := range err.(validator.ValidationErrors) {
 		e = append(e, map[string]interface{}{
-			"key":     util.SnakeCase(err.StructField()),
+			"key":     stringy.SnakeCase(err.StructField()),
 			"message": c.getMessageValidation(err),
 			"value":   err.Value(),
 		})
