@@ -4,6 +4,7 @@ import (
 	"go-rest-echo/app"
 	"go-rest-echo/config"
 	"go-rest-echo/db"
+	"go-rest-echo/util/logger"
 
 	"github.com/joho/godotenv"
 )
@@ -15,9 +16,9 @@ func main() {
 
 	config := config.New()
 
-	db, err := db.NewDatabase(config.Database, config.App.Timezone)
+	db, err := db.New(config.Database, config.App.Timezone)
 	if err != nil {
-		print(err)
+		logger.LogError(err)
 	}
 
 	app.New(config, db)
