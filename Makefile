@@ -1,40 +1,54 @@
-# -------------------- including environment variable -------------------- #
+# -------------------- including environment variable -------------------------------------------- #
 include .env
 
-# -------------------- define environment variable ----------------------- #
-NAME=$(DOCKER_IMAGE_NAME)
-VERSION=$(shell git describe --tags --always)
+# -------------------- define environment variable ----------------------------------------------- #
+NAME					= $(APP_NAME)
+PORT					= $(APP_PORT)
+VERSION					= $(shell git describe --tags --always)
 
-CONTAINER_NAME=$(shell docker ps -aq --filter name=${NAME})
-IMAGE_NAME=$(shell docker ps -aq --filter name=${NAME})
+DOCKER_CONTAINER_NAME	= $(NAME)
+DOCKER_IMAGE_NAME		= $(NAME):$(VERSION)
 
-# -------------------- define command target ----------------------------- #
-up: lint build run
+CONTAINER_NAME_EXIST	= $(shell docker ps -aq --filter name=${DOCKER_CONTAINER_NAME})
+IMAGE_NAME_EXIST		= $(shell docker images -aq ${DOCKER_IMAGE_NAME})
 
-build: clean
-	@docker build --build-arg TAGGED=builder-${NAME} --file Dockerfile --tag $(NAME):$(VERSION) .
-	@docker image prune --filter label=tagged=builder-${NAME} --force
+# -------------------- define command target for docker ------------------------------------------ #
+up: lint clean docker-build docker-run
 
-run: destroy-container
-	@docker run --detach --name $(NAME) -p $(APP_PORT):$(APP_PORT) $(NAME):$(VERSION)
+clean: docker-destroy-container docker-destroy-image
 
-clean:
-	@echo "delete container if exist --force"
-	@echo "delete image if exist --force"
+docker-build:
+	@docker build --build-arg TAGGED=builder-${DOCKER_IMAGE_NAME} --file Dockerfile --tag $(DOCKER_IMAGE_NAME) .
+	@docker image prune --filter label=tagged=builder-${DOCKER_IMAGE_NAME} --force
 
-destroy-image:
-	@if [ -n "$(NAME)" ]; then docker image rm $(NAME) --force; fi;
+docker-run:
+	@docker run --detach --name $(DOCKER_CONTAINER_NAME) -p $(PORT):$(PORT) $(DOCKER_IMAGE_NAME)
 
-destroy-container:
-	@if [ -n "$(CONTAINER_NAME)" ]; then docker rm $(NAME) --force; fi;
+docker-destroy-image:
+	if [ -n "$(IMAGE_NAME_EXIST)" ]; then docker image rm $(IMAGE_NAME_EXIST) --force; fi;
 
+docker-destroy-container:
+	@if [ -n "$(CONTAINER_NAME_EXIST)" ]; then docker rm $(CONTAINER_NAME_EXIST) --force; fi;
+
+# -------------------- define command target for docker-compose --------------------------------- #
+compose: compose-down
+	@clear
+	@docker-compose up --build
+
+compose-down:
+	@clear
+	@docker-compose down
+
+# -------------------- define command target for generate rsa ------------------------------------ #
 cert:
+	@clear
 	@openssl genrsa -out ./resource/key/private.pem 4096
 	@openssl rsa -in ./resource/key/private.pem -pubout -out ./resource/key/public.pem
 
+# -------------------- define command target for development & testing --------------------------- #
 test: lint
 	@clear
-	@go test -timeout 90s --race -v ./...
+	@go test -v ./...
 
 test-cover: lint
 	@clear
@@ -48,8 +62,9 @@ lint:
 
 dev: lint
 	@clear
-	@reflex -r '\.go' -s -- sh -c "go run ."
+	@reflex -r '\.go' -s -- sh -c "go run main.go"
 
 start: lint
 	@clear
-	@go run .
+	@go run main.go
+# -------------------------------------------------------------------------------------------------- #
