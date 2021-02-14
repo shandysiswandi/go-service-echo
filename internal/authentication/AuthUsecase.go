@@ -34,7 +34,12 @@ func (u *usecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 
 	// call generate token
 	data := jwtlib.ClaimData{ID: user.ID, Email: user.Email, Name: user.Name}
-	rl.AccessToken, rl.RefreshToken, err = u.jwt.Generate(data)
+	rl.AccessToken, err = u.jwt.GenerateAccessToken(data)
+	if err != nil {
+		return nil, err
+	}
+
+	rl.RefreshToken, err = u.jwt.GenerateRefreshToken(data)
 	if err != nil {
 		return nil, err
 	}
