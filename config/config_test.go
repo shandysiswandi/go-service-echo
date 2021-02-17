@@ -11,7 +11,7 @@ import (
 func TestNewConfiguration(t *testing.T) {
 	is := assert.New(t)
 
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load(".env.test"); err != nil {
 		is.Nil(err)
 	}
 
