@@ -12,23 +12,30 @@ DOCKER_IMAGE_NAME		= $(NAME):$(VERSION)
 CONTAINER_NAME_EXIST	= $(shell docker ps -aq --filter name=${DOCKER_CONTAINER_NAME})
 IMAGE_NAME_EXIST		= $(shell docker images -aq ${DOCKER_IMAGE_NAME})
 
-# -------------------- define command target for docker ------------------------------------------ #
-up: lint clean docker-build docker-run
+DOCKER_HUB_REPO			= shandysiswandi/go-service
 
-clean: docker-destroy-container docker-destroy-image
+# -------------------- define command target for docker ------------------------------------------ #
+up: lint clean docker-build docker-push docker-run
+
+clean: docker-remove-container docker-remove-image
 
 docker-build:
 	@docker build --build-arg TAGGED=builder-${DOCKER_IMAGE_NAME} --file Dockerfile --tag $(DOCKER_IMAGE_NAME) .
-	@docker image prune --filter label=tagged=builder-${DOCKER_IMAGE_NAME} --force
+	# @docker image prune --filter label=tagged=builder-${DOCKER_IMAGE_NAME} --force
+
+docker-push:
+	@docker tag $(DOCKER_IMAGE_NAME) $(DOCKER_HUB_REPO):latest
+	@docker tag $(DOCKER_IMAGE_NAME) $(DOCKER_HUB_REPO):$(VERSION)
+	@docker push $(DOCKER_HUB_REPO)
 
 docker-run:
-	@docker run --detach --name $(DOCKER_CONTAINER_NAME) -p $(PORT):$(PORT) $(DOCKER_IMAGE_NAME)
+	@docker run --rm --detach --name $(DOCKER_CONTAINER_NAME) -p $(PORT):$(PORT) $(DOCKER_HUB_REPO)
 
-docker-destroy-image:
-	if [ -n "$(IMAGE_NAME_EXIST)" ]; then docker image rm $(IMAGE_NAME_EXIST) --force; fi;
-
-docker-destroy-container:
+docker-remove-container:
 	@if [ -n "$(CONTAINER_NAME_EXIST)" ]; then docker rm $(CONTAINER_NAME_EXIST) --force; fi;
+
+docker-remove-image:
+	@if [ -n "$(IMAGE_NAME_EXIST)" ]; then docker image rm $(IMAGE_NAME_EXIST) --force; fi;
 
 # -------------------- define command target for docker-compose --------------------------------- #
 compose: compose-down
