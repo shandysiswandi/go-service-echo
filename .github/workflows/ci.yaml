@@ -15,7 +15,11 @@ jobs:
       with:
         go-version: 1.15
 
-    - name: Build
+    - name: Go Format and Linting
       run: |
-        make lint
-        make test
+        golint ./...
+        go fmt ./...
+
+    - name: Go Testing
+      run: |
+        go test -v ./...
