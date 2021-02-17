@@ -64,7 +64,6 @@ test-cover: lint
 
 lint:
 	@clear
-	@golint ./...
 	@go fmt ./...
 
 dev: lint
