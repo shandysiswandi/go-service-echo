@@ -1,0 +1,147 @@
+package blogs
+
+import (
+	"go-rest-echo/app/context"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+)
+
+type web struct {
+	usecase Usecase
+}
+
+// NewWeb is
+func NewWeb(bu Usecase) Delivery {
+	return &web{usecase: bu}
+}
+
+func (w *web) Fetch(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// usecase
+	result, err := w.usecase.Fetch()
+	if err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "Success Fetch Blog", result)
+}
+
+func (w *web) Get(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	id := c.Param("id")
+
+	// usecase
+	result, err := w.usecase.Get(id)
+	if err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "Success Get Blog", result)
+}
+
+func (w *web) Create(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	b := BlogPayloadCreate{}
+
+	// binding
+	if err = c.Bind(&b); err != nil {
+		return c.BadRequest(err)
+	}
+
+	// validation
+	if err = c.Validate(&b); err != nil {
+		return c.UnprocessableEntity(err)
+	}
+
+	// usecase
+	if err = w.usecase.Create(b); err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusCreated, "Success Create Blog", b)
+}
+
+func (w *web) Update(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	b := BlogPayloadPut{}
+	id := c.Param("id")
+
+	// binding
+	if err = c.Bind(&b); err != nil {
+		return c.BadRequest(err)
+	}
+
+	// validation
+	if err = c.Validate(&b); err != nil {
+		return c.UnprocessableEntity(err)
+	}
+
+	// usecase
+	if err = w.usecase.Update(b, id); err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "Success Update Blog", b)
+}
+
+func (w *web) UpdateField(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	b := BlogPayloadPatch{}
+	id := c.Param("id")
+
+	// binding
+	if err = c.Bind(&b); err != nil {
+		return c.BadRequest(err)
+	}
+
+	// validation
+	if err = c.Validate(&b); err != nil {
+		return c.UnprocessableEntity(err)
+	}
+
+	// usecase
+	if err = w.usecase.UpdateField(b, id); err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "Success Update Field Blog", b)
+}
+
+func (w *web) Delete(cc echo.Context) (err error) {
+	// extend echo.Context
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	id := c.Param("id")
+
+	// usecase
+	if err = w.usecase.Delete(id); err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "Success Delete Blog", map[string]interface{}{
+		"id":         id,
+		"is_deleted": true,
+	})
+}

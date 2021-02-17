@@ -1,0 +1,8 @@
+TZ=UTC
+
+DB_DRIVER=postgresql
+DB_HOST=127.0.0.1
+DB_PORT=5300
+DB_USERNAME=root
+DB_PASSWORD=password
+DB_NAME=go-rest-echo
