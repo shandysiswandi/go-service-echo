@@ -5,7 +5,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
+  testing:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,6 +18,7 @@ jobs:
     - name: Installing Depedencies
       run: |
         go get -u golang.org/x/lint/golint
+        go mod download
 
     - name: Go Format and Linting
       run: |
