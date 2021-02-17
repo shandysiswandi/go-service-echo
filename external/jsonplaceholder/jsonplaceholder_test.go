@@ -14,11 +14,12 @@ func TestNew_With_URL_Empty(t *testing.T) {
 }
 
 func TestNew_With_URL_From_ENV(t *testing.T) {
-	if err := godotenv.Load(".env"); err != nil {
-		t.Error(".env Not Found")
+	is := assert.New(t)
+
+	if err := godotenv.Load(".env.test"); err != nil {
+		is.Nil(err)
 	}
 
-	is := assert.New(t)
 	conf := config.New()
 	actual := jsonplaceholder.New(conf.External.JsonplaceholderURL)
 
