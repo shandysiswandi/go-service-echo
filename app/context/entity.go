@@ -24,7 +24,13 @@ type ResponseSuccess struct {
 }
 
 // Pagination is
-type Pagination struct{}
+type Pagination struct {
+	Total    int `json:"total"`
+	Limit    int `json:"limit"`
+	Page     int `json:"page"`
+	NextPage int `json:"next_page"`
+	PrevPage int `json:"prev_page"`
+}
 
 // ResponseSuccessWithPaginate is
 type ResponseSuccessWithPaginate struct {
