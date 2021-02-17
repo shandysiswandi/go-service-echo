@@ -22,5 +22,17 @@ jobs:
     - name: Go Format and Linting
       run: go fmt ./...
 
+    - uses: mirromutth/mysql-action@v1.1
+      with:
+        host port: 3306
+        container port: 3306
+        character set server: 'utf8mb4'
+        collation server: 'utf8mb4_general_ci'
+        mysql version: '8.0'
+        mysql database: 'go-service'
+        mysql root password: 'root_password'
+        mysql user: 'root'
+        mysql password: 'password'
+
     - name: Go Testing
       run: go test -v ./...
