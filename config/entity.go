@@ -4,13 +4,16 @@ package config
 type Config struct {
 	App      *AppConfig
 	Database *DatabaseConfig
-	Library  *LibraryConfig
+	JWT      *JWTConfig
+	Redis    *RedisConfig
+	Sentry   *SentryConfig
 	External *ExternalConfig
 }
 
 // AppConfig is
 type AppConfig struct {
 	Env      string
+	Host     string
 	Port     string
 	Name     string
 	Timezone string
@@ -24,13 +27,7 @@ type DatabaseConfig struct {
 	Username string
 	Password string
 	Name     string
-}
-
-// LibraryConfig is
-type LibraryConfig struct {
-	JWT       *JWTConfig
-	Redis     *RedisConfig
-	SentryDSN string
+	Timezone string
 }
 
 // JWTConfig is
@@ -41,12 +38,18 @@ type JWTConfig struct {
 
 // RedisConfig is
 type RedisConfig struct {
-	Addr     string
+	Address  string
 	Password string
 	Database int
 }
 
+// SentryConfig is
+type SentryConfig struct {
+	DNS string
+	ENV string
+}
+
 // ExternalConfig is
 type ExternalConfig struct {
-	JsonplaceholderURL string
+	JSONPlaceHolder string
 }

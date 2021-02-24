@@ -9,9 +9,10 @@ import (
 func New() *Config {
 
 	app := &AppConfig{
-		Env:      os.Getenv("APP_ENV"),
-		Port:     os.Getenv("APP_PORT"),
-		Name:     os.Getenv("APP_NAME"),
+		Env:      os.Getenv("ENV"),
+		Host:     os.Getenv("HOST"),
+		Port:     os.Getenv("PORT"),
+		Name:     os.Getenv("NAME"),
 		Timezone: os.Getenv("TZ"),
 	}
 
@@ -22,32 +23,39 @@ func New() *Config {
 		Username: os.Getenv("DB_USERNAME"),
 		Password: os.Getenv("DB_PASSWORD"),
 		Name:     os.Getenv("DB_NAME"),
+		Timezone: os.Getenv("DB_TIMEZONE"),
 	}
 
 	jwt := &JWTConfig{
-		AccessSecret:  []byte(os.Getenv("LIBRARY_JWT_ACCESS_SECRET")),
-		RefreshSecret: []byte(os.Getenv("LIBRARY_JWT_REFRESH_SECRET")),
+		AccessSecret:  []byte(os.Getenv("JWT_ACCESS_SECRET")),
+		RefreshSecret: []byte(os.Getenv("JWT_REFRESH_SECRET")),
 	}
 
-	lrd, err := strconv.Atoi(os.Getenv("LIBRARY_REDIS_DATABASE"))
+	lrd, err := strconv.Atoi(os.Getenv("REDIS_DATABASE"))
 	if err != nil {
 		lrd = 0
 	}
 	redis := &RedisConfig{
-		Addr:     os.Getenv("LIBRARY_REDIS_ADDR"),
-		Password: os.Getenv("LIBRARY_REDIS_PASSWORD"),
+		Address:  os.Getenv("REDIS_ADDRESS"),
+		Password: os.Getenv("REDIS_PASSWORD"),
 		Database: lrd,
 	}
 
-	lib := &LibraryConfig{
-		SentryDSN: os.Getenv("LIBRARY_SENTRY_DSN"),
-		JWT:       jwt,
-		Redis:     redis,
+	sentry := &SentryConfig{
+		DNS: os.Getenv("SENTRY_DSN"),
+		ENV: os.Getenv("SENTRY_ENV"),
 	}
 
 	ext := &ExternalConfig{
-		JsonplaceholderURL: os.Getenv("EXTERTNAL_JSONPLACEHOLDER_URL"),
+		JSONPlaceHolder: os.Getenv("URL_JSONPLACEHOLDER"),
 	}
 
-	return &Config{app, db, lib, ext}
+	return &Config{
+		App:      app,
+		Database: db,
+		JWT:      jwt,
+		Redis:    redis,
+		Sentry:   sentry,
+		External: ext,
+	}
 }
