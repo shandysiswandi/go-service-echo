@@ -1,71 +1,93 @@
 package db_test
 
 import (
-	"go-rest-echo/config"
-	"go-rest-echo/db"
+	"go-service-echo/config"
+	"go-service-echo/db"
+	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNew_Error(t *testing.T) {
 	is := assert.New(t)
 
-	ts := []struct {
-		name     string
-		dc       *config.DatabaseConfig
-		expected error
-	}{
-		{"config is nil", nil, db.ErrConfigIsNil},
-		{"driver is empty", &config.DatabaseConfig{Driver: ""}, db.ErrNotUseDatabase},
-		{"driver mysql but error", &config.DatabaseConfig{Driver: "mysql"}, db.ErrNotConnectMysql},
-		{"driver postgresql but error", &config.DatabaseConfig{Driver: "postgresql"}, db.ErrNotConnectPostgresql},
-		{"driver mongo but error", &config.DatabaseConfig{Driver: "mongo"}, db.ErrNotConnectMongo},
-		{"driver not support", &config.DatabaseConfig{Driver: "blabla"}, db.ErrDriverNotSupport},
-	}
+	/* config is nil */
+	actual, err := db.New(nil)
+	is.Nil(actual)
+	is.Equal(err, db.ErrDatabaseConfigIsNil)
 
-	for _, tc := range ts {
-		t.Run(tc.name, func(t *testing.T) {
-			actual, err := db.New(tc.dc, "UTC")
-			is.Nil(actual, tc.name)
-			is.Equal(err, tc.expected, tc.name)
-		})
-	}
+	/* driver database is empty */
+	actual, err = db.New(&config.DatabaseConfig{Driver: ""})
+	is.Nil(actual)
+	is.Equal(err, db.ErrNotUseDatabase)
+
+	/* driver is mysql but error */
+	actual, err = db.New(&config.DatabaseConfig{Driver: "mysql"})
+	is.Nil(actual)
+	is.Equal(err, db.ErrNotConnectMysql)
+
+	/* driver is postgres but error */
+	actual, err = db.New(&config.DatabaseConfig{Driver: "postgres"})
+	is.Nil(actual)
+	is.Equal(err, db.ErrNotConnectPostgres)
+
+	/* driver is mongo but error */
+	actual, err = db.New(&config.DatabaseConfig{Driver: "mongo"})
+	is.Nil(actual)
+	is.Equal(err, db.ErrNotConnectMongo)
+
+	/* driver is not support */
+	actual, err = db.New(&config.DatabaseConfig{Driver: "blabla"})
+	is.Nil(actual)
+	is.Equal(err, db.ErrDatabaseDriverNotSupport)
 }
 
 func TestNew_Success(t *testing.T) {
 	is := assert.New(t)
 
-	ts := []struct {
-		name string
-		file string
-	}{
-		{"mysql config from env", ".mysql"},
-		{"postgresql config from env", ".postgresql"},
-		{"mongo config from env", ".mongo"},
-	}
+	/* mysql config from env */
+	os.Setenv("DB_DRIVER", "mysql")
+	os.Setenv("DB_HOST", "localhost")
+	os.Setenv("DB_PORT", "3306")
+	os.Setenv("DB_USERNAME", "root")
+	os.Setenv("DB_PASSWORD", "password")
+	os.Setenv("DB_NAME", "go-service")
+	os.Setenv("DB_TIMEZONE", "UTC")
 
-	for _, tc := range ts {
-		t.Run(tc.name, func(t *testing.T) {
-			if err := godotenv.Overload(tc.file); err != nil {
-				is.Nil(err)
-			}
+	actual, err := db.New(config.New().Database)
+	is.NotNil(actual)
+	is.NotNil(actual.SQL)
+	is.Nil(actual.Mongo)
+	is.Nil(err)
 
-			dbConfig := config.New().Database
-			actual, err := db.New(dbConfig, "UTC")
+	/* postgres config from env */
+	os.Setenv("DB_DRIVER", "postgres")
+	os.Setenv("DB_HOST", "localhost")
+	os.Setenv("DB_PORT", "5432")
+	os.Setenv("DB_USERNAME", "postgres")
+	os.Setenv("DB_PASSWORD", "password")
+	os.Setenv("DB_NAME", "go-service")
+	os.Setenv("DB_TIMEZONE", "UTC")
 
-			if dbConfig.Driver == "mongo" {
-				is.NotNil(actual)
-				is.NotNil(actual.Mongo)
-				is.Nil(actual.SQL)
-				is.Nil(err)
-			} else {
-				is.NotNil(actual)
-				is.NotNil(actual.SQL)
-				is.Nil(actual.Mongo)
-				is.Nil(err)
-			}
-		})
-	}
+	actual, err = db.New(config.New().Database)
+	is.NotNil(actual)
+	is.NotNil(actual.SQL)
+	is.Nil(actual.Mongo)
+	is.Nil(err)
+
+	/* mongo config from env */
+	// os.Setenv("DB_DRIVER", "mongo")
+	// os.Setenv("DB_HOST", "localhost")
+	// os.Setenv("DB_PORT", "27017")
+	// os.Setenv("DB_USERNAME", "root")
+	// os.Setenv("DB_PASSWORD", "password")
+	// os.Setenv("DB_NAME", "go-service")
+	// os.Setenv("DB_TIMEZONE", "UTC")
+
+	// actual, err = db.New(config.New().Database)
+	// is.NotNil(actual)
+	// is.NotNil(actual.SQL)
+	// is.Nil(actual.Mongo)
+	// is.Nil(err)
 }
