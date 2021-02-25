@@ -1,11 +1,11 @@
-package jwtlib
+package jwt
 
 import (
 	"errors"
-	"go-rest-echo/config"
+	"go-service-echo/config"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	lib "github.com/dgrijalva/jwt-go"
 )
 
 // all errors jwtlib
@@ -29,7 +29,7 @@ type ClaimData struct {
 // Claim is
 type Claim struct {
 	Data ClaimData `json:"data"`
-	jwt.StandardClaims
+	lib.StandardClaims
 }
 
 // New is
@@ -39,8 +39,8 @@ func New(c *config.JWTConfig) *JWT {
 
 // GenerateAccessToken is
 func (j *JWT) GenerateAccessToken(data ClaimData) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claim{
-		data, jwt.StandardClaims{
+	token := lib.NewWithClaims(lib.SigningMethodHS256, &Claim{
+		data, lib.StandardClaims{
 			Audience:  "ACCESS_TOKEN_AUDIENCE",
 			ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
 			IssuedAt:  time.Now().Unix(),
@@ -59,8 +59,8 @@ func (j *JWT) GenerateAccessToken(data ClaimData) (string, error) {
 
 // GenerateRefreshToken is
 func (j *JWT) GenerateRefreshToken(data ClaimData) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claim{
-		data, jwt.StandardClaims{
+	token := lib.NewWithClaims(lib.SigningMethodHS256, &Claim{
+		data, lib.StandardClaims{
 			Audience:  "REFRESH_TOKEN_AUDIENCE",
 			ExpiresAt: time.Now().Add(time.Minute * 24).Unix(),
 			IssuedAt:  time.Now().Unix(),
