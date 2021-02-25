@@ -35,7 +35,7 @@ func New() *Config {
 		lrd = 0
 	}
 	redis := &RedisConfig{
-		Address:  os.Getenv("REDIS_ADDRESS"),
+		Host:     os.Getenv("REDIS_ADDRESS"),
 		Password: os.Getenv("REDIS_PASSWORD"),
 		Database: lrd,
 	}
