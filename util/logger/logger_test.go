@@ -1,7 +1,7 @@
 package logger_test
 
 import (
-	"go-rest-echo/util/logger"
+	"go-service-echo/util/logger"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

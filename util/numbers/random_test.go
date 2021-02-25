@@ -1,7 +1,7 @@
 package numbers_test
 
 import (
-	"go-rest-echo/util/numbers"
+	"go-service-echo/util/numbers"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

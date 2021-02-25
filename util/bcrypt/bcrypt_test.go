@@ -1,7 +1,7 @@
 package bcrypt_test
 
 import (
-	"go-rest-echo/util/bcrypt"
+	"go-service-echo/util/bcrypt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

@@ -1,7 +1,7 @@
 package stringy_test
 
 import (
-	"go-rest-echo/util/stringy"
+	"go-service-echo/util/stringy"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
