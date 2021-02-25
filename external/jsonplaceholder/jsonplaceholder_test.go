@@ -1,8 +1,8 @@
 package jsonplaceholder_test
 
 import (
-	"go-rest-echo/config"
-	"go-rest-echo/external/jsonplaceholder"
+	"go-service-echo/config"
+	"go-service-echo/external/jsonplaceholder"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -20,8 +20,7 @@ func TestNew_With_URL_From_ENV(t *testing.T) {
 		is.Nil(err)
 	}
 
-	conf := config.New()
-	actual := jsonplaceholder.New(conf.External.JsonplaceholderURL)
+	actual := jsonplaceholder.New(config.New().External.JSONPlaceHolder)
 
 	is.NotNil(actual)
 }
