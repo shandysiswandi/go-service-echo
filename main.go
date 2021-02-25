@@ -1,24 +1,24 @@
 package main
 
 import (
-	"go-rest-echo/app"
-	"go-rest-echo/config"
-	"go-rest-echo/db"
-	"go-rest-echo/util/logger"
+	"go-service-echo/app"
+	"go-service-echo/config"
+	"go-service-echo/db"
+	"go-service-echo/util/logger"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	if err := godotenv.Load(".env"); err != nil {
-		print(err)
+		logger.Error(err)
 	}
 
 	config := config.New()
 
-	db, err := db.New(config.Database, config.App.Timezone)
+	db, err := db.New(config.Database)
 	if err != nil {
-		logger.LogError(err)
+		logger.Error(err)
 	}
 
 	app.New(config, db)
