@@ -1,20 +1,20 @@
-package redislib
+package redis
 
 import (
-	"go-rest-echo/config"
+	"go-service-echo/config"
 
-	"github.com/go-redis/redis"
+	lib "github.com/go-redis/redis"
 )
 
 // Redis is service for caching
 type Redis struct {
-	client *redis.Client
+	client *lib.Client
 }
 
 // New is constructor
 func New(c *config.RedisConfig) *Redis {
-	return &Redis{redis.NewClient(&redis.Options{
-		Addr:     c.Addr,
+	return &Redis{lib.NewClient(&lib.Options{
+		Addr:     c.Host,
 		Password: c.Password,
 		DB:       c.Database,
 	})}
