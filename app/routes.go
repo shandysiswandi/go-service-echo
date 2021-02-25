@@ -1,17 +1,17 @@
 package app
 
 import (
-	"go-rest-echo/app/library/jwtlib"
-	"go-rest-echo/app/library/redislib"
-	"go-rest-echo/app/library/sentrylib"
-	"go-rest-echo/config"
-	"go-rest-echo/db"
-	"go-rest-echo/external/jsonplaceholder"
-	"go-rest-echo/internal/authentication"
-	"go-rest-echo/internal/blogs"
-	"go-rest-echo/internal/tasks"
-	"go-rest-echo/internal/users"
-	"go-rest-echo/internal/welcomes"
+	"go-service-echo/app/library/jwt"
+	"go-service-echo/app/library/redis"
+	"go-service-echo/app/library/sentry"
+	"go-service-echo/config"
+	"go-service-echo/db"
+	"go-service-echo/external/jsonplaceholder"
+	"go-service-echo/internal/authentication"
+	"go-service-echo/internal/blogs"
+	"go-service-echo/internal/tasks"
+	"go-service-echo/internal/users"
+	"go-service-echo/internal/welcomes"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -20,15 +20,15 @@ import (
 func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	var (
 		// library
-		jwt    = jwtlib.New(c.Library.JWT)
-		redis  = redislib.New(c.Library.Redis)
-		sentry = sentrylib.New(c)
+		jwtLib = jwt.New(c.JWT)
+		redis  = redis.New(c.Redis)
+		sentry = sentry.New(c)
 
 		// external (thrid-party)
-		jph = jsonplaceholder.New(c.External.JsonplaceholderURL)
+		jph = jsonplaceholder.New(c.External.JSONPlaceHolder)
 
 		// welcomes
-		welcomeDelivery = welcomes.NewWeb(db, jwt, redis, sentry, jph)
+		welcomeDelivery = welcomes.NewWeb(db, jwtLib, redis, sentry, jph)
 
 		// users
 		userRepo     = users.NewMysql(db)
@@ -36,7 +36,7 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 		userDelivery = users.NewDelivery(userUsecase)
 
 		// auth
-		authUsecase  = authentication.NewUsecase(userRepo, jwt)
+		authUsecase  = authentication.NewUsecase(userRepo, jwtLib)
 		authDelivery = authentication.NewWeb(authUsecase)
 
 		// tasks
@@ -68,8 +68,8 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	/******--Restricted--*****/
 	api := e.Group("/api")
 	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &jwtlib.Claim{},
-		SigningKey: c.Library.JWT.AccessSecret,
+		Claims:     &jwt.Claim{},
+		SigningKey: c.JWT.AccessSecret,
 	}))
 
 	r = api.Group("/tasks")
