@@ -7,7 +7,6 @@ import (
 
 // New is
 func New() *Config {
-
 	app := &AppConfig{
 		Env:      os.Getenv("ENV"),
 		Host:     os.Getenv("HOST"),
