@@ -69,7 +69,7 @@ func TestNew_Redis_Config(t *testing.T) {
 
 	actual := config.New().Redis
 
-	is.Equal("localhost:1000", actual.Address)
+	is.Equal("localhost:1000", actual.Host)
 	is.Equal("password", actual.Password)
 	is.Equal(0, actual.Database)
 

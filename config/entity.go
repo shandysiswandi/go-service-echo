@@ -38,7 +38,7 @@ type JWTConfig struct {
 
 // RedisConfig is
 type RedisConfig struct {
-	Address  string
+	Host     string
 	Password string
 	Database int
 }
