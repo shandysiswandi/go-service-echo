@@ -63,7 +63,7 @@ func TestNew_JWT_Config(t *testing.T) {
 func TestNew_Redis_Config(t *testing.T) {
 	is := assert.New(t)
 
-	os.Setenv("REDIS_ADDRESS", "localhost:1000")
+	os.Setenv("REDIS_HOST", "localhost:1000")
 	os.Setenv("REDIS_PASSWORD", "password")
 	os.Setenv("REDIS_DATABASE", "0")
 
