@@ -1,6 +1,0 @@
-DB_DRIVER=mongo
-DB_HOST=127.0.0.1
-DB_PORT=27017
-DB_USERNAME=root
-DB_PASSWORD=password
-DB_NAME=go-service
