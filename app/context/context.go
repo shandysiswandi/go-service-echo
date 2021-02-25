@@ -3,8 +3,8 @@ package context
 import (
 	"errors"
 	"fmt"
-	"go-rest-echo/app/library/jwtlib"
-	"go-rest-echo/util/stringy"
+	"go-service-echo/app/library/jwtlib"
+	"go-service-echo/util/stringy"
 	"log"
 	"net/http"
 
