@@ -3,12 +3,12 @@ package context
 import (
 	"errors"
 	"fmt"
-	"go-service-echo/app/library/jwtlib"
+	"go-service-echo/app/library/jwt"
 	"go-service-echo/util/stringy"
 	"log"
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
+	jwtlib "github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -67,9 +67,9 @@ func (c *CustomContext) ValidateVar(value interface{}, tag string) map[string]in
 }
 
 // GetJWT is function to get data from jwt token
-func (c *CustomContext) GetJWT() (*jwtlib.Claim, string) {
-	user := c.Get("user").(*jwt.Token)
-	return user.Claims.(*jwtlib.Claim), user.Raw
+func (c *CustomContext) GetJWT() (*jwt.Claim, string) {
+	user := c.Get("user").(*jwtlib.Token)
+	return user.Claims.(*jwt.Claim), user.Raw
 }
 
 // Success is | 200, 201, 204
