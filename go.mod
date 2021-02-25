@@ -1,4 +1,4 @@
-module go-rest-echo
+module go-service-echo
 
 go 1.15
 
