@@ -1,10 +1,10 @@
 package app
 
 import (
-	"go-rest-echo/app/context"
-	"go-rest-echo/app/validation"
-	"go-rest-echo/config"
-	"go-rest-echo/db"
+	"go-service-echo/app/context"
+	"go-service-echo/app/validation"
+	"go-service-echo/config"
+	"go-service-echo/db"
 
 	"github.com/labstack/echo/v4"
 )
