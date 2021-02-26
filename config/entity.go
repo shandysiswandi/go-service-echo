@@ -3,6 +3,7 @@ package config
 // Config is
 type Config struct {
 	App      *AppConfig
+	SSL      *SSLConfig
 	Database *DatabaseConfig
 	JWT      *JWTConfig
 	Redis    *RedisConfig
@@ -17,6 +18,12 @@ type AppConfig struct {
 	Port     string
 	Name     string
 	Timezone string
+}
+
+// SSLConfig is
+type SSLConfig struct {
+	Cert string
+	Key  string
 }
 
 // DatabaseConfig is

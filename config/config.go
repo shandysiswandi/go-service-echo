@@ -15,6 +15,11 @@ func New() *Config {
 		Timezone: os.Getenv("TZ"),
 	}
 
+	ssl := &SSLConfig{
+		Cert: os.Getenv("SSL_CERT_PATH"),
+		Key:  os.Getenv("SSL_KEY_PATH"),
+	}
+
 	db := &DatabaseConfig{
 		Driver:   os.Getenv("DB_DRIVER"),
 		Host:     os.Getenv("DB_HOST"),
@@ -51,6 +56,7 @@ func New() *Config {
 
 	return &Config{
 		App:      app,
+		SSL:      ssl,
 		Database: db,
 		JWT:      jwt,
 		Redis:    redis,
