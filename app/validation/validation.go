@@ -10,8 +10,9 @@ type valid struct {
 }
 
 // New is
-func New(e *echo.Echo) {
+func New(e *echo.Echo) *echo.Echo {
 	e.Validator = &valid{validator: validator.New()}
+	return e
 }
 
 func (v *valid) Validate(i interface{}) error {

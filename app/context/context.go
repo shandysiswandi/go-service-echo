@@ -15,13 +15,15 @@ import (
 )
 
 // New is constructor
-func New(e *echo.Echo) {
+func New(e *echo.Echo) *echo.Echo {
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error { return next(&CustomContext{c}) }
 	})
 
 	// set custom error
 	e.HTTPErrorHandler = httpErrorHandler
+
+	return e
 }
 
 func httpErrorHandler(e error, c echo.Context) {
