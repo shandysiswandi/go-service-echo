@@ -19,7 +19,7 @@ const (
 	latency = "\033[33mLATENCY\033[0m: ${latency_human}"
 )
 
-func middlewares(e *echo.Echo) {
+func middlewares(e *echo.Echo) *echo.Echo {
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -56,4 +56,6 @@ func middlewares(e *echo.Echo) {
 		WaitForDelivery: false,
 		Timeout:         0,
 	}))
+
+	return e
 }

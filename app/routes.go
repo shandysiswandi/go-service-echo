@@ -17,7 +17,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func routes(e *echo.Echo, c *config.Config, db *db.Database) {
+func routes(e *echo.Echo, c *config.Config, db *db.Database) *echo.Echo {
 	var (
 		// library
 		jwtLib = jwt.New(c.JWT)
@@ -93,4 +93,6 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) {
 	r.PUT("/:id", blogDelivery.Update)
 	r.PATCH("/:id", blogDelivery.UpdateField)
 	r.DELETE("/:id", blogDelivery.Delete)
+
+	return e
 }
