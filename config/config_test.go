@@ -26,6 +26,18 @@ func TestNew_App_Config(t *testing.T) {
 	is.Equal("UTC", actual.Timezone)
 }
 
+func TestNew_SSL_Config(t *testing.T) {
+	is := assert.New(t)
+
+	os.Setenv("SSL_CERT_PATH", "cert")
+	os.Setenv("SSL_KEY_PATH", "key")
+
+	actual := config.New().SSL
+
+	is.Equal("cert", actual.Cert)
+	is.Equal("key", actual.Key)
+}
+
 func TestNew_Database_Config(t *testing.T) {
 	is := assert.New(t)
 
