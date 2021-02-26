@@ -9,15 +9,44 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// App is
+type App struct {
+	engine   *echo.Echo
+	config   *config.Config
+	database *db.Database
+}
+
 // New is
-func New(c *config.Config, db *db.Database) {
-	e := echo.New()
+func New(e *echo.Echo, c *config.Config, db *db.Database) *App {
+	return &App{e, c, db}
+}
 
-	context.New(e)
-	validation.New(e)
+// SetContext is
+func (a *App) SetContext() *App {
+	context.New(a.engine)
+	return a
+}
 
-	middlewares(e)
-	routes(e, c, db)
+// SetValidation is
+func (a *App) SetValidation() *App {
+	validation.New(a.engine)
+	return a
+}
 
-	e.Logger.Fatal(e.Start(":" + c.App.Port))
+// SetMiddlewares is
+func (a *App) SetMiddlewares() *App {
+	middlewares(a.engine)
+	return a
+}
+
+// SetRoutes is
+func (a *App) SetRoutes() *App {
+	routes(a.engine, a.config, a.database)
+	return a
+}
+
+// Run is
+func (a *App) Run() {
+	c := a.config
+	a.engine.Logger.Fatal(a.engine.StartTLS(":"+c.App.Port, c.SSL.Cert, c.SSL.Key))
 }
