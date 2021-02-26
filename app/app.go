@@ -48,5 +48,9 @@ func (a *App) SetRoutes() *App {
 // Run is
 func (a *App) Run() {
 	c := a.config
-	a.engine.Logger.Fatal(a.engine.StartTLS(":"+c.App.Port, c.SSL.Cert, c.SSL.Key))
+	if c.App.Env == "production" {
+		a.engine.Logger.Fatal(a.engine.StartTLS(":"+c.App.Port, c.SSL.Cert, c.SSL.Key))
+	} else {
+		a.engine.Logger.Fatal(a.engine.Start(":" + c.App.Port))
+	}
 }
