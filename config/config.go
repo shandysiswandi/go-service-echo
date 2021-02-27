@@ -30,6 +30,12 @@ func New() *Config {
 		Timezone: os.Getenv("DB_TIMEZONE"),
 	}
 
+	token := &TokenConfig{
+		TokenType:  os.Getenv("TOKEN_TYPE"),
+		AccessKey:  os.Getenv("TOKEN_ACCESS_KEY"),
+		RefreshKey: os.Getenv("TOKEN_REFRESH_KEY"),
+	}
+
 	jwt := &JWTConfig{
 		AccessSecret:  []byte(os.Getenv("JWT_ACCESS_SECRET")),
 		RefreshSecret: []byte(os.Getenv("JWT_REFRESH_SECRET")),
@@ -58,6 +64,7 @@ func New() *Config {
 		App:      app,
 		SSL:      ssl,
 		Database: db,
+		Token:    token,
 		JWT:      jwt,
 		Redis:    redis,
 		Sentry:   sentry,

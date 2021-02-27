@@ -5,6 +5,7 @@ type Config struct {
 	App      *AppConfig
 	SSL      *SSLConfig
 	Database *DatabaseConfig
+	Token    *TokenConfig
 	JWT      *JWTConfig
 	Redis    *RedisConfig
 	Sentry   *SentryConfig
@@ -35,6 +36,13 @@ type DatabaseConfig struct {
 	Password string
 	Name     string
 	Timezone string
+}
+
+// TokenConfig is
+type TokenConfig struct {
+	TokenType  string
+	AccessKey  string
+	RefreshKey string
 }
 
 // JWTConfig is
