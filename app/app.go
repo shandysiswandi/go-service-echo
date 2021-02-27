@@ -4,6 +4,7 @@ import (
 	"go-service-echo/app/context"
 	"go-service-echo/app/validation"
 	"go-service-echo/config"
+	"go-service-echo/config/constant"
 	"go-service-echo/db"
 
 	"github.com/labstack/echo/v4"
@@ -35,7 +36,7 @@ func (a *App) SetValidation() *App {
 
 // SetMiddlewares is
 func (a *App) SetMiddlewares() *App {
-	middlewares(a.engine)
+	middlewares(a.engine, a.config)
 	return a
 }
 
@@ -48,7 +49,7 @@ func (a *App) SetRoutes() *App {
 // Run is
 func (a *App) Run() {
 	c := a.config
-	if c.App.Env == "production" {
+	if c.App.Env == constant.Production {
 		a.engine.Logger.Fatal(a.engine.StartTLS(":"+c.App.Port, c.SSL.Cert, c.SSL.Key))
 	} else {
 		a.engine.Logger.Fatal(a.engine.Start(":" + c.App.Port))
