@@ -14,6 +14,7 @@ require (
 	github.com/klauspost/compress v1.11.7 // indirect
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/mattn/go-colorable v0.1.8 // indirect
+	github.com/o1egl/paseto v1.0.0
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/sirupsen/logrus v1.7.0
