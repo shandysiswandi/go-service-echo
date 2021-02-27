@@ -21,14 +21,6 @@ var (
 )
 
 type (
-	// Token is
-	Token interface {
-		NewAccessToken(PayloadData, time.Duration) (string, error)
-		NewRefreshToken(PayloadData, time.Duration) (string, error)
-		VerifyAccessToken(string) (*Payload, error)
-		VerifyRefreshToken(string) (*Payload, error)
-	}
-
 	// PayloadData is
 	PayloadData struct {
 		ID    string `json:"id"`
@@ -43,7 +35,8 @@ type (
 		ExpiredAt time.Time   `json:"expired_at"`
 	}
 
-	token struct {
+	// Token is
+	Token struct {
 		tokenType  string
 		accessKey  string
 		refreshKey string
@@ -51,7 +44,7 @@ type (
 )
 
 // New is
-func New(c *config.TokenConfig) (Token, error) {
+func New(c *config.TokenConfig) (*Token, error) {
 	if c == nil {
 		return nil, ErrConfigTokenNil
 	}
@@ -61,21 +54,23 @@ func New(c *config.TokenConfig) (Token, error) {
 	}
 
 	if c.TokenType == constant.JWT || c.TokenType == constant.Paseto {
-		return &token{c.TokenType, c.AccessKey, c.RefreshKey}, nil
+		return &Token{c.TokenType, c.AccessKey, c.RefreshKey}, nil
 	}
 
 	return nil, ErrTokenType
 }
 
-func (token *token) NewAccessToken(pd PayloadData, exp time.Duration) (string, error) {
+// NewAccessToken is
+func (token *Token) NewAccessToken(pd PayloadData, exp time.Duration) (string, error) {
 	return token.generate(pd, exp, token.accessKey)
 }
 
-func (token *token) NewRefreshToken(pd PayloadData, exp time.Duration) (string, error) {
+// NewRefreshToken is
+func (token *Token) NewRefreshToken(pd PayloadData, exp time.Duration) (string, error) {
 	return token.generate(pd, exp, token.refreshKey)
 }
 
-func (token *token) generate(pd PayloadData, exp time.Duration, key string) (string, error) {
+func (token *Token) generate(pd PayloadData, exp time.Duration, key string) (string, error) {
 	body := NewPayload(pd, exp)
 
 	if token.tokenType == constant.JWT {
@@ -85,15 +80,17 @@ func (token *token) generate(pd PayloadData, exp time.Duration, key string) (str
 	return paseto.NewV2().Encrypt([]byte(key), body, nil)
 }
 
-func (token *token) VerifyAccessToken(t string) (*Payload, error) {
+// VerifyAccessToken is
+func (token *Token) VerifyAccessToken(t string) (*Payload, error) {
 	return token.verify(t, token.accessKey)
 }
 
-func (token *token) VerifyRefreshToken(t string) (*Payload, error) {
+// VerifyRefreshToken is
+func (token *Token) VerifyRefreshToken(t string) (*Payload, error) {
 	return token.verify(t, token.refreshKey)
 }
 
-func (token *token) verify(t, k string) (*Payload, error) {
+func (token *Token) verify(t, k string) (*Payload, error) {
 	payload := &Payload{}
 
 	if token.tokenType == constant.JWT {
@@ -132,6 +129,11 @@ func (token *token) verify(t, k string) (*Payload, error) {
 	}
 
 	return payload, nil
+}
+
+// GetTokenType is
+func (token *Token) GetTokenType() string {
+	return token.tokenType
 }
 
 // NewPayload is

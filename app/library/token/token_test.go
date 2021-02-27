@@ -36,6 +36,17 @@ func TestNew_Config_Token_Type_Not_Support(t *testing.T) {
 	assert.Nil(t, theToken)
 }
 
+func TestNew_GetTokenType(t *testing.T) {
+	os.Setenv("TOKEN_TYPE", "jwt")
+	os.Setenv("TOKEN_ACCESS_KEY", "eyJhbGciOiJub25lIiwidHlwIjoiSldU")
+	os.Setenv("TOKEN_REFRESH_KEY", "48PX2KNDvmoPnF4BASrszNkwvw0l3Mgh")
+
+	theToken, err := token.New(config.New().Token)
+	assert.Nil(t, err)
+	assert.NotNil(t, theToken)
+	assert.Equal(t, "jwt", theToken.GetTokenType())
+}
+
 func TestNew_Token_JWT(t *testing.T) {
 	is := assert.New(t)
 	exp := time.Minute
