@@ -60,6 +60,20 @@ func TestNew_Database_Config(t *testing.T) {
 	is.Equal("UTC", actual.Timezone)
 }
 
+func TestNew_Token_Config(t *testing.T) {
+	is := assert.New(t)
+
+	os.Setenv("TOKEN_TYPE", "token")
+	os.Setenv("TOKEN_ACCESS_KEY", "access")
+	os.Setenv("TOKEN_REFRESH_KEY", "refresh")
+
+	actual := config.New().Token
+
+	is.Equal("token", actual.TokenType)
+	is.Equal("access", actual.AccessKey)
+	is.Equal("refresh", actual.RefreshKey)
+}
+
 func TestNew_JWT_Config(t *testing.T) {
 	is := assert.New(t)
 
