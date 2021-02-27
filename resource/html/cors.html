@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEST CORS</title>
+</head>
+<body>
+
+  <h1>Test cors</h1>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    var link = "http://localhost:50000/check-cors";
+    // GET
+    axios({
+      method: 'GET',
+      url: `${link}`,
+    });
+    // POST
+    axios({
+      method: 'POST',
+      url: `${link}`,
+    });
+    // PUT
+    axios({
+      method: 'PUT',
+      url: `${link}`,
+    });
+    // PATCH
+    axios({
+      method: 'PATCH',
+      url: `${link}`,
+    });
+    // DELETE
+    axios({
+      method: 'DELETE',
+      url: `${link}`,
+    });
+  </script>
+</body>
+</html>
