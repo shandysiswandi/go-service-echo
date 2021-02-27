@@ -8,24 +8,24 @@ import (
 
 // Sentry is
 type Sentry struct {
-	config *config.Config
+	config *config.SentryConfig
 }
 
 // New is
-func New(c *config.Config) *Sentry {
-	if err := lib.Init(lib.ClientOptions{Dsn: c.Sentry.DNS, Environment: c.Sentry.ENV}); err != nil {
-		return nil
+func New(c *config.SentryConfig) (*Sentry, error) {
+	if err := lib.Init(lib.ClientOptions{Dsn: c.DNS, Environment: c.ENV}); err != nil {
+		return nil, err
 	}
 
-	return &Sentry{c}
+	return &Sentry{c}, nil
 }
 
-// CaptureError is
-func (s *Sentry) CaptureError(e error) *lib.EventID {
+// Error is
+func (s *Sentry) Error(e error) *lib.EventID {
 	return lib.CaptureException(e)
 }
 
-// CaptureMessage is
-func (s *Sentry) CaptureMessage(msg string) *lib.EventID {
+// Message is
+func (s *Sentry) Message(msg string) *lib.EventID {
 	return lib.CaptureMessage(msg)
 }
