@@ -45,10 +45,6 @@ type (
 
 // New is
 func New(c *config.TokenConfig) (*Token, error) {
-	if c == nil {
-		return nil, ErrConfigTokenNil
-	}
-
 	if len(c.AccessKey) != 32 || len(c.RefreshKey) != 32 {
 		return nil, ErrKeyLengthToken
 	}

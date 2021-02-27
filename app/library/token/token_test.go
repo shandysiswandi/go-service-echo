@@ -11,12 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNew_Config_Nil(t *testing.T) {
-	theToken, err := token.New(nil)
-	assert.Equal(t, token.ErrConfigTokenNil, err)
-	assert.Nil(t, theToken)
-}
-
 func TestNew_Config_Key_Length(t *testing.T) {
 	os.Setenv("TOKEN_ACCESS_KEY", "access")
 	os.Setenv("TOKEN_REFRESH_KEY", "refresh")
