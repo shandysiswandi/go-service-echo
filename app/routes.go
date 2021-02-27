@@ -1,34 +1,41 @@
 package app
 
 import (
-	"go-service-echo/app/library/jwt"
 	"go-service-echo/app/library/redis"
 	"go-service-echo/app/library/sentry"
+	"go-service-echo/app/library/token"
 	"go-service-echo/config"
 	"go-service-echo/db"
 	"go-service-echo/external/jsonplaceholder"
+	"go-service-echo/internal"
 	"go-service-echo/internal/authentication"
-	"go-service-echo/internal/blogs"
-	"go-service-echo/internal/tasks"
 	"go-service-echo/internal/users"
-	"go-service-echo/internal/welcomes"
+	"go-service-echo/util/logger"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
-func routes(e *echo.Echo, c *config.Config, db *db.Database) *echo.Echo {
+func routes(e *echo.Echo, c *config.Config, db *db.Database) {
+	// library Token
+	token, err := token.New(c.Token)
+	if err != nil {
+		logger.Error(err)
+	}
+
+	// library sentry
+	sentry, err := sentry.New(c.Sentry)
+	if err != nil {
+		logger.Error(err)
+	}
+
 	var (
-		// library
-		jwtLib = jwt.New(c.JWT)
-		redis  = redis.New(c.Redis)
-		sentry = sentry.New(c)
+		redis = redis.New(c.Redis)
 
 		// external (thrid-party)
 		jph = jsonplaceholder.New(c.External.JSONPlaceHolder)
 
 		// welcomes
-		welcomeDelivery = welcomes.NewWeb(db, jwtLib, redis, sentry, jph)
+		dDefault = internal.NewDefault(db, token, redis, sentry, jph)
 
 		// users
 		userRepo     = users.NewMysql(db)
@@ -36,26 +43,14 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) *echo.Echo {
 		userDelivery = users.NewDelivery(userUsecase)
 
 		// auth
-		authUsecase  = authentication.NewUsecase(userRepo, jwtLib)
+		authUsecase  = authentication.NewUsecase(userRepo, nil)
 		authDelivery = authentication.NewWeb(authUsecase)
-
-		// tasks
-		taskRepo     = tasks.NewMysql(db)
-		taskUsecase  = tasks.NewUsecase(taskRepo)
-		taskDelivery = tasks.NewDelivery(taskUsecase)
-
-		// blogs
-		blogMysqlRepository = blogs.NewMysql(db)
-		// blogPostgresqlRepository = blogs.NewPostgresql(db)
-		blogUsecase  = blogs.NewUsecase(blogMysqlRepository)
-		blogDelivery = blogs.NewWeb(blogUsecase)
 	)
 
-	e.GET("/", welcomeDelivery.Home)
-	e.GET("/favicon.ico", welcomeDelivery.Favicon)
-	e.GET("/check-database", welcomeDelivery.CheckDatabase)
-	e.GET("/check-library", welcomeDelivery.CheckLibrary)
-	e.GET("/check-external", welcomeDelivery.CheckExternal)
+	e.GET("/", dDefault.Default)                                  // default route and check | db | token | sentry
+	e.Any("/cors", dDefault.CORS)                                 // for cors testing
+	e.GET("/favicon.ico", dDefault.Favicon)                       // for request via browser
+	e.GET("/example-external-call", dDefault.ExampleExternalCall) // example external call
 
 	r := e.Group("/auth")
 	r.POST("/login", authDelivery.Login)
@@ -65,34 +60,10 @@ func routes(e *echo.Echo, c *config.Config, db *db.Database) *echo.Echo {
 	r.POST("/refresh", authDelivery.Login)
 	r.POST("/logout", authDelivery.Login)
 
-	/******--Restricted--*****/
-	api := e.Group("/api")
-	api.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		Claims:     &jwt.Claim{},
-		SigningKey: c.JWT.AccessSecret,
-	}))
-
-	r = api.Group("/tasks")
-	r.GET("", taskDelivery.Fetch)
-	r.GET("/:id", taskDelivery.Get)
-	r.POST("", taskDelivery.Create)
-	r.PUT("/:id", taskDelivery.Update)
-	r.DELETE("/:id", taskDelivery.Delete)
-
-	r = api.Group("/users")
+	r = e.Group("/users")
 	r.GET("", userDelivery.Fetch)
 	r.GET("/:id", userDelivery.Get)
 	r.POST("", userDelivery.Create)
 	r.PUT("/:id", userDelivery.Update)
 	r.DELETE("/:id", userDelivery.Delete)
-
-	r = api.Group("/blogs")
-	r.GET("", blogDelivery.Fetch)
-	r.GET("/:id", blogDelivery.Get)
-	r.POST("", blogDelivery.Create)
-	r.PUT("/:id", blogDelivery.Update)
-	r.PATCH("/:id", blogDelivery.UpdateField)
-	r.DELETE("/:id", blogDelivery.Delete)
-
-	return e
 }
