@@ -37,12 +37,12 @@ func (u *AuthUsecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 
 	// call generate token
 	data := token.PayloadData{ID: user.ID, Email: user.Email}
-	rl.AccessToken, err = u.token.NewAccessToken(data, time.Minute)
+	rl.AccessToken, err = u.token.NewAccessToken(data, time.Hour)
 	if err != nil {
 		return nil, err
 	}
 
-	rl.RefreshToken, err = u.token.NewRefreshToken(data, time.Hour)
+	rl.RefreshToken, err = u.token.NewRefreshToken(data, 24*time.Hour)
 	if err != nil {
 		return nil, err
 	}
