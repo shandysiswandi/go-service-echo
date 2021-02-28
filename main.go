@@ -27,7 +27,7 @@ func main() {
 	/********** ********** ********** **********/
 	app := app.New(config).
 		RegisterContext().
-		SetValidation().
+		RegisterValidation().
 		RegisterMiddlewares().
 		RegisterRoutes()
 
