@@ -3,6 +3,7 @@ package users
 import (
 	"go-service-echo/app/context"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,8 +13,8 @@ type UserHandler struct {
 	usecase *UserUsecase
 }
 
-// NewDelivery is
-func NewDelivery(u *UserUsecase) *UserHandler {
+// NewUserHandler is
+func NewUserHandler(u *UserUsecase) *UserHandler {
 	return &UserHandler{usecase: u}
 }
 
@@ -29,7 +30,7 @@ func (d *UserHandler) Fetch(cc echo.Context) (err error) {
 	}
 
 	// response
-	return c.Success(http.StatusOK, "fetch users", result)
+	return c.Success(http.StatusOK, "fetch users", result.Transform())
 }
 
 // Get is
@@ -107,11 +108,9 @@ func (d *UserHandler) Update(cc echo.Context) (err error) {
 
 // Delete is
 func (d *UserHandler) Delete(cc echo.Context) (err error) {
-	// extend echo.Context
 	c := cc.(*context.CustomContext)
 
 	// define variables
-	u := User{}
 	id := c.Param("id")
 
 	// usecase
@@ -121,6 +120,6 @@ func (d *UserHandler) Delete(cc echo.Context) (err error) {
 
 	// response
 	return c.Success(http.StatusOK, "delete user", map[string]interface{}{
-		"deleted_at": u.DeletedAt,
+		"deleted_at": time.Now(),
 	})
 }

@@ -11,7 +11,7 @@ func NewUserUsecase(r UserRepository) *UserUsecase {
 }
 
 // Fetch is
-func (u *UserUsecase) Fetch() (*[]User, error) {
+func (u *UserUsecase) Fetch() (Users, error) {
 	return u.userRepository.Fetch()
 }
 
