@@ -74,18 +74,6 @@ func TestNew_Token_Config(t *testing.T) {
 	is.Equal("refresh", actual.RefreshKey)
 }
 
-func TestNew_JWT_Config(t *testing.T) {
-	is := assert.New(t)
-
-	os.Setenv("JWT_ACCESS_SECRET", "access")
-	os.Setenv("JWT_REFRESH_SECRET", "refresh")
-
-	actual := config.New().JWT
-
-	is.Equal([]byte("access"), actual.AccessSecret)
-	is.Equal([]byte("refresh"), actual.RefreshSecret)
-}
-
 func TestNew_Redis_Config(t *testing.T) {
 	is := assert.New(t)
 

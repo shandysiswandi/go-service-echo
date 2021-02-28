@@ -5,6 +5,70 @@ import (
 	"strconv"
 )
 
+type (
+	// Config is
+	Config struct {
+		App      *AppConfig
+		SSL      *SSLConfig
+		Database *DatabaseConfig
+		Token    *TokenConfig
+		Redis    *RedisConfig
+		Sentry   *SentryConfig
+		External *ExternalConfig
+	}
+
+	// AppConfig is
+	AppConfig struct {
+		Env      string
+		Host     string
+		Port     string
+		Name     string
+		Timezone string
+	}
+
+	// SSLConfig is
+	SSLConfig struct {
+		Cert string
+		Key  string
+	}
+
+	// DatabaseConfig is
+	DatabaseConfig struct {
+		Driver   string
+		Host     string
+		Port     string
+		Username string
+		Password string
+		Name     string
+		Timezone string
+	}
+
+	// TokenConfig is
+	TokenConfig struct {
+		TokenType  string
+		AccessKey  string
+		RefreshKey string
+	}
+
+	// RedisConfig is
+	RedisConfig struct {
+		Host     string
+		Password string
+		Database int
+	}
+
+	// SentryConfig is
+	SentryConfig struct {
+		DNS string
+		ENV string
+	}
+
+	// ExternalConfig is
+	ExternalConfig struct {
+		JSONPlaceHolder string
+	}
+)
+
 // New is
 func New() *Config {
 	app := &AppConfig{
@@ -36,11 +100,6 @@ func New() *Config {
 		RefreshKey: os.Getenv("TOKEN_REFRESH_KEY"),
 	}
 
-	jwt := &JWTConfig{
-		AccessSecret:  []byte(os.Getenv("JWT_ACCESS_SECRET")),
-		RefreshSecret: []byte(os.Getenv("JWT_REFRESH_SECRET")),
-	}
-
 	lrd, err := strconv.Atoi(os.Getenv("REDIS_DATABASE"))
 	if err != nil {
 		lrd = 0
@@ -65,7 +124,6 @@ func New() *Config {
 		SSL:      ssl,
 		Database: db,
 		Token:    token,
-		JWT:      jwt,
 		Redis:    redis,
 		Sentry:   sentry,
 		External: ext,
