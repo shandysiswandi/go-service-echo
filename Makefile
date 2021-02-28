@@ -73,4 +73,8 @@ dev: lint
 start: lint
 	@clear
 	@go run main.go
+
+cli: lint
+	@clear
+	@go run cmd/main.go
 # -------------------------------------------------------------------------------------------------- #
