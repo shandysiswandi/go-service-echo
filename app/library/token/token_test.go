@@ -11,13 +11,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNew_Config_Key_Length(t *testing.T) {
+func TestNew_Config_Key_Length_Paseto(t *testing.T) {
+	os.Setenv("TOKEN_TYPE", "paseto")
 	os.Setenv("TOKEN_ACCESS_KEY", "access")
 	os.Setenv("TOKEN_REFRESH_KEY", "refresh")
 
 	theToken, err := token.New(config.New().Token)
 	assert.Equal(t, token.ErrKeyLengthToken, err)
 	assert.Nil(t, theToken)
+}
+
+func TestNew_Config_Key_Length_JWT(t *testing.T) {
+	os.Setenv("TOKEN_TYPE", "jwt")
+	os.Setenv("TOKEN_ACCESS_KEY", "access")
+	os.Setenv("TOKEN_REFRESH_KEY", "refresh")
+
+	theToken, err := token.New(config.New().Token)
+	assert.Nil(t, err)
+	assert.NotNil(t, theToken)
 }
 
 func TestNew_Config_Token_Type_Not_Support(t *testing.T) {

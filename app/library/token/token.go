@@ -45,7 +45,7 @@ type (
 
 // New is
 func New(c *config.TokenConfig) (*Token, error) {
-	if len(c.AccessKey) != 32 || len(c.RefreshKey) != 32 {
+	if c.TokenType == constant.Paseto && (len(c.AccessKey) != 32 || len(c.RefreshKey) != 32) {
 		return nil, ErrKeyLengthToken
 	}
 
