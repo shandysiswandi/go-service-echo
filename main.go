@@ -2,20 +2,18 @@ package main
 
 import (
 	"go-service-echo/app"
-	"go-service-echo/app/library/token"
 	"go-service-echo/config"
-	"go-service-echo/db"
+	"go-service-echo/config/constant"
 	"go-service-echo/util/logger"
 
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
 )
 
 func main() {
 	/********** ********** ********** **********/
 	/* Load environment
 	/********** ********** ********** **********/
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load(); err != nil {
 		logger.Error(err)
 	}
 
@@ -25,28 +23,23 @@ func main() {
 	config := config.New()
 
 	/********** ********** ********** **********/
-	/* Define database variable
+	/* Define server and app variable
 	/********** ********** ********** **********/
-	db, err := db.New(config.Database)
-	if err != nil {
-		logger.Error(err)
-	}
-
-	/********** ********** ********** **********/
-	/* Define token library variable
-	/********** ********** ********** **********/
-	token, err := token.New(config.Token)
-	if err != nil {
-		logger.Error(err)
-	}
-
-	/********** ********** ********** **********/
-	/* Define server and app variable then run it
-	/********** ********** ********** **********/
-	app.New(echo.New(), config, db, token).
-		SetContext().
+	app := app.New(config).
+		RegisterContext().
 		SetValidation().
-		SetMiddlewares().
-		SetRoutes().
-		Run()
+		RegisterMiddlewares().
+		RegisterRoutes()
+
+	/********** ********** ********** **********/
+	/* run application server
+	/********** ********** ********** **********/
+	appLogger := app.GetLogger()
+	appEngine := app.GetEngine()
+
+	if config.App.Env == constant.Production {
+		appLogger.Fatal(appEngine.StartTLS(":"+config.App.Port, config.SSL.Cert, config.SSL.Key))
+	}
+
+	appLogger.Fatal(appEngine.Start(":" + config.App.Port))
 }
