@@ -58,7 +58,7 @@ func (r *Routes) Auth(db *db.Database, tok *token.Token) *Routes {
 func (r *Routes) Users(db *db.Database) *Routes {
 	userRepo := users.NewGormRepository(db)
 	userUsecase := users.NewUserUsecase(userRepo)
-	userHanlder := users.NewDelivery(userUsecase)
+	userHanlder := users.NewUserHandler(userUsecase)
 
 	usersRoute := r.prefix.Group("/users")
 	usersRoute.GET("", userHanlder.Fetch)
