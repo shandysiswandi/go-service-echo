@@ -13,16 +13,77 @@ import (
 	"gorm.io/gorm"
 )
 
+// errors
+var (
+	ErrInvalidCredential   = errors.New("Invalid Credential")
+	ErrFailedGenerateToken = errors.New("Failed Generate Token")
+
+	ErrInvalidCredentialMessage   = "Invalid Credential"
+	ErrFailedGenerateTokenMessage = "Failed Generate Token"
+	ErrNotFoundMessage            = "Not Found, your request data not found in our database"
+	ErrInternalServerMessage      = "Internal Server Error"
+	ErrBadRequest                 = "Validation Failed"
+	ErrUnprocessableEntity        = "Bad Request, something wrong on your request"
+
+	// custom error
+	err400 = "The URL you want is protected, you must supplied token"
+	err401 = "The token you supplied is invalid"
+	err404 = "The URL you want is not in this application"
+	err405 = "The URL you want is not using this METHOD"
+
+	// validation message
+	minMsg      = "value must be at least"
+	requiredMsg = "value must be required"
+	emailMsg    = "value must be a valid email"
+	defaultMsg  = "value must be validate"
+)
+
+type (
+	// CustomContext is
+	CustomContext struct {
+		echo.Context
+	}
+
+	// ResponseError is
+	ResponseError struct {
+		Success bool        `json:"success"`
+		Message string      `json:"message"`
+		Error   interface{} `json:"error"`
+	}
+
+	// ResponseSuccess is
+	ResponseSuccess struct {
+		Success bool        `json:"success"`
+		Message string      `json:"message"`
+		Data    interface{} `json:"data"`
+	}
+
+	// Pagination is
+	Pagination struct {
+		Total    int `json:"total"`
+		Limit    int `json:"limit"`
+		Page     int `json:"page"`
+		NextPage int `json:"next_page"`
+		PrevPage int `json:"prev_page"`
+	}
+
+	// ResponseSuccessWithPaginate is
+	ResponseSuccessWithPaginate struct {
+		Success    bool        `json:"success"`
+		Message    string      `json:"message"`
+		Data       interface{} `json:"data"`
+		Pagination Pagination  `json:"pagination"`
+	}
+)
+
 // New is constructor
-func New(e *echo.Echo) *echo.Echo {
+func New(e *echo.Echo) {
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error { return next(&CustomContext{c}) }
 	})
 
 	// set custom error
 	e.HTTPErrorHandler = httpErrorHandler
-
-	return e
 }
 
 func httpErrorHandler(e error, c echo.Context) {
@@ -45,7 +106,9 @@ func httpErrorHandler(e error, c echo.Context) {
 	c.JSON(code, ResponseError{false, message, e})
 }
 
-// ValidateVar is
+// ValidateVar is function to validate one line variable
+// ex:  myEmail := "joeybloggs.gmail.com"
+// err := c.ValidateVar(myEmail, "required,email")
 func (c *CustomContext) ValidateVar(value interface{}, tag string) map[string]interface{} {
 	var v = validator.New()
 	var e map[string]interface{}
