@@ -1,31 +1,37 @@
 package users
 
-type usecase struct {
+// UserUsecase is
+type UserUsecase struct {
 	userRepository UserRepository
 }
 
-// NewUsecase is
-func NewUsecase(r UserRepository) UserUsecase {
-	return &usecase{userRepository: r}
+// NewUserUsecase is
+func NewUserUsecase(r UserRepository) *UserUsecase {
+	return &UserUsecase{userRepository: r}
 }
 
-func (u *usecase) Fetch() (*[]User, error) {
+// Fetch is
+func (u *UserUsecase) Fetch() (*[]User, error) {
 	return u.userRepository.Fetch()
 }
 
-func (u *usecase) Get(ID string) (*User, error) {
+// Get is
+func (u *UserUsecase) Get(ID string) (*User, error) {
 	return u.userRepository.Get(ID)
 }
 
-func (u *usecase) Create(eu *User) error {
+// Create is
+func (u *UserUsecase) Create(eu *User) error {
 	eu.SetID()
 	return u.userRepository.Create(eu)
 }
 
-func (u *usecase) Update(t *User, ID string) error {
+// Update is
+func (u *UserUsecase) Update(t *User, ID string) error {
 	return u.userRepository.Update(t, ID)
 }
 
-func (u *usecase) Delete(ID string) error {
+// Delete is
+func (u *UserUsecase) Delete(ID string) error {
 	return u.userRepository.Delete(ID)
 }

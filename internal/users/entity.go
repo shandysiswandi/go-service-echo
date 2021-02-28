@@ -7,6 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// UserRepository is
+type UserRepository interface {
+	Fetch() (*[]User, error)
+	Get(string) (*User, error)
+	GetByEmail(email string) (*User, error)
+
+	Create(*User) error
+	Update(*User, string) error
+	Delete(string) error
+}
+
 // User is
 type User struct {
 	ID        string         `json:"id"`
@@ -18,6 +29,9 @@ type User struct {
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
 	// Task      []Task
 }
+
+// Users is
+type Users []User
 
 // TableName is
 func (User) TableName() string {
