@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 )
 
 type (
@@ -11,11 +12,33 @@ type (
 	UserRepository interface {
 		Fetch() (Users, error)
 		Get(string) (*User, error)
-		GetByEmail(email string) (*User, error)
+		GetByEmail(string) (*User, error)
 
 		Create(*User) error
 		Update(*User, string) error
 		Delete(string) error
+	}
+
+	// UserUsecase is
+	UserUsecase interface {
+		Fetch() (Users, error)
+		Get(string) (*User, error)
+		GetByEmail(string) (*User, error)
+
+		Create(*User) error
+		Update(*User, string) error
+		Delete(string) error
+	}
+
+	// UserHandler is
+	UserHandler interface {
+		Fetch(echo.Context) error
+		Get(echo.Context) error
+		GetByEmail(echo.Context) error
+
+		Create(echo.Context) error
+		Update(echo.Context) error
+		Delete(echo.Context) error
 	}
 
 	// UserResponse is
