@@ -36,13 +36,14 @@ func New(e *echo.Echo) *Middlewares {
 // PreRouter is middleware to the chain which is run before router.
 func (mid *Middlewares) PreRouter() *Middlewares {
 	mid.engine.Pre(middleware.RemoveTrailingSlash())
-	mid.engine.Pre(middleware.Recover())
 
 	return mid
 }
 
 // PraRouter is middleware to the chain which is run after router.
 func (mid *Middlewares) PraRouter(token *token.Token) *Middlewares {
+	mid.engine.Use(middleware.Recover())
+
 	mid.engine.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowCredentials: true,
 		AllowOrigins:     []string{"*"},
