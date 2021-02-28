@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-service-echo/app"
+	"go-service-echo/app/library/token"
 	"go-service-echo/config"
 	"go-service-echo/db"
 	"go-service-echo/util/logger"
@@ -32,9 +33,17 @@ func main() {
 	}
 
 	/********** ********** ********** **********/
+	/* Define token library variable
+	/********** ********** ********** **********/
+	token, err := token.New(config.Token)
+	if err != nil {
+		logger.Error(err)
+	}
+
+	/********** ********** ********** **********/
 	/* Define server and app variable then run it
 	/********** ********** ********** **********/
-	app.New(echo.New(), config, db).
+	app.New(echo.New(), config, db, token).
 		SetContext().
 		SetValidation().
 		SetMiddlewares().
