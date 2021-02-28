@@ -3,7 +3,7 @@ package redis
 import (
 	"go-service-echo/config"
 
-	lib "github.com/go-redis/redis"
+	lib "github.com/go-redis/redis/v8"
 )
 
 // Redis is service for caching
@@ -13,6 +13,8 @@ type Redis struct {
 
 // New is constructor
 func New(c *config.RedisConfig) *Redis {
+	// dsn := fmt.Sprintf("redis://%s/<db>")
+	// opt, err := lib.ParseURL("redis://localhost:6379/<db>")
 	return &Redis{lib.NewClient(&lib.Options{
 		Addr:     c.Host,
 		Password: c.Password,
@@ -21,21 +23,22 @@ func New(c *config.RedisConfig) *Redis {
 }
 
 // Get is
-func (Redis) Get() error {
+func (r *Redis) Get() error {
+	// r.client.Get(1, "")
 	return nil
 }
 
 // Set is
-func (Redis) Set() error {
+func (r *Redis) Set() error {
 	return nil
 }
 
 // Increment is
-func (Redis) Increment() error {
+func (r *Redis) Increment() error {
 	return nil
 }
 
 // Decrement is
-func (Redis) Decrement() error {
+func (r *Redis) Decrement() error {
 	return nil
 }
