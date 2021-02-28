@@ -8,19 +8,16 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// UserHandler is
-type UserHandler struct {
-	usecase *UserUsecase
+type userHandler struct {
+	usecase UserUsecase
 }
 
 // NewUserHandler is
-func NewUserHandler(u *UserUsecase) *UserHandler {
-	return &UserHandler{usecase: u}
+func NewUserHandler(u UserUsecase) UserHandler {
+	return &userHandler{u}
 }
 
-// Fetch is
-func (d *UserHandler) Fetch(cc echo.Context) (err error) {
-	// extend echo.Context
+func (d *userHandler) Fetch(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// usecase
@@ -33,9 +30,7 @@ func (d *UserHandler) Fetch(cc echo.Context) (err error) {
 	return c.Success(http.StatusOK, "fetch users", result.Transform())
 }
 
-// Get is
-func (d *UserHandler) Get(cc echo.Context) (err error) {
-	// extend echo.Context
+func (d *userHandler) Get(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
@@ -51,9 +46,28 @@ func (d *UserHandler) Get(cc echo.Context) (err error) {
 	return c.Success(http.StatusOK, "get user", result)
 }
 
-// Create is
-func (d *UserHandler) Create(cc echo.Context) (err error) {
-	// extend echo.Context
+func (d *userHandler) GetByEmail(cc echo.Context) (err error) {
+	c := cc.(*context.CustomContext)
+
+	// define variables
+	email := c.Param("email")
+
+	// validation
+	if err := c.ValidateVar(email, "required,email,min:5"); err != nil {
+		return c.UnprocessableEntityVar(err)
+	}
+
+	// usecase
+	result, err := d.usecase.GetByEmail(email)
+	if err != nil {
+		return c.HandleErrors(err)
+	}
+
+	// response
+	return c.Success(http.StatusOK, "get user by email", result)
+}
+
+func (d *userHandler) Create(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
@@ -78,9 +92,7 @@ func (d *UserHandler) Create(cc echo.Context) (err error) {
 	return c.Success(http.StatusCreated, "create user", u)
 }
 
-// Update is
-func (d *UserHandler) Update(cc echo.Context) (err error) {
-	// extend echo.Context
+func (d *userHandler) Update(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
@@ -106,8 +118,7 @@ func (d *UserHandler) Update(cc echo.Context) (err error) {
 	return c.Success(http.StatusOK, "update task", u)
 }
 
-// Delete is
-func (d *UserHandler) Delete(cc echo.Context) (err error) {
+func (d *userHandler) Delete(cc echo.Context) (err error) {
 	c := cc.(*context.CustomContext)
 
 	// define variables
