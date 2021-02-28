@@ -15,21 +15,15 @@ import (
 
 // errors
 var (
-	ErrInvalidCredential   = errors.New("Invalid Credential")
-	ErrFailedGenerateToken = errors.New("Failed Generate Token")
-
-	ErrInvalidCredentialMessage   = "Invalid Credential"
-	ErrFailedGenerateTokenMessage = "Failed Generate Token"
-	ErrNotFoundMessage            = "Not Found, your request data not found in our database"
-	ErrInternalServerMessage      = "Internal Server Error"
-	ErrBadRequest                 = "Validation Failed"
-	ErrUnprocessableEntity        = "Bad Request, something wrong on your request"
-
-	// custom error
-	err400 = "The URL you want is protected, you must supplied token"
-	err401 = "The token you supplied is invalid"
-	err404 = "The URL you want is not in this application"
-	err405 = "The URL you want is not using this METHOD"
+	ErrBadRequest          = errors.New("Bad Request, something wrong on your request")           // 400
+	ErrInvalidCredential   = errors.New("Invalid Credential")                                     // 401
+	ErrUnauthorized        = errors.New("Need Authorizetion Credential")                          // 401
+	ErrNotFound            = errors.New("Not Found, your request data not found in our database") // 404
+	ErrNotFoundRoute       = errors.New("Not Found, URL you want is not in this application")     // 404
+	ErrMethodNotAllowed    = errors.New("Method Not Allowed")                                     // 405
+	ErrUnprocessableEntity = errors.New("Validation Failed")                                      // 422
+	ErrFailedGenerateToken = errors.New("Failed Generate Token")                                  // 500
+	ErrInternalServer      = errors.New("Internal Server Error")                                  // 500
 
 	// validation message
 	minMsg      = "value must be at least"
@@ -83,32 +77,33 @@ func New(e *echo.Echo) {
 	})
 
 	// set custom error
-	e.HTTPErrorHandler = httpErrorHandler
-}
+	e.HTTPErrorHandler = func(e error, c echo.Context) {
+		code := http.StatusInternalServerError
+		message := ErrInternalServer.Error()
 
-func httpErrorHandler(e error, c echo.Context) {
-	code := http.StatusInternalServerError
-	message := ErrInternalServerMessage
+		if he, ok := e.(*echo.HTTPError); ok {
+			switch he.Code {
+			case 404:
+				message = ErrNotFoundRoute.Error()
+				e = nil
+			case 405:
+				message = ErrMethodNotAllowed.Error()
+				e = nil
+			}
 
-	if he, ok := e.(*echo.HTTPError); ok {
-		switch he.Code {
-		case 404:
-			message = err404
-			e = errors.New("404")
-		case 405:
-			message = err405
-			e = errors.New("405")
+			code = he.Code
 		}
 
-		code = he.Code
+		c.JSON(code, ResponseError{false, message, e})
 	}
-
-	c.JSON(code, ResponseError{false, message, e})
 }
 
 // ValidateVar is function to validate one line variable
-// ex:  myEmail := "joeybloggs.gmail.com"
-// err := c.ValidateVar(myEmail, "required,email")
+// example:
+// myEmail := "joeybloggs.gmail.com"
+// if err := c.ValidateVar(id, "email"); err != nil {
+//    return c.UnprocessableEntityVar(err)
+// }
 func (c *CustomContext) ValidateVar(value interface{}, tag string) map[string]interface{} {
 	var v = validator.New()
 	var e map[string]interface{}
@@ -136,12 +131,17 @@ func (c *CustomContext) SuccessWithPaginate(code int, m string, p Pagination, d 
 
 // Unauthorized is | 401
 func (c *CustomContext) Unauthorized(err interface{}) error {
-	return c.commonError(http.StatusUnauthorized, "The URL is protected, you must supplied token", err)
+	return c.commonError(http.StatusUnauthorized, ErrUnauthorized.Error(), err)
 }
 
 // BadRequest is | 400
 func (c *CustomContext) BadRequest(err interface{}) error {
-	return c.commonError(http.StatusBadRequest, ErrBadRequest, err)
+	return c.commonError(http.StatusBadRequest, ErrBadRequest.Error(), err)
+}
+
+// UnprocessableEntityVar is | 422
+func (c *CustomContext) UnprocessableEntityVar(m map[string]interface{}) error {
+	return c.commonError(http.StatusUnprocessableEntity, ErrUnprocessableEntity.Error(), m)
 }
 
 // UnprocessableEntity is | 422
@@ -156,7 +156,7 @@ func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 		})
 	}
 
-	return c.commonError(http.StatusUnprocessableEntity, ErrUnprocessableEntity, e)
+	return c.commonError(http.StatusUnprocessableEntity, ErrUnprocessableEntity.Error(), e)
 }
 
 // HandleErrors is | 4xx - 5xx
@@ -175,7 +175,7 @@ func (c *CustomContext) HandleErrors(e error) error {
 
 	// no record in table of database | 404
 	if errors.Is(e, gorm.ErrRecordNotFound) {
-		return c.commonError(http.StatusNotFound, ErrNotFoundMessage, gorm.ErrRecordNotFound)
+		return c.commonError(http.StatusNotFound, ErrNotFound.Error(), nil)
 	}
 
 	// login failed | 401
@@ -183,14 +183,15 @@ func (c *CustomContext) HandleErrors(e error) error {
 		return c.commonError(http.StatusUnauthorized, ErrInvalidCredential.Error(), nil)
 	}
 
+	// login failed or failed generate token | 500
 	if errors.Is(e, ErrFailedGenerateToken) {
-		return c.commonError(http.StatusInternalServerError, ErrFailedGenerateTokenMessage, ErrFailedGenerateToken)
+		return c.commonError(http.StatusInternalServerError, ErrFailedGenerateToken.Error(), nil)
 	}
 
-	return c.commonError(http.StatusInternalServerError, ErrInternalServerMessage, e)
+	return c.commonError(http.StatusInternalServerError, ErrInternalServer.Error(), nil)
 }
 
-/*---------- private methods or functions ----------*/
+// commonError is
 func (c *CustomContext) commonError(code int, m string, e interface{}) error {
 	return c.JSON(code, ResponseError{false, m, e})
 }
