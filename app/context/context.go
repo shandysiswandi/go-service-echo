@@ -98,6 +98,12 @@ func New(e *echo.Echo) {
 	}
 }
 
+// GetTokenData is
+func (c *CustomContext) GetTokenData() token.PayloadData {
+	tokPayload := c.Get("user").(*token.Payload)
+	return tokPayload.Data
+}
+
 // ValidateVar is function to validate one line variable
 // example:
 // myEmail := "joeybloggs.gmail.com"
