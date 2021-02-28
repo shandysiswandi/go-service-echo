@@ -1,40 +1,38 @@
 # Go REST Echo
-is
+go started template for building micro service using framework echo.
 
 ## Project Structure
-    .
-    ├── app
-    ├── config
-    │   ├── .env.test
-    │   ├── config_test.go
-    │   └── config.go
-    ├── db
-    │   ├── db_test.go
-    │   └── db.go
-    ├── external
-    │   └── .gitkeep
-    ├── internal
-    │   ├── users
-    │   └── tasks
-    ├── resource
-    │   ├── ...
-    │   └── .gitkeep
-    ├── service
-    │   └── .gitkeep
-    ├── util
-    │   └── .gitkeep
-    ├── .dockerignore
-    ├── .env.example
-    ├── .gitignore
-    ├── Dockerfile
-    ├── go.mod
-    ├── go.sum
-    ├── main.go
-    ├── Makefile
-    ├── mysql.sql
-    ├── README.md
-    ├── requests.http
-    └── serverless.yml
+```
+.
+├── app
+│   ├── context
+│   ├── library
+│   │   ├── redis
+│   │   ├── sentry
+│   │   └── token
+│   ├── middlewares
+│   ├── routes
+│   └── validation
+├── config
+│   └── constant
+├── db
+├── external
+│   └── jsonplaceholder
+├── internal
+│   ├── authentication
+│   └── users
+├── resource
+│   ├── html
+│   ├── log
+│   ├── media
+│   └── ssl
+└── util
+    ├── arrays
+    ├── bcrypt
+    ├── logger
+    ├── numbers
+    └── stringy
+```
 
 ## Routes List
 asas
