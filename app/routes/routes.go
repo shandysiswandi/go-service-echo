@@ -39,7 +39,7 @@ func (r *Routes) Default(db *db.Database, tok *token.Token, red *redis.Redis, se
 
 // Auth is
 func (r *Routes) Auth(db *db.Database, tok *token.Token) *Routes {
-	userRepo := users.NewMysql(db)
+	userRepo := users.NewGormRepository(db)
 	authUsecase := authentication.NewUsecase(userRepo, tok)
 	authHanlder := authentication.NewHandler(authUsecase)
 
@@ -56,8 +56,8 @@ func (r *Routes) Auth(db *db.Database, tok *token.Token) *Routes {
 
 // Users is
 func (r *Routes) Users(db *db.Database) *Routes {
-	userRepo := users.NewMysql(db)
-	userUsecase := users.NewUsecase(userRepo)
+	userRepo := users.NewGormRepository(db)
+	userUsecase := users.NewUserUsecase(userRepo)
 	userHanlder := users.NewDelivery(userUsecase)
 
 	usersRoute := r.prefix.Group("/users")
