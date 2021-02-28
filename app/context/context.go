@@ -3,6 +3,7 @@ package context
 import (
 	"errors"
 	"fmt"
+	"go-service-echo/app/library/token"
 	"go-service-echo/util/stringy"
 	"log"
 	"net/http"
@@ -30,12 +31,6 @@ func httpErrorHandler(e error, c echo.Context) {
 
 	if he, ok := e.(*echo.HTTPError); ok {
 		switch he.Code {
-		case 400:
-			message = err400
-			e = errors.New("400")
-		case 401:
-			message = err401
-			e = errors.New("401")
 		case 404:
 			message = err404
 			e = errors.New("404")
@@ -76,6 +71,11 @@ func (c *CustomContext) SuccessWithPaginate(code int, m string, p Pagination, d 
 	return c.JSON(code, ResponseSuccessWithPaginate{true, m, d, p})
 }
 
+// Unauthorized is | 401
+func (c *CustomContext) Unauthorized(err interface{}) error {
+	return c.commonError(http.StatusUnauthorized, "The URL is protected, you must supplied token", err)
+}
+
 // BadRequest is | 400
 func (c *CustomContext) BadRequest(err interface{}) error {
 	return c.commonError(http.StatusBadRequest, ErrBadRequest, err)
@@ -100,12 +100,24 @@ func (c *CustomContext) UnprocessableEntity(err interface{}) error {
 func (c *CustomContext) HandleErrors(e error) error {
 	log.Println("Error:", e)
 
+	// token expired | 400
+	if errors.Is(e, token.ErrExpiredToken) {
+		return c.commonError(http.StatusBadRequest, token.ErrExpiredToken.Error(), nil)
+	}
+
+	// token invalid 401
+	if errors.Is(e, token.ErrInvalidToken) {
+		return c.commonError(http.StatusUnauthorized, token.ErrInvalidToken.Error(), nil)
+	}
+
+	// no record in table of database | 404
 	if errors.Is(e, gorm.ErrRecordNotFound) {
 		return c.commonError(http.StatusNotFound, ErrNotFoundMessage, gorm.ErrRecordNotFound)
 	}
 
+	// login failed | 401
 	if errors.Is(e, ErrInvalidCredential) {
-		return c.commonError(http.StatusUnauthorized, ErrInvalidCredentialMessage, ErrInvalidCredential)
+		return c.commonError(http.StatusUnauthorized, ErrInvalidCredential.Error(), nil)
 	}
 
 	if errors.Is(e, ErrFailedGenerateToken) {
