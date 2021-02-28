@@ -26,7 +26,7 @@ func (u *AuthUsecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 		return nil, context.ErrInvalidCredential
 	}
 
-	isPassValid := bcrypt.CheckPasswordHash(pl.Password, user.Password)
+	isPassValid := bcrypt.IsValidPassword(pl.Password, user.Password)
 	if !isPassValid {
 		return nil, context.ErrInvalidCredential
 	}
