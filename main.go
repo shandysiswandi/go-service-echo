@@ -50,9 +50,12 @@ func main() {
 	<-quit
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+	logger.Info()
+	logger.Info("💥 Shutdown server ...")
 	if err := engine.Shutdown(ctx); err != nil {
 		engine.Logger.Fatal(err)
 	}
+	logger.Info("💯 Shutdown server done !")
 }
 
 func server(config *config.Config, app *echo.Echo) {
