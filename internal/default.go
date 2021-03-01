@@ -7,9 +7,8 @@ import (
 	dd "go-service-echo/app/library/sentry"
 	bb "go-service-echo/app/library/token"
 	"go-service-echo/config/constant"
-	aa "go-service-echo/db"
-	"go-service-echo/external/jsonplaceholder"
-	ee "go-service-echo/external/jsonplaceholder"
+	aa "go-service-echo/infrastructure/database"
+	ee "go-service-echo/infrastructure/external/jsonplaceholder"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -100,13 +99,13 @@ func (def *DefaultInternal) ExampleExternalCall(cc echo.Context) error {
 		return c.String(502, err.Error())
 	}
 
-	pCreate := jsonplaceholder.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
+	pCreate := ee.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
 	create, err := def.jsonPlaceHolder.CreatePost(pCreate)
 	if err != nil {
 		return c.String(502, err.Error())
 	}
 
-	pUpdate := jsonplaceholder.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
+	pUpdate := ee.Post{UserID: 1, ID: 1, Title: "title", Body: "body"}
 	update, err := def.jsonPlaceHolder.UpdatePost(pUpdate, 1)
 	if err != nil {
 		return c.String(502, err.Error())

@@ -4,8 +4,8 @@ import (
 	"go-service-echo/app/library/redis"
 	"go-service-echo/app/library/sentry"
 	"go-service-echo/app/library/token"
-	"go-service-echo/db"
-	"go-service-echo/external/jsonplaceholder"
+	"go-service-echo/infrastructure/database"
+	"go-service-echo/infrastructure/external/jsonplaceholder"
 	"go-service-echo/internal"
 	"go-service-echo/internal/authentication"
 	"go-service-echo/internal/users"
@@ -26,7 +26,7 @@ func New(e *echo.Echo) *Routes {
 }
 
 // Default is
-func (r *Routes) Default(db *db.Database, tok *token.Token, red *redis.Redis, sen *sentry.Sentry, jph *jsonplaceholder.JSONPlaceHolder) *Routes {
+func (r *Routes) Default(db *database.Database, tok *token.Token, red *redis.Redis, sen *sentry.Sentry, jph *jsonplaceholder.JSONPlaceHolder) *Routes {
 	dHanlder := internal.NewHandler(db, tok, red, sen, jph)
 
 	r.engine.GET("/", dHanlder.Default)                                  // default route and check | db | token | sentry
@@ -38,7 +38,7 @@ func (r *Routes) Default(db *db.Database, tok *token.Token, red *redis.Redis, se
 }
 
 // Auth is
-func (r *Routes) Auth(db *db.Database, tok *token.Token) *Routes {
+func (r *Routes) Auth(db *database.Database, tok *token.Token) *Routes {
 	userRepo := users.NewGormRepository(db)
 	authUsecase := authentication.NewUsecase(userRepo, tok)
 	authHanlder := authentication.NewHandler(authUsecase)
@@ -55,7 +55,7 @@ func (r *Routes) Auth(db *db.Database, tok *token.Token) *Routes {
 }
 
 // Users is
-func (r *Routes) Users(db *db.Database) *Routes {
+func (r *Routes) Users(db *database.Database) *Routes {
 	userRepo := users.NewGormRepository(db)
 	userUsecase := users.NewUserUsecase(userRepo)
 	userHanlder := users.NewUserHandler(userUsecase)

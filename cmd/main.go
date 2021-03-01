@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"go-service-echo/config"
-	"go-service-echo/db"
+	"go-service-echo/infrastructure/database"
 	"go-service-echo/internal/users"
 	"go-service-echo/util/bcrypt"
 	"go-service-echo/util/faker"
@@ -22,7 +22,7 @@ func main() {
 
 	config := config.New()
 
-	database, err := db.New(config.Database)
+	database, err := database.New(config.Database)
 	if err != nil {
 		logger.Error(err)
 	}
@@ -36,7 +36,7 @@ func main() {
 	fmt.Println(text)
 }
 
-func doBatch(database *db.Database, l int) {
+func doBatch(database *database.Database, l int) {
 	pass, _ := bcrypt.HashPassword("password")
 
 	for i := 0; i < l; i++ {

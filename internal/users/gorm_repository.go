@@ -1,7 +1,7 @@
 package users
 
 import (
-	"go-service-echo/db"
+	"go-service-echo/infrastructure/database"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ type gormRepository struct {
 }
 
 // NewGormRepository is contstructor
-func NewGormRepository(db *db.Database) UserRepository {
+func NewGormRepository(db *database.Database) UserRepository {
 	return &gormRepository{db: db.SQL}
 }
 

@@ -9,8 +9,8 @@ import (
 	"go-service-echo/app/routes"
 	"go-service-echo/app/validation"
 	"go-service-echo/config"
-	"go-service-echo/db"
-	"go-service-echo/external/jsonplaceholder"
+	"go-service-echo/infrastructure/database"
+	"go-service-echo/infrastructure/external/jsonplaceholder"
 	"go-service-echo/util/logger"
 
 	"github.com/labstack/echo/v4"
@@ -20,7 +20,7 @@ import (
 type App struct {
 	engine          *echo.Echo
 	config          *config.Config
-	database        *db.Database
+	database        *database.Database
 	token           *token.Token
 	sentry          *sentry.Sentry
 	redis           *redis.Redis
@@ -37,7 +37,7 @@ func New(config *config.Config) *App {
 	/********** ********** ********** ********** **********/
 	/* create new database variable
 	/********** ********** ********** ********** **********/
-	database, err := db.New(config.Database)
+	database, err := database.New(config.Database)
 	if err != nil {
 		logger.Error(err)
 	}
