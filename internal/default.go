@@ -8,7 +8,7 @@ import (
 	bb "go-service-echo/app/library/token"
 	"go-service-echo/config/constant"
 	aa "go-service-echo/infrastructure/database"
-	ee "go-service-echo/infrastructure/external/jsonplaceholder"
+	ee "go-service-echo/infrastructure/jsonplaceholder"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

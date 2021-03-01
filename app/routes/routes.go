@@ -5,7 +5,7 @@ import (
 	"go-service-echo/app/library/sentry"
 	"go-service-echo/app/library/token"
 	"go-service-echo/infrastructure/database"
-	"go-service-echo/infrastructure/external/jsonplaceholder"
+	"go-service-echo/infrastructure/jsonplaceholder"
 	"go-service-echo/internal"
 	"go-service-echo/internal/authentication"
 	"go-service-echo/internal/users"

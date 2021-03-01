@@ -10,7 +10,7 @@ import (
 	"go-service-echo/app/validation"
 	"go-service-echo/config"
 	"go-service-echo/infrastructure/database"
-	"go-service-echo/infrastructure/external/jsonplaceholder"
+	"go-service-echo/infrastructure/jsonplaceholder"
 	"go-service-echo/util/logger"
 
 	"github.com/labstack/echo/v4"
