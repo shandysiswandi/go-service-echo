@@ -4,11 +4,11 @@ import (
 	"go-service-echo/app/library/redis"
 	"go-service-echo/app/library/sentry"
 	"go-service-echo/app/library/token"
+	"go-service-echo/domain"
+	"go-service-echo/domain/authentication"
+	"go-service-echo/domain/users"
 	"go-service-echo/infrastructure/database"
 	"go-service-echo/infrastructure/jsonplaceholder"
-	"go-service-echo/internal"
-	"go-service-echo/internal/authentication"
-	"go-service-echo/internal/users"
 
 	"github.com/labstack/echo/v4"
 )
@@ -27,7 +27,7 @@ func New(e *echo.Echo) *Routes {
 
 // Default is
 func (r *Routes) Default(db *database.Database, tok *token.Token, red *redis.Redis, sen *sentry.Sentry, jph *jsonplaceholder.JSONPlaceHolder) *Routes {
-	dHanlder := internal.NewHandler(db, tok, red, sen, jph)
+	dHanlder := domain.NewDefaultHandler(db, tok, red, sen, jph)
 
 	r.engine.GET("/", dHanlder.Default)                                  // default route and check | db | token | sentry
 	r.engine.Any("/cors", dHanlder.CORS)                                 // for cors testing
