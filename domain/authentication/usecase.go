@@ -3,7 +3,7 @@ package authentication
 import (
 	"go-service-echo/app/context"
 	"go-service-echo/app/library/token"
-	"go-service-echo/internal/users"
+	"go-service-echo/domain/users"
 	"go-service-echo/util/bcrypt"
 	"time"
 )

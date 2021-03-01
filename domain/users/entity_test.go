@@ -1,7 +1,7 @@
 package users_test
 
 import (
-	"go-service-echo/internal/users"
+	"go-service-echo/domain/users"
 	"testing"
 	"time"
 
