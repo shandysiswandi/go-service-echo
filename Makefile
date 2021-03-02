@@ -77,4 +77,8 @@ start: lint
 cli: lint
 	@clear
 	@go run cmd/main.go
+
+mock:
+	@rm -rf mocks/
+	@mockery --all
 # -------------------------------------------------------------------------------------------------- #
