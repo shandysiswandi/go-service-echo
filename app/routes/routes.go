@@ -39,7 +39,7 @@ func (r *Routes) Default(db *database.Database, tok *token.Token, red *redis.Red
 
 // Auth is
 func (r *Routes) Auth(db *database.Database, tok *token.Token) *Routes {
-	userRepo := users.NewGormRepository(db)
+	userRepo := users.NewGormRepository(db.SQL)
 	authUsecase := authentication.NewUsecase(userRepo, tok)
 	authHanlder := authentication.NewHandler(authUsecase)
 
@@ -56,7 +56,7 @@ func (r *Routes) Auth(db *database.Database, tok *token.Token) *Routes {
 
 // Users is
 func (r *Routes) Users(db *database.Database) *Routes {
-	userRepo := users.NewGormRepository(db)
+	userRepo := users.NewGormRepository(db.SQL)
 	userUsecase := users.NewUserUsecase(userRepo)
 	userHanlder := users.NewUserHandler(userUsecase)
 
