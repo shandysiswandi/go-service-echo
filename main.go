@@ -17,44 +17,44 @@ import (
 )
 
 func main() {
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	/* Load environment
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	if err := godotenv.Load(); err != nil {
 		logger.Error(err)
 	}
 
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	/* Define config variable
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	config := config.New()
 
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	/* Define server and app variable
-	/********** ********** ********** **********/
-	app := app.New(config).
-		RegisterContext().
-		RegisterValidation().
-		RegisterMiddlewares().
-		RegisterRoutes()
+	/********** ********** ********** ********** ********** ********** ********** **********/
+	app := app.New(config)
 
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	/* run application server with graceful shutdown
-	/********** ********** ********** **********/
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	engine := app.GetEngine()
+	engine.HideBanner = true
+	engine.Server.ReadTimeout = 30 * time.Second
+	engine.Server.WriteTimeout = 30 * time.Second
 	go server(config, engine)
 
-	// Wait for interrupt signal to gracefully shutdown the server with a timeout of 5 seconds.
-	// Use a buffered channel to avoid missing signals as recommended for signal.Notify
+	/********** ********** ********** ********** ********** ********** ********** **********/
+	/* Wait for interrupt signal to gracefully shutdown the server with a timeout of 5 seconds.
+	/* Use a buffered channel to avoid missing signals as recommended for signal.Notify
+	/********** ********** ********** ********** ********** ********** ********** **********/
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL)
 	<-quit
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	logger.Info()
 	logger.Info("💥 Shutdown server ...")
 	if err := engine.Shutdown(ctx); err != nil {
-		engine.Logger.Fatal(err)
+		logger.Error(err)
 	}
 	logger.Info("💯 Shutdown server done !")
 }
