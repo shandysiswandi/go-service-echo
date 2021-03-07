@@ -5,7 +5,6 @@ import (
 	"go-service-echo/app"
 	"go-service-echo/config"
 	"go-service-echo/config/constant"
-	"go-service-echo/util/logger"
 	"net/http"
 	"os"
 	"os/signal"
@@ -21,7 +20,7 @@ func main() {
 	/* Load environment
 	/********** ********** ********** ********** ********** ********** ********** **********/
 	if err := godotenv.Load(); err != nil {
-		logger.Error(err)
+		println("Err: ", err)
 	}
 
 	/********** ********** ********** ********** ********** ********** ********** **********/
@@ -41,6 +40,7 @@ func main() {
 	engine.HideBanner = true
 	engine.Server.ReadTimeout = 30 * time.Second
 	engine.Server.WriteTimeout = 30 * time.Second
+	println("⇨ Running", config.App.Name, "Version", constant.Version, "Build", constant.Build)
 	go server(config, engine)
 
 	/********** ********** ********** ********** ********** ********** ********** **********/
@@ -52,11 +52,11 @@ func main() {
 	<-quit
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	logger.Info("💥 Shutdown server ...")
+	println("💥 Shutdown server ...")
 	if err := engine.Shutdown(ctx); err != nil {
-		logger.Error(err)
+		println("Err", err)
 	}
-	logger.Info("💯 Shutdown server done !")
+	println("💯 Shutdown server done !")
 }
 
 func server(config *config.Config, app *echo.Echo) {
