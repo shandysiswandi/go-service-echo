@@ -55,7 +55,7 @@ cert:
 # -------------------- define command target for development & testing --------------------------- #
 test: lint
 	@clear
-	@go test -v ./...
+	@go test `go list ./... | grep -v /cmd/ | grep -v /mocks | grep -v /resource/` -v
 
 test-cover: lint
 	@clear
