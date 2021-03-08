@@ -68,15 +68,15 @@ lint:
 
 dev: lint
 	@clear
-	@reflex -r '\.go' -s -- sh -c "go run main.go"
+	@reflex -r '\.go' -s -- sh -c "go run cmd/api/main.go"
 
 start: lint
 	@clear
-	@go run main.go
+	@go run cmd/api/main.go
 
 cli: lint
 	@clear
-	@go run cmd/main.go
+	@go run cmd/cli/main.go
 
 mock:
 	@rm -rf mocks/*.go
