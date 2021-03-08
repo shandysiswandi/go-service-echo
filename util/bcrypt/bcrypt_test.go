@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHashPassword_Check_Five_Character_From_Front_No_Error(t *testing.T) {
+func Test_HashPassword(t *testing.T) {
 	is := assert.New(t)
 
 	actual, err := bcrypt.HashPassword("password")
@@ -17,7 +17,7 @@ func TestHashPassword_Check_Five_Character_From_Front_No_Error(t *testing.T) {
 	is.Equal(expected, actual[0:6])
 }
 
-func TestIsValidPassword(t *testing.T) {
+func Test_IsValidPassword(t *testing.T) {
 	is := assert.New(t)
 
 	actual := bcrypt.IsValidPassword("password", "$2a$10$mjqqoczR7odoHg/npdnwcuJCk4GHUDYTrkX48vuy/tNq7P/V/wAGi")
