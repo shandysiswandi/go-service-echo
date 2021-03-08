@@ -17,7 +17,6 @@ require (
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/o1egl/paseto v1.0.0
-	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	go.mongodb.org/mongo-driver v1.4.5
