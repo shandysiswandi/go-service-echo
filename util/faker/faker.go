@@ -1,6 +1,8 @@
 package faker
 
-import v3 "github.com/bxcodec/faker/v3"
+import (
+	v3 "github.com/bxcodec/faker/v3"
+)
 
 // Sentence is
 func Sentence() string {
