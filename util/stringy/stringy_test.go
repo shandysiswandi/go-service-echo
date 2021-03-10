@@ -8,22 +8,35 @@ import (
 )
 
 func Test_SnakeCase(t *testing.T) {
-	assert.Equal(t, "capitalize", stringy.SnakeCase("CAPITALIZE"))
-	assert.Equal(t, "lower", stringy.SnakeCase("lower"))
-	assert.Equal(t, "is_uuid", stringy.SnakeCase("IsUUID"))
-	assert.Equal(t, "user_id", stringy.SnakeCase("UserId"))
-	assert.Equal(t, "the_url", stringy.SnakeCase("theURL"))
+	ts := []struct {
+		input    string
+		expected string
+	}{
+		{"CAPITALIZE", "capitalize"},
+		{"lower", "lower"},
+		{"IsUUID", "is_uuid"},
+		{"UserId", "user_id"},
+		{"theURL", "the_url"},
+	}
+
+	for _, val := range ts {
+		assert.Equal(t, val.expected, stringy.SnakeCase(val.input))
+	}
 }
 
-func Test_Split(t *testing.T) {
-	assert.Equal(t, []string{"a", "2"}, stringy.Split("a/2", "/"))
-	assert.Equal(t, []string{"a", "2"}, stringy.Split("/a/2", "/"))
-	assert.Equal(t, []string{"a", "2"}, stringy.Split("/a/2/", "/"))
-}
+func Test_Random(t *testing.T) {
+	ts := []struct {
+		input    int
+		expected int
+	}{
+		{5, 5},
+		{10, 10},
+		{50, 50},
+		{100, 100},
+		{150, 150},
+	}
 
-func Test_RandomString(t *testing.T) {
-	assert.Equal(t, 10, len(stringy.RandomString(10)))
-	assert.Equal(t, 10, len(stringy.RandomString(10)))
-	assert.Equal(t, 50, len(stringy.RandomString(50)))
-	assert.Equal(t, 100, len(stringy.RandomString(100)))
+	for _, val := range ts {
+		assert.Equal(t, val.expected, len(stringy.Random(val.input)))
+	}
 }
