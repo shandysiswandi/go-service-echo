@@ -2,10 +2,10 @@ package middlewares
 
 import (
 	"fmt"
-	"go-service-echo/app/context"
 	"go-service-echo/app/library/token"
+	"go-service-echo/app/response"
 	"go-service-echo/config/constant"
-	"go-service-echo/util/stringy"
+	"go-service-echo/util/arrays"
 	"net/http"
 
 	sentryecho "github.com/getsentry/sentry-go/echo"
@@ -26,25 +26,31 @@ const (
 // Middlewares is
 type Middlewares struct {
 	engine *echo.Echo
+	token  *token.Token
 }
 
 // New is
-func New(e *echo.Echo) *Middlewares {
-	return &Middlewares{e}
-}
+func New(e *echo.Echo, token *token.Token) *Middlewares {
+	/* ----------------------------------------------------------- */
+	/* Official Echo Middleware
+	/*
+	/* Pre is middleware to the chain which is run before router.
+	/* ----------------------------------------------------------- */
+	e.Pre(middleware.RemoveTrailingSlash())
 
-// PreRouter is middleware to the chain which is run before router.
-func (mid *Middlewares) PreRouter() *Middlewares {
-	mid.engine.Pre(middleware.RemoveTrailingSlash())
-
-	return mid
-}
-
-// PraRouter is middleware to the chain which is run after router.
-func (mid *Middlewares) PraRouter(token *token.Token) *Middlewares {
-	mid.engine.Use(middleware.Recover())
-
-	mid.engine.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+	/* ----------------------------------------------------------- */
+	/* Official Echo Middleware
+	/*
+	/* Pra is middleware to the chain which is run after router.
+	/* ----------------------------------------------------------- */
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s\n", time, method, uri, ip, status, err, latency),
+	}))
+	e.Use(middleware.Recover())
+	e.Use(middleware.Secure())
+	e.Use(middleware.BodyLimit("8M"))
+	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{Level: 5}))
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowCredentials: true,
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
@@ -61,47 +67,44 @@ func (mid *Middlewares) PraRouter(token *token.Token) *Middlewares {
 		MaxAge: 2 * 3600,
 	}))
 
-	mid.engine.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(cc echo.Context) error {
-			ctx := cc.(*context.CustomContext)
+	/* ----------------------------------------------------------- */
+	/* Third-Party Echo Middleware
+	/*
+	/* ----------------------------------------------------------- */
+	e.Use(sentryecho.New(sentryecho.Options{
+		Repanic:         true,
+		WaitForDelivery: false,
+		Timeout:         0,
+	}))
 
-			paths := stringy.Split(ctx.Request().URL.Path, "/")
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(ctx echo.Context) error {
+
+			paths := arrays.Split(ctx.Request().URL.Path, "/")
 			if len(paths) < 2 {
 				return next(ctx)
 			}
 
-			if paths[0] != "api" {
+			if paths[0] != constant.AuthRoutePrefix {
 				return next(ctx)
 			}
 
 			auth := ctx.Request().Header.Get(echo.HeaderAuthorization)
-			l := len(constant.AuthScheme)
-			if len(auth) > l+1 && auth[:l] == constant.AuthScheme {
-				data, err := token.VerifyAccessToken(auth[l+1:])
+			length := len(constant.AuthScheme)
+			if len(auth) > length+1 && auth[:length] == constant.AuthScheme {
+				data, err := token.VerifyAccessToken(auth[length+1:])
 				if err != nil {
-					return ctx.HandleErrors(err)
+					return response.HandleErrors(ctx, err)
 				}
 
 				ctx.Set("user", data)
 				return next(ctx)
 			}
 
-			return ctx.Unauthorized(nil)
+			return response.Unauthorized(ctx, nil)
 		}
 	})
 
-	mid.engine.Use(middleware.BodyLimit("8M"))
-	mid.engine.Use(middleware.GzipWithConfig(middleware.GzipConfig{Level: 5}))
-	mid.engine.Use(middleware.Secure())
-	mid.engine.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s\n", time, method, uri, ip, status, err, latency),
-	}))
-
-	mid.engine.Use(sentryecho.New(sentryecho.Options{
-		Repanic:         true,
-		WaitForDelivery: false,
-		Timeout:         0,
-	}))
-
-	return mid
+	/* return nil */
+	return nil
 }
