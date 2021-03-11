@@ -7,134 +7,110 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRandomInt64(t *testing.T) {
-	is := assert.New(t)
-
-	cases := []struct {
-		name     string
+func Test_RandomInt64(t *testing.T) {
+	ts := []struct {
 		expected int64
 	}{
-		{"Random Int64 0", int64(0)},
-		{"Random Int64 1", int64(1)},
-		{"Random Int64 2", int64(2)},
-		{"Random Int64 3", int64(3)},
-		{"Random Int64 4", int64(4)},
-		{"Random Int64 5", int64(5)},
+		{5110693013082846335},
+		{1271216402443795064},
+		{1446451073544560071},
+		{2381045507947682220},
+		{2510080112869722342},
+		{132178464212336404},
 	}
 
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			is.NotEqual(tc.expected, numbers.RandomInt64())
-		})
+	for _, tc := range ts {
+		assert.NotEqual(t, tc.expected, numbers.RandomInt64())
 	}
 }
 
-func TestRandomInt32(t *testing.T) {
-	is := assert.New(t)
-
-	cases := []struct {
-		name     string
+func Test_RandomInt32(t *testing.T) {
+	ts := []struct {
 		expected int32
 	}{
-		{"Random Int32 0", int32(0)},
-		{"Random Int32 1", int32(1)},
-		{"Random Int32 2", int32(2)},
-		{"Random Int32 3", int32(3)},
-		{"Random Int32 4", int32(4)},
-		{"Random Int32 5", int32(5)},
+		{311446475},
+		{1837464741},
+		{1605255085},
+		{361368483},
+		{317327984},
+		{641821864},
 	}
 
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			is.NotEqual(tc.expected, numbers.RandomInt32())
-		})
+	for _, tc := range ts {
+		assert.NotEqual(t, tc.expected, numbers.RandomInt32())
 	}
 }
 
-func TestRandom(t *testing.T) {
-	is := assert.New(t)
-
+func Test_Random(t *testing.T) {
 	cases := []struct {
-		name     string
-		expected int32
-	}{
-		{"Random Int 0", 0},
-		{"Random Int 1", 1},
-		{"Random Int 2", 2},
-		{"Random Int 3", 3},
-		{"Random Int 4", 4},
-		{"Random Int 5", 5},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			is.NotEqual(tc.expected, numbers.Random())
-		})
-	}
-}
-
-func TestRandomBetween(t *testing.T) {
-	is := assert.New(t)
-
-	cases := []struct {
-		name     string
 		expected int
 	}{
-		{"Random Between Int 0", 0},
-		{"Random Between Int 1", 1},
-		{"Random Between Int 2", 2},
-		{"Random Between Int 3", 3},
-		{"Random Between Int 4", 4},
-		{"Random Between Int 5", 5},
+		{2677932324900483984},
+		{7677636105966346175},
+		{7196187788169409176},
+		{1821690828470340119},
+		{3990467886744853333},
+		{6506211577922304348},
 	}
 
 	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			is.NotEqual(tc.expected, numbers.RandomBetween(6, 10))
-		})
+		assert.NotEqual(t, tc.expected, numbers.Random())
 	}
 }
 
-func TestRandomBetweenInt32(t *testing.T) {
-	is := assert.New(t)
-
-	cases := []struct {
-		name     string
-		expected int32
+func Test_RandomBetween(t *testing.T) {
+	ts := []struct {
+		inMin    int
+		inMax    int
+		expected int
 	}{
-		{"Random Between Int32 0", 0},
-		{"Random Between Int32 1", 1},
-		{"Random Between Int32 2", 2},
-		{"Random Between Int32 3", 3},
-		{"Random Between Int32 4", 4},
-		{"Random Between Int32 5", 5},
+		{1, 3, 0},
+		{2, 4, 1},
+		{3, 5, 2},
+		{4, 6, 3},
+		{5, 7, 4},
+		{6, 8, 5},
 	}
 
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			is.NotEqual(tc.expected, numbers.RandomBetweenInt32(6, 10))
-		})
+	for _, tc := range ts {
+		assert.NotEqual(t, tc.expected, numbers.RandomBetween(tc.inMin, tc.inMax))
 	}
 }
 
-func TestRandomBetweenInt64(t *testing.T) {
-	is := assert.New(t)
-
-	cases := []struct {
-		name     string
+func Test_RandomBetweenInt32(t *testing.T) {
+	ts := []struct {
+		inMin    int32
+		inMax    int32
 		expected int32
 	}{
-		{"Random Between Int64 0", 0},
-		{"Random Between Int64 1", 1},
-		{"Random Between Int64 2", 2},
-		{"Random Between Int64 3", 3},
-		{"Random Between Int64 4", 4},
-		{"Random Between Int64 5", 5},
+		{1, 3, 0},
+		{2, 4, 1},
+		{3, 5, 2},
+		{4, 6, 3},
+		{5, 7, 4},
+		{6, 8, 5},
 	}
 
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			is.NotEqual(tc.expected, numbers.RandomBetweenInt64(6, 10))
-		})
+	for _, tc := range ts {
+		assert.NotEqual(t, tc.expected, numbers.RandomBetweenInt32(tc.inMin, tc.inMax))
+	}
+}
+
+func Test_RandomBetweenInt64(t *testing.T) {
+	ts := []struct {
+		inMin    int64
+		inMax    int64
+		expected int64
+	}{
+		{1, 3, 0},
+		{2, 4, 1},
+		{3, 5, 2},
+		{4, 6, 3},
+		{5, 7, 4},
+		{6, 8, 5},
+	}
+
+	for _, tc := range ts {
+		assert.NotEqual(t, tc.expected, numbers.RandomBetweenInt64(tc.inMin, tc.inMax))
 	}
 }
