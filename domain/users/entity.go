@@ -14,8 +14,8 @@ type (
 		Get(string) (*User, error)
 		GetByEmail(string) (*User, error)
 
-		Create(*User) error
-		Update(*User, string) error
+		Create(*UserCreatePayload) error
+		Update(*UserUpdatePayload, string) error
 		Delete(string) error
 	}
 
@@ -25,8 +25,8 @@ type (
 		Get(string) (*User, error)
 		GetByEmail(string) (*User, error)
 
-		Create(*User) error
-		Update(*User, string) error
+		Create(*UserCreatePayload) error
+		Update(*UserUpdatePayload, string) error
 		Delete(string) error
 	}
 
@@ -51,6 +51,24 @@ type (
 		DeletedAt *time.Time `json:"deleted_at"`
 	}
 
+	// UserCreatePayload is
+	UserCreatePayload struct {
+		ID        string    `json:"id,omitempty"`
+		Name      string    `json:"name" validate:"required,min=5"`
+		Email     string    `json:"email" validate:"required,email,min=5"`
+		Password  string    `json:"password" validate:"required,min=6"`
+		CreatedAt time.Time `json:"created_at,omitempty"`
+		UpdatedAt time.Time `json:"updated_at,omitempty"`
+	}
+
+	// UserUpdatePayload is
+	UserUpdatePayload struct {
+		Name      string    `json:"name" validate:"required,min=5"`
+		Email     string    `json:"email" validate:"required,email,min=5"`
+		Password  string    `json:"password" validate:"required,min=6"`
+		UpdatedAt time.Time `json:"updated_at,omitempty"`
+	}
+
 	// User is
 	User struct {
 		ID        string     `json:"id"`
@@ -72,7 +90,7 @@ func (User) TableName() string {
 }
 
 // SetID is
-func (u *User) SetID() {
+func (u *UserCreatePayload) SetID() {
 	u.ID = uuid.New().String()
 }
 

@@ -1,7 +1,6 @@
 package users
 
 import (
-	"go-service-echo/infrastructure/database"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,36 +11,54 @@ type gormRepository struct {
 }
 
 // NewGormRepository is contstructor
-func NewGormRepository(db *database.Database) UserRepository {
-	return &gormRepository{db: db.SQL}
+func NewGormRepository(db *gorm.DB) UserRepository {
+	return &gormRepository{db: db}
 }
 
 func (m *gormRepository) Fetch() (Users, error) {
 	var us Users
-	return us, m.db.Find(&us).Error
+	var table = User{}.TableName()
+
+	return us, m.db.Table(table).Find(&us).Error
 }
 
 func (m *gormRepository) Get(ID string) (*User, error) {
-	u := &User{}
-	return u, m.db.First(u, "id", ID).Error
+	var u = new(User)
+	var table = User{}.TableName()
+
+	if err := m.db.Table(table).First(u, "id", ID).Error; err != nil {
+		return nil, err
+	}
+
+	return u, nil
 }
 
 func (m *gormRepository) GetByEmail(email string) (*User, error) {
-	u := &User{}
-	return u, m.db.First(u, "email", email).Error
-}
+	var u = new(User)
+	var table = User{}.TableName()
 
-func (m *gormRepository) Create(u *User) error {
-	return m.db.Create(u).Error
-}
-
-func (m *gormRepository) Update(u *User, ID string) error {
-	q := m.db.Where("id = ?", ID).Updates(u)
-	if q.Error != nil {
-		return q.Error
+	if err := m.db.Table(table).First(u, "email", email).Error; err != nil {
+		return nil, err
 	}
 
-	if q.RowsAffected < 1 {
+	return u, nil
+}
+
+func (m *gormRepository) Create(u *UserCreatePayload) error {
+	var table = User{}.TableName()
+
+	return m.db.Table(table).Create(u).Error
+}
+
+func (m *gormRepository) Update(u *UserUpdatePayload, ID string) error {
+	var table = User{}.TableName()
+
+	query := m.db.Table(table).Where("id = ?", ID).Updates(u)
+	if query.Error != nil {
+		return query.Error
+	}
+
+	if query.RowsAffected < 1 {
 		return gorm.ErrRecordNotFound
 	}
 

@@ -123,7 +123,7 @@ func TestUserUsecase_GetByEmail_Error(t *testing.T) {
 
 func TestUserUsecase_Create_Success(t *testing.T) {
 	now := time.Now()
-	payload := &users.User{
+	payload := &users.UserCreatePayload{
 		ID:        "1",
 		Name:      "name",
 		Email:     "email",
@@ -146,7 +146,7 @@ func TestUserUsecase_Create_Success(t *testing.T) {
 func TestUserUsecase_Create_Error(t *testing.T) {
 	expected := errors.New("can't Create")
 	now := time.Now()
-	payload := &users.User{
+	payload := &users.UserCreatePayload{
 		ID:        "1",
 		Name:      "name",
 		Email:     "email",
@@ -168,12 +168,10 @@ func TestUserUsecase_Create_Error(t *testing.T) {
 
 func TestUserUsecase_Update_Success(t *testing.T) {
 	now := time.Now()
-	payload := &users.User{
-		ID:        "1",
+	payload := &users.UserUpdatePayload{
 		Name:      "name",
 		Email:     "email",
 		Password:  "password",
-		CreatedAt: now,
 		UpdatedAt: now,
 	}
 
@@ -191,12 +189,10 @@ func TestUserUsecase_Update_Success(t *testing.T) {
 func TestUserUsecase_Update_Error(t *testing.T) {
 	expected := errors.New("can't Update")
 	now := time.Now()
-	payload := &users.User{
-		ID:        "1",
+	payload := &users.UserUpdatePayload{
 		Name:      "name",
 		Email:     "email",
 		Password:  "password",
-		CreatedAt: now,
 		UpdatedAt: now,
 	}
 

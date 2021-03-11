@@ -1,7 +1,8 @@
 package users
 
 import (
-	"go-service-echo/app/context"
+	"go-service-echo/app/response"
+	"go-service-echo/app/validation"
 	"net/http"
 	"time"
 
@@ -17,120 +18,108 @@ func NewUserHandler(u UserUsecase) UserHandler {
 	return &userHandler{u}
 }
 
-func (d *userHandler) Fetch(cc echo.Context) (err error) {
-	c := cc.(*context.CustomContext)
-
+func (d *userHandler) Fetch(c echo.Context) (err error) {
 	// usecase
 	result, err := d.usecase.Fetch()
 	if err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusOK, "fetch users", result.Transform())
+	return response.NewSuccess(c, http.StatusOK, "fetch users", result.Transform())
 }
 
-func (d *userHandler) Get(cc echo.Context) (err error) {
-	c := cc.(*context.CustomContext)
-
+func (d *userHandler) Get(c echo.Context) (err error) {
 	// define variables
 	id := c.Param("id")
 
 	// usecase
 	result, err := d.usecase.Get(id)
 	if err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusOK, "get user", result)
+	return response.NewSuccess(c, http.StatusOK, "get user", result)
 }
 
-func (d *userHandler) GetByEmail(cc echo.Context) (err error) {
-	c := cc.(*context.CustomContext)
-
+func (d *userHandler) GetByEmail(c echo.Context) (err error) {
 	// define variables
 	email := c.Param("email")
 
 	// validation
-	if err := c.ValidateVar(email, "required,email,min:5"); err != nil {
-		return c.UnprocessableEntityVar(err)
+	if err := validation.ValidateVar(email, "required,email,min:5"); err != nil {
+		return response.UnprocessableEntityVar(c, err)
 	}
 
 	// usecase
 	result, err := d.usecase.GetByEmail(email)
 	if err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusOK, "get user by email", result)
+	return response.NewSuccess(c, http.StatusOK, "get user by email", result)
 }
 
-func (d *userHandler) Create(cc echo.Context) (err error) {
-	c := cc.(*context.CustomContext)
-
+func (d *userHandler) Create(c echo.Context) (err error) {
 	// define variables
-	u := new(User)
+	u := new(UserCreatePayload)
 
 	// binding
 	if err = c.Bind(u); err != nil {
-		return c.BadRequest(err)
+		return response.BadRequest(c, err)
 	}
 
 	// validation
 	if err = c.Validate(u); err != nil {
-		return c.UnprocessableEntity(err)
+		return response.UnprocessableEntity(c, err)
 	}
 
 	// usecase
 	if err = d.usecase.Create(u); err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusCreated, "create user", u)
+	return response.NewSuccess(c, http.StatusCreated, "create user", u)
 }
 
-func (d *userHandler) Update(cc echo.Context) (err error) {
-	c := cc.(*context.CustomContext)
-
+func (d *userHandler) Update(c echo.Context) (err error) {
 	// define variables
-	u := new(User)
+	u := new(UserUpdatePayload)
 	id := c.Param("id")
 
 	// binding
 	if err = c.Bind(u); err != nil {
-		return c.BadRequest(err)
+		return response.BadRequest(c, err)
 	}
 
 	// validation
 	if err = c.Validate(u); err != nil {
-		return c.UnprocessableEntity(err)
+		return response.UnprocessableEntity(c, err)
 	}
 
 	// usecase
 	if err = d.usecase.Update(u, id); err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusOK, "update task", u)
+	return response.NewSuccess(c, http.StatusOK, "update task", u)
 }
 
-func (d *userHandler) Delete(cc echo.Context) (err error) {
-	c := cc.(*context.CustomContext)
-
+func (d *userHandler) Delete(c echo.Context) (err error) {
 	// define variables
 	id := c.Param("id")
 
 	// usecase
 	if err = d.usecase.Delete(id); err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusOK, "delete user", map[string]interface{}{
+	return response.NewSuccess(c, http.StatusOK, "delete user", map[string]interface{}{
 		"deleted_at": time.Now(),
 	})
 }

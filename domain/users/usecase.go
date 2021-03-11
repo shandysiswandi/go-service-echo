@@ -21,12 +21,12 @@ func (u *userUsecase) GetByEmail(email string) (*User, error) {
 	return u.userRepository.GetByEmail(email)
 }
 
-func (u *userUsecase) Create(eu *User) error {
+func (u *userUsecase) Create(eu *UserCreatePayload) error {
 	eu.SetID()
 	return u.userRepository.Create(eu)
 }
 
-func (u *userUsecase) Update(t *User, ID string) error {
+func (u *userUsecase) Update(t *UserUpdatePayload, ID string) error {
 	return u.userRepository.Update(t, ID)
 }
 

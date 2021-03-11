@@ -8,19 +8,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTableName(t *testing.T) {
+func Test_User_TableName(t *testing.T) {
 	u := &users.User{}
 	assert.Equal(t, "users", u.TableName())
 }
 
-func TestSetID(t *testing.T) {
-	u := &users.User{}
+func Test_UserCreatePayload_SetID(t *testing.T) {
+	u := &users.UserCreatePayload{}
 	assert.Equal(t, "", u.ID)
 	u.SetID()
 	assert.NotEqual(t, "", u.ID)
 }
 
-func TestTransform(t *testing.T) {
+func Test_Users_Transform(t *testing.T) {
 	us := users.Users{}
 	assert.Equal(t, 0, len(us))
 
