@@ -15,7 +15,8 @@ const (
 
 // token
 const (
-	JWT        string = "jwt"
-	Paseto     string = "paseto"
-	AuthScheme string = "Bearer"
+	JWT             string = "jwt"
+	Paseto          string = "paseto"
+	AuthScheme      string = "Bearer"
+	AuthRoutePrefix string = "api"
 )
