@@ -1,7 +1,7 @@
 package authentication
 
 import (
-	"go-service-echo/app/context"
+	"go-service-echo/app/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -18,28 +18,26 @@ func NewHandler(u *AuthUsecase) *AuthHandler {
 }
 
 // Login is
-func (w *AuthHandler) Login(cc echo.Context) error {
-	c := cc.(*context.CustomContext)
-
+func (w *AuthHandler) Login(c echo.Context) error {
 	// define variables
 	pl := PayloadLogin{}
 
 	// binding
 	if err := c.Bind(&pl); err != nil {
-		return c.BadRequest(err)
+		return response.BadRequest(c, err)
 	}
 
 	// validation
 	if err := c.Validate(&pl); err != nil {
-		return c.UnprocessableEntity(err)
+		return response.UnprocessableEntity(c, err)
 	}
 
 	// usecase
 	result, err := w.usecase.Login(&pl)
 	if err != nil {
-		return c.HandleErrors(err)
+		return response.HandleErrors(c, err)
 	}
 
 	// response
-	return c.Success(http.StatusOK, "auth login", result)
+	return response.NewSuccess(c, http.StatusOK, "auth login", result)
 }

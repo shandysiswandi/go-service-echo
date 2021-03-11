@@ -1,10 +1,10 @@
 package authentication
 
 import (
-	"go-service-echo/app/context"
 	"go-service-echo/app/library/token"
+	"go-service-echo/app/response"
 	"go-service-echo/domain/users"
-	"go-service-echo/util/bcrypt"
+	"go-service-echo/util/security"
 	"time"
 )
 
@@ -23,12 +23,12 @@ func NewUsecase(ur users.UserRepository, token *token.Token) *AuthUsecase {
 func (u *AuthUsecase) Login(pl *PayloadLogin) (*ResponseLogin, error) {
 	user, err := u.userRepository.GetByEmail(pl.Email)
 	if err != nil {
-		return nil, context.ErrInvalidCredential
+		return nil, response.ErrInvalidCredential
 	}
 
-	isPassValid := bcrypt.IsValidPassword(pl.Password, user.Password)
+	isPassValid := security.IsValidPassword(pl.Password, user.Password)
 	if !isPassValid {
-		return nil, context.ErrInvalidCredential
+		return nil, response.ErrInvalidCredential
 	}
 
 	rl := new(ResponseLogin)
